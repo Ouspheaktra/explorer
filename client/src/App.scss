@@ -1,0 +1,45 @@
+:root {
+  --dark: #15191a;
+  --white: #f2f0ed;
+  --list-width: 300px;
+}
+
+body {
+  margin: 0;
+  background-color: var(--dark);
+  color: var(--white);
+  overflow: hidden;
+}
+* {
+  box-sizing: border-box;
+}
+#root {
+  display: flex;
+}
+
+#viewer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.prev,
+.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: black;
+  padding: 50px 10px;
+  color: white;
+  opacity: 0;
+  &:hover {
+    opacity: 1;
+  }
+}
+.prev {
+  left: 0;
+}
+.next {
+  right: 0;
+}

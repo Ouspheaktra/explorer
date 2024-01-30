@@ -1,0 +1,43 @@
+#image {
+  width: 100%;
+}
+
+#viewer.image {
+  display: flex;
+  align-items: center;
+}
+
+#info {
+  position: fixed;
+  width: 300px;
+  left: 0;
+  top: 0;
+  background: #ffffff55;
+  display: flex;
+  flex-direction: column;
+  > .avatar-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    > * {
+      padding: 5px 10px;
+      border: 1px solid gray;
+      border-radius: 5px;
+    }
+    > .avatar-input {
+      font-size: inherit;
+      width: 100px;
+      border: none;
+    }
+    > .avatar {
+      position: relative;
+      background: blue;
+      > .x {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        font-size: small;
+      }
+    }
+  }
+}

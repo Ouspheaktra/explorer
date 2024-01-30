@@ -1,0 +1,40 @@
+.list-opener {
+  background: yellow;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+}
+.list {
+  background: var(--dark);
+  position: relative;
+  height: 100vh;
+  margin: 0;
+  width: 0;
+  padding: 0;
+  list-style: none;
+  &.active {
+    width: var(--list-width);
+    overflow: hidden auto;
+  }
+  li {
+    padding: 0 15px;
+    white-space: pre;
+    &.active {
+      background: blue;
+    }
+    &.is-dir {
+      color: lime;
+    }
+    &.is-image {
+      color: aqua;
+    }
+    &.is-video {
+      color: orange;
+    }
+    &:not(.is-unknown, .active):hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
