@@ -2,8 +2,9 @@ import { useRef } from "react";
 import panzoom, { PanZoom } from "panzoom";
 import { fileUrl } from "../utils";
 import { useGlobal } from "../contexts/GlobalContext";
-import "./style.scss";
 import Viewer from "../Viewer";
+import Info from "../Viewer/Info";
+import "./style.scss";
 
 export default function ImageViewer() {
   let {
@@ -24,6 +25,15 @@ export default function ImageViewer() {
       }}
     >
       <img ref={image} id="image" src={fileUrl(path)} />
+      <Info
+        formNewName={({ avatars }) => (avatars || []).join("-")}
+        detailsTypes={[
+          {
+            name: "avatars",
+            type: "string[]",
+          },
+        ]}
+      />
     </Viewer>
   );
 }
