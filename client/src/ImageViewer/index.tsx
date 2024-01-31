@@ -6,6 +6,10 @@ import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
 import "./style.scss";
 
+interface iImageDetails {
+  avatars: string[];
+}
+
 export default function ImageViewer() {
   let {
     dir: { files },
@@ -25,8 +29,8 @@ export default function ImageViewer() {
       }}
     >
       <img ref={image} id="image" src={fileUrl(path)} />
-      <Info
-        formNewName={({ avatars }) => (avatars || []).join("-")}
+      <Info<iImageDetails>
+        formName={({ avatars }) => (avatars || []).join("-")}
         detailsTypes={[
           {
             name: "avatars",

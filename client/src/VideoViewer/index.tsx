@@ -4,6 +4,11 @@ import { fileUrl } from "../utils";
 import { useGlobal } from "../contexts/GlobalContext";
 import Viewer from "../Viewer";
 import "./style.scss";
+import Info from "../Viewer/Info";
+
+interface iVideoDetails {
+  title: string;
+}
 
 export default function VideoViewer() {
   let {
@@ -28,6 +33,15 @@ export default function VideoViewer() {
         src={fileUrl(path)}
         autoPlay
         controls
+      />
+      <Info<iVideoDetails>
+        formName={({ title }) => title}
+        detailsTypes={[
+          {
+            name: "title",
+            type: "string",
+          },
+        ]}
       />
     </Viewer>
   );

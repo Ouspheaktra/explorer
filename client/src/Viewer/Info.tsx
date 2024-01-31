@@ -1,15 +1,17 @@
 import { useGlobal } from "../contexts/GlobalContext";
 import { iFile } from "../types";
 
-export default function Info({
+type DetailsType = "string" | "string[]";
+
+export default function Info<iDetails extends object>({
   detailsTypes,
-  formNewName,
+  formName,
 }: {
   detailsTypes: {
-    name: string;
-    type: "string" | "string[]";
+    name: keyof iDetails;
+    type: DetailsType;
   }[];
-  formNewName: (details: iFile["details"]) => string;
+  formName: (details: iDetails) => string;
 }) {
   const {
     file,
@@ -18,17 +20,24 @@ export default function Info({
   } = useGlobal();
   const update = (details: iFile["details"]) => {
     const newDetails = { ...file.details, ...details };
-    updateFile(file, newDetails, formNewName(newDetails));
+    updateFile(file, newDetails, formName(newDetails as iDetails));
   };
   return (
     <div id="info">
-      {detailsTypes.map(({ name, type }) => {
+      {detailsTypes.map((detailsType) => {
+        let { name, type } = detailsType as {
+          name: string;
+          type: DetailsType;
+        };
         if (type === "string[]") {
           const pluralName = name;
           if (name.endsWith("s")) name = name.slice(0, -1);
           const data: string[] = file.details[pluralName] || [];
           return (
-            <div key={pluralName} className={`string[]-wrapper ${pluralName}-wrapper`}>
+            <div
+              key={pluralName}
+              className={`string[]-wrapper ${pluralName}-wrapper`}
+            >
               {data.map((one) => (
                 <span key={one} className={`string ${name}`}>
                   <button
