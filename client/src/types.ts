@@ -25,3 +25,8 @@ export interface iDir {
   };
   files: iFile[];
 }
+
+export interface iData {
+  dir: iDir;
+  file: iFile;
+}

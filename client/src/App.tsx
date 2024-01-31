@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import ImageViewer from "./ImageViewer";
 import VideoViewer from "./VideoViewer";
-import { iDir, iFile } from "./types";
+import { iData, iDir, iFile } from "./types";
 import Explorer from "./Explorer";
 import {
   dirToPrevDir,
@@ -23,20 +23,33 @@ function App() {
     dir: iDir | null;
     file: iFile | null;
   }>({ dir: null, file: null });
-  const goto: Goto = (dir) =>
+  const goto: Goto = (dir, pushHistory = true) =>
     gotoDir(dir).then((data) => {
-      history.pushState({}, "", `/?${objectToQuery({ dir })}`);
+      if (pushHistory) history.pushState({}, "", `/?${objectToQuery({ dir })}`);
       data.prevDir = dirToPrevDir(data.dir);
       data.files.forEach((f, i) => {
         f._id = i;
         prepareFile(f);
       });
-      setState({ file, dir: data });
+      const newData = { file, dir: data } as iData;
+      setState(newData);
+      return newData;
     });
   // query data
   useEffect(() => {
     const search = new URLSearchParams(location.search.slice(1));
-    goto(search.get("dir") || "");
+    const dirPath = search.get("dir");
+    const filePath = search.get("file");
+    if (dirPath) goto(dirPath, false);
+    else if (filePath)
+      goto(filePath.split("/").slice(0, -1).join("/"), false).then(
+        ({ dir }) =>
+          setState({
+            dir,
+            file: dir?.files.find((file) => file.path === filePath) || null,
+          })
+      );
+    else goto("", false);
   }, []);
   //
   if (!dir) return "Loading...";
@@ -47,7 +60,15 @@ function App() {
         dir,
         goto,
         file: file as iFile,
-        setFile: (newFile) => setState({ dir, file: newFile }),
+        setFile: (newFile) => {
+          if (newFile)
+            history.pushState(
+              {},
+              "",
+              `/?${objectToQuery({ file: newFile.path })}`
+            );
+          setState({ dir, file: newFile });
+        },
         updateFile: (file, details, newName) =>
           postFile(file, details, newName).then((newFileData) => {
             const newFile = prepareFile({ ...file, ...newFileData });
