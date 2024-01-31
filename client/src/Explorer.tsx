@@ -23,7 +23,7 @@ export default function Explorer() {
             background: "black",
             paddingBlock: "10px",
           }}
-          onClick={() => goto(prevDir).then(() => setFile(null))}
+          onClick={() => goto(prevDir)}
         >
           &lt;&minus; Back
         </li>
@@ -42,7 +42,7 @@ export default function Explorer() {
                     // is file, change file
                     if (ext) setFile(f);
                     // if directory, change dir
-                    else goto(dir).then(() => setFile(null));
+                    else goto(dir);
                   }
                 : undefined
             }

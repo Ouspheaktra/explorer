@@ -31,9 +31,9 @@ function App() {
         f._id = i;
         prepareFile(f);
       });
-      const newData = { file, dir: data } as iData;
+      const newData = { file: null, dir: data };
       setState(newData);
-      return newData;
+      return newData as unknown as iData;
     });
   // query data
   useEffect(() => {
@@ -42,12 +42,11 @@ function App() {
     const filePath = search.get("file");
     if (dirPath) goto(dirPath, false);
     else if (filePath)
-      goto(filePath.split("/").slice(0, -1).join("/"), false).then(
-        ({ dir }) =>
-          setState({
-            dir,
-            file: dir?.files.find((file) => file.path === filePath) || null,
-          })
+      goto(filePath.split("/").slice(0, -1).join("/"), false).then(({ dir }) =>
+        setState({
+          dir,
+          file: dir?.files.find((file) => file.path === filePath) || null,
+        })
       );
     else goto("", false);
   }, []);
@@ -67,6 +66,7 @@ function App() {
               "",
               `/?${objectToQuery({ file: newFile.path })}`
             );
+          // FIXME if newFile is null, change history to /?dir=...
           setState({ dir, file: newFile });
         },
         updateFile: (file, details, newName) =>
