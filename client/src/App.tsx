@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import ImageViewer from "./ImageViewer";
-// import VideoViewer from "./VideoViewer";
+import VideoViewer from "./VideoViewer";
 import { iDir, iFile } from "./types";
 import Explorer from "./Explorer";
 import {
@@ -15,7 +15,7 @@ import { GlobalContext, Goto } from "./contexts/GlobalContext";
 
 const VIEWER = {
   image: ImageViewer,
-  // video: VideoViewer,
+  video: VideoViewer,
 };
 
 function App() {
