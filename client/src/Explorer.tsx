@@ -23,10 +23,7 @@ export default function Explorer() {
             background: "black",
             paddingBlock: "10px",
           }}
-          onClick={() => {
-            goto(prevDir);
-            setFile(null);
-          }}
+          onClick={() => goto(prevDir).then(() => setFile(null))}
         >
           &lt;&minus; Back
         </li>
