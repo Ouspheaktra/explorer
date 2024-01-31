@@ -42,7 +42,7 @@ export default function Explorer() {
                     // is file, change file
                     if (ext) setFile(f);
                     // if directory, change dir
-                    else goto(dir);
+                    else goto(dir).then(() => setFile(null));
                   }
                 : undefined
             }
