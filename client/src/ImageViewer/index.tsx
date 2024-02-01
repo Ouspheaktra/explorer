@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import panzoom, { PanZoom } from "panzoom";
 import { fileUrl } from "../utils";
 import { useGlobal } from "../contexts/GlobalContext";
@@ -13,21 +13,19 @@ interface iImageDetails {
 export default function ImageViewer() {
   let {
     dir: { files },
-    file: { path },
+    file: { _id, path },
   } = useGlobal();
   const image = useRef(null);
   const panzoomHandle = useRef<PanZoom>();
+  useEffect(() => {
+    if (panzoomHandle.current) panzoomHandle.current.dispose();
+    panzoomHandle.current = panzoom(image.current!, {
+      smoothScroll: false,
+    });
+  }, [_id]);
   files = files.filter((o) => o.type === "image");
   return (
-    <Viewer
-      type="image"
-      onNewFile={() => {
-        if (panzoomHandle.current) panzoomHandle.current.dispose();
-        panzoomHandle.current = panzoom(image.current!, {
-          smoothScroll: false,
-        });
-      }}
-    >
+    <Viewer type="image">
       <img ref={image} id="image" src={fileUrl(path)} />
       <Info<iImageDetails>
         formName={({ avatars }) => (avatars || []).join("-")}

@@ -1,21 +1,18 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { useGlobal } from "../contexts/GlobalContext";
 
 export default function Viewer({
   type,
   children,
-  onNewFile,
 }: {
   type: string,
   children: ReactNode
-  onNewFile: () => void;
 }) {
   let {
     dir: { files },
-    file: {_id, name},
+    file: { name },
     setFile,
   } = useGlobal();
-  useEffect(() => onNewFile(), [_id]);
   files = files.filter((o) => o.type === type);
   const currentId = files.findIndex((f) => f.name === name),
     prevFile = files[currentId - 1],
