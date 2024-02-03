@@ -1,5 +1,5 @@
 import { HTMLProps, useEffect, useRef } from "react";
-import panzoom, { PanZoom } from "panzoom";
+import panZoom, { PanZoom } from "panzoom";
 import "./style.scss";
 
 export default function VideoPlayer({
@@ -13,22 +13,36 @@ export default function VideoPlayer({
   const volumeBarRef = useRef<HTMLInputElement | null>(null);
   const isRightHold = useRef(false);
   useEffect(() => {
-    if (panzoomHandle.current) panzoomHandle.current.dispose();
+    panzoomHandle.current?.dispose();
     const video = videoRef.current!;
-    panzoomHandle.current = panzoom(video, {
+    panzoomHandle.current = panZoom(video, {
       smoothScroll: false,
+      // disable zoom
       zoomSpeed: 0,
       zoomDoubleClickSpeed: 1,
+      // double click to fullscreen
       onDoubleClick: () => {
         if (document.fullscreenElement) document.exitFullscreen();
         else video.closest(".video-player")!.requestFullscreen();
       },
     });
-    panzoomHandle.current.on("transform", (e: PanZoom) => {
+    const panzoom = panzoomHandle.current;
+    // use translate property instead of transform property
+    // because translate property works very well on video
+    panzoom.on("transform", (e: PanZoom) => {
       const { x, y } = e.getTransform();
       video.style.transform = "";
-      // translate property works very well on video
       video.style.translate = x + "px " + y + "px";
+    });
+    // video.onmouseup has toggle video play state
+    // which if pan, we don't want to toggle play state
+    // so we store play state on panstart and use it on panend
+    let isVideoPaused = false;
+    panzoom.on("panstart", () => {
+      isVideoPaused = video.paused;
+    });
+    panzoom.on("panend", () => {
+      isVideoPaused ? video.pause() : video.play();
     });
   }, [_id]);
   return (
@@ -48,17 +62,15 @@ export default function VideoPlayer({
         onMouseDown={(e) => {
           if (e.button === 2) isRightHold.current = true;
         }}
-        onMouseUp={() => {
+        onMouseUp={({ currentTarget: video }) => {
           isRightHold.current = false;
+          video.paused ? video.play() : video.pause();
         }}
         onContextMenu={(e) => {
           e.preventDefault();
           e.stopPropagation();
           return false;
         }}
-        onClick={({ currentTarget: video }) =>
-          video.paused ? video.play() : video.pause()
-        }
         onTimeUpdate={({ currentTarget: video }) =>
           timeBarRef.current
             ? (timeBarRef.current.value = video.currentTime.toString())
