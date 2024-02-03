@@ -52,3 +52,6 @@ export const prepareFile = (file: iFile) => {
     : file.dir;
   return file;
 };
+
+export const secondsToString = (seconds: number) =>
+  `${Math.floor(seconds/3600)}:${Math.floor(seconds/60)%60}:${seconds%60}`;

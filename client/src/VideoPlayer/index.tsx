@@ -1,6 +1,7 @@
 import { HTMLProps, useEffect, useRef } from "react";
 import panZoom, { PanZoom } from "panzoom";
 import "./style.scss";
+import { secondsToString } from "../utils";
 
 export default function VideoPlayer({
   controls,
@@ -9,11 +10,10 @@ export default function VideoPlayer({
 }: HTMLProps<HTMLVideoElement> & { _id: number }) {
   const panzoomHandle = useRef<PanZoom>();
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
+  const previewRef = useRef<HTMLVideoElement | null>(null);
   const timeBarRef = useRef<HTMLInputElement | null>(null);
   const volumeBarRef = useRef<HTMLInputElement | null>(null);
   const playRef = useRef<HTMLInputElement | null>(null);
-  const previewRef = useRef<HTMLDivElement | null>(null);
   const isRightHold = useRef(false);
   useEffect(() => {
     panzoomHandle.current?.dispose();
@@ -149,13 +149,16 @@ export default function VideoPlayer({
                 const mouseX = clientX - boundingRect.left;
                 const ratio = mouseX / range.offsetWidth;
                 const potentialValue = Math.round(ratio*parseInt(range.max));
-                videoPreviewRef.current!.currentTime = Math.floor(potentialValue/5);
-                previewRef.current!.style.left = mouseX + "px";
+                const preview = previewRef.current!;
+                preview.currentTime = Math.floor(potentialValue/5);
+                preview.parentElement!.style.left = mouseX + "px";
+                preview.previousElementSibling!.textContent = secondsToString(potentialValue);
               }}
             />
-            <div ref={previewRef} className="vp-preview">
+            <div className="vp-preview">
+              <span></span>
               <video
-                ref={videoPreviewRef}
+                ref={previewRef}
                 src={props.src}
                 autoPlay={false}
                 muted={true}

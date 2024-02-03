@@ -58,15 +58,28 @@
           width: 3px;
           height: var(--bar-height);
         }
+        &:hover + .vp-preview {
+          display: block;
+        }
       }
       > .vp-preview {
         position: absolute;
         bottom: 100%;
+        display: none;
         > video {
+          display: block;
           position: relative;
           left: -50%;
-          display: block;
           border: 2px solid black;
+          text-align: center;
+        }
+        > span {
+          background: black;
+          position: relative;
+          left: -50%;
+          font-family: monospace;
+          font-size: large;
+          display: table;
         }
       }
     }
