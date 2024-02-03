@@ -150,7 +150,7 @@ export default function VideoPlayer({
                 const ratio = mouseX / range.offsetWidth;
                 const potentialValue = Math.round(ratio*parseInt(range.max));
                 const preview = previewRef.current!;
-                preview.currentTime = Math.floor(potentialValue/5);
+                preview.currentTime = potentialValue;
                 preview.parentElement!.style.left = mouseX + "px";
                 preview.previousElementSibling!.textContent = secondsToString(potentialValue);
               }}
