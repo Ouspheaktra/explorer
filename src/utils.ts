@@ -21,6 +21,7 @@ export const mimeTypes: {
     ".mkv": "video/x-matroska",
     ".3gp": "video/3gpp",
     ".webm": "video/webm",
+    // ".ts": "video/mp2t",
   },
 };
 

@@ -1,5 +1,5 @@
 import express from "express";
-// import path from "path";
+import p from "path";
 import fs from "fs";
 import { execSync } from "child_process";
 import bodyParser from "body-parser";
@@ -18,6 +18,12 @@ const port = process.env.PORT || 5000;
 
 // app.set("views", path.join(__dirname, "views"));
 // app.set("view engine", "ejs");
+
+app.use(express.static(p.join(__dirname, '../client/dist')));
+
+app.get('/', (req, res) => {
+  res.sendFile(p.join(__dirname, '../client/dist', 'index.html'));
+});
 
 app.use(bodyParser.json());
 
