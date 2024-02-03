@@ -11,6 +11,7 @@ export default function VideoPlayer({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const timeBarRef = useRef<HTMLInputElement | null>(null);
   const volumeBarRef = useRef<HTMLInputElement | null>(null);
+  const playRef = useRef<HTMLInputElement | null>(null);
   const isRightHold = useRef(false);
   useEffect(() => {
     panzoomHandle.current?.dispose();
@@ -59,6 +60,12 @@ export default function VideoPlayer({
           // skip
           else video.currentTime += deltaY < 0 ? 5 : -5;
         }}
+        onPause={() => {
+          playRef.current!.style.display = "";
+        }}
+        onPlay={() => {
+          playRef.current!.style.display = "none";
+        }}
         onMouseDown={(e) => {
           if (e.button === 2) isRightHold.current = true;
         }}
@@ -87,6 +94,7 @@ export default function VideoPlayer({
             : null
         }
       />
+      <div ref={playRef} className="vp-play">▶</div>
       {controls && (
         <div className="vp-control">
           <div className="vp-side">
