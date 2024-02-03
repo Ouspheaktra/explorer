@@ -95,7 +95,29 @@ export default function VideoPlayer({
         }
       />
       <div ref={playRef} className="vp-play">▶</div>
-      {controls && (
+      {controls && (<>
+        <form
+          className="vp-color"
+          onInput={({ currentTarget: form }) => {
+            videoRef.current!.style.filter = [
+              `contrast(${form.contrast.valueAsNumber}%)`,
+              `brightness(${form.brightness.valueAsNumber}%)`,
+              `saturate(${form.saturate.valueAsNumber}%)`,
+              `hue-rotate(${form.hue.valueAsNumber}deg)`
+            ].join(" ");
+          }}
+          onReset={({ currentTarget: form }) =>
+            setTimeout(() => form.dispatchEvent(
+              new Event("input", { bubbles: true })
+            ), 1)
+          }
+        >
+          bright__: <input name="brightness" type="number" min="0" step="4" defaultValue="100" /><br />
+          contrast: <input name="contrast" type="number" min="0" step="4" defaultValue="100" /><br />
+          saturate: <input name="saturate" type="number" min="0" step="4" defaultValue="100" /><br />
+          hue_____: <input name="hue" type="number" min="0" step="4" defaultValue="360" /><br />
+          <input type="reset" />
+        </form>
         <div className="vp-control">
           <div className="vp-side">
             <input
@@ -135,7 +157,7 @@ export default function VideoPlayer({
             </button>
           </div>
         </div>
-      )}
+      </>)}
     </div>
   );
 }
