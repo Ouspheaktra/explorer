@@ -1,0 +1,42 @@
+:root {
+  --bar-height: 30px;
+}
+
+.video-player {
+  position: relative;
+  > video {
+    width: 100%;
+  }
+  > .vp-control {
+    opacity: 0;
+    &:hover {
+      opacity: 1;
+    }
+    height: var(--bar-height);
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: stretch;
+    > .vp-time-bar {
+      width: 100%;
+      background-color: dimgray;
+      appearance: none;
+      &::-webkit-slider-thumb {
+        appearance: none;
+        border: 2px solid #fff;
+        outline: 2px solid #000;
+        width: 3px;
+        height: var(--bar-height);
+      }
+    }
+    > .vp-side {
+      display: flex;
+      align-items: center;
+      > .vp-volume {
+        width: 100%;
+      }
+    }
+  }
+}
