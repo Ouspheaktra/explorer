@@ -41,17 +41,33 @@
     bottom: 0;
     left: 0;
     display: flex;
+    flex-wrap: nowrap;
     align-items: stretch;
-    > .vp-time-bar {
+    > .vp-time-bar-wrapper {
+      position: relative;
       width: 100%;
-      background-color: dimgray;
-      appearance: none;
-      &::-webkit-slider-thumb {
+      > .vp-time-bar {
+        width: 100%;
+        margin: 0;
+        background-color: dimgray;
         appearance: none;
-        border: 2px solid #fff;
-        outline: 2px solid #000;
-        width: 3px;
-        height: var(--bar-height);
+        &::-webkit-slider-thumb {
+          appearance: none;
+          border: 2px solid #fff;
+          outline: 2px solid #000;
+          width: 3px;
+          height: var(--bar-height);
+        }
+      }
+      > .vp-preview {
+        position: absolute;
+        bottom: 100%;
+        > video {
+          position: relative;
+          left: -50%;
+          display: block;
+          border: 2px solid black;
+        }
       }
     }
     > .vp-side {

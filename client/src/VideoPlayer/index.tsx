@@ -9,9 +9,11 @@ export default function VideoPlayer({
 }: HTMLProps<HTMLVideoElement> & { _id: number }) {
   const panzoomHandle = useRef<PanZoom>();
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
   const timeBarRef = useRef<HTMLInputElement | null>(null);
   const volumeBarRef = useRef<HTMLInputElement | null>(null);
   const playRef = useRef<HTMLInputElement | null>(null);
+  const previewRef = useRef<HTMLDivElement | null>(null);
   const isRightHold = useRef(false);
   useEffect(() => {
     panzoomHandle.current?.dispose();
@@ -133,15 +135,34 @@ export default function VideoPlayer({
               }}
             />
           </div>
-          <input
-            ref={timeBarRef}
-            className="vp-time-bar"
-            type="range"
-            min={0}
-            onInput={(e) =>
-              (videoRef.current!.currentTime = e.currentTarget.valueAsNumber)
-            }
-          />
+          <div className="vp-time-bar-wrapper">
+            <input
+              ref={timeBarRef}
+              className="vp-time-bar"
+              type="range"
+              min={0}
+              onInput={(e) =>
+                (videoRef.current!.currentTime = e.currentTarget.valueAsNumber)
+              }
+              onMouseMove={({ currentTarget: range, clientX }) => {
+                const boundingRect = range.getBoundingClientRect();
+                const mouseX = clientX - boundingRect.left;
+                const ratio = mouseX / range.offsetWidth;
+                const potentialValue = Math.round(ratio*parseInt(range.max));
+                videoPreviewRef.current!.currentTime = Math.floor(potentialValue/5);
+                previewRef.current!.style.left = mouseX + "px";
+              }}
+            />
+            <div ref={previewRef} className="vp-preview">
+              <video
+                ref={videoPreviewRef}
+                src={props.src}
+                autoPlay={false}
+                muted={true}
+                height={80}
+              />
+            </div>
+          </div>
           <div className="vp-side">
             <button
               type="button"
