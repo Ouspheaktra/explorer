@@ -14,6 +14,7 @@ export default function VideoPlayer({
   const timeBarRef = useRef<HTMLInputElement | null>(null);
   const volumeBarRef = useRef<HTMLInputElement | null>(null);
   const playRef = useRef<HTMLInputElement | null>(null);
+  const currentTimeRef = useRef<HTMLSpanElement | null>(null);
   const isRightHold = useRef(false);
   useEffect(() => {
     panzoomHandle.current?.dispose();
@@ -80,11 +81,12 @@ export default function VideoPlayer({
           e.stopPropagation();
           return false;
         }}
-        onTimeUpdate={({ currentTarget: video }) =>
-          timeBarRef.current
-            ? (timeBarRef.current.value = video.currentTime.toString())
-            : null
-        }
+        onTimeUpdate={({ currentTarget: video }) => {
+          if (timeBarRef.current)
+            timeBarRef.current.value = video.currentTime.toString();
+          if (currentTimeRef.current)
+            currentTimeRef.current.textContent = `${secondsToString(video.currentTime)} / ${secondsToString(video.duration)}`;
+        }}
         onDurationChange={({ currentTarget: video }) =>
           timeBarRef.current
             ? (timeBarRef.current.max = video.duration.toString())
@@ -142,7 +144,7 @@ export default function VideoPlayer({
               }}
             />
             <div className="vp-preview">
-              <span></span>
+              <span className="vp-time"></span>
               <video
                 ref={previewRef}
                 src={props.src}
@@ -153,6 +155,9 @@ export default function VideoPlayer({
             </div>
           </div>
           <div className="vp-buttons-container">
+            <div className="vp-buttons-side-container">
+              <span ref={currentTimeRef} className="vp-time"></span>
+            </div>
             <div className="vp-buttons-side-container">
               <input
                 ref={volumeBarRef}
@@ -166,8 +171,6 @@ export default function VideoPlayer({
                   videoRef.current!.muted = false;
                 }}
               />
-            </div>
-            <div className="vp-buttons-side-container">
               <button
                 type="button"
                 onClick={(e) =>

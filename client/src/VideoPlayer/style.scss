@@ -70,8 +70,6 @@
           background: black;
           position: relative;
           left: -50%;
-          font-family: monospace;
-          font-size: large;
           display: table;
         }
       }
@@ -86,5 +84,9 @@
         width: 100%;
       }
     }
+  }
+  .vp-time {
+    font-family: monospace;
+    font-size: large;
   }
 }

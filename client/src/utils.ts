@@ -53,5 +53,8 @@ export const prepareFile = (file: iFile) => {
   return file;
 };
 
+export const pad2 = (number: number) =>
+  Math.floor(number).toString().padStart(2, "0")
+
 export const secondsToString = (seconds: number) =>
-  `${Math.floor(seconds/3600)}:${Math.floor(seconds/60)%60}:${seconds%60}`;
+  `${pad2(seconds/3600)}:${pad2(seconds/60%60)}:${pad2(seconds%60)}`;
