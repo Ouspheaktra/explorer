@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node-dev src/index.ts",
     "prod": "node dist/index.js",
-    "build": "tsc"
+    "build": "tsc & cd client & npm run build"
   },
   "keywords": [],
   "author": "",
