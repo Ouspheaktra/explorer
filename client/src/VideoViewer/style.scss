@@ -1,8 +1,10 @@
-#video {
-  width: 100%;
-}
-
-#viewer.video {
-  display: flex;
-  align-items: center;
+#viewer {
+  &.video {
+    display: flex;
+    align-items: center;
+  }
+  > .video-player {
+    width: 100%;
+    height: 100%;
+  }
 }

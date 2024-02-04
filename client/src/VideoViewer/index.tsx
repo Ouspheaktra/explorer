@@ -17,7 +17,6 @@ export default function VideoViewer() {
     <Viewer type="video">
       <VideoPlayer
         _id={_id}
-        id="video"
         src={fileUrl(path)}
         autoPlay
         controls
