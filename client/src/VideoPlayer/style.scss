@@ -1,7 +1,3 @@
-:root {
-  --bar-height: 30px;
-}
-
 .video-player {
   position: relative;
   > video {
@@ -35,18 +31,15 @@
     &:hover {
       opacity: 1;
     }
-    height: var(--bar-height);
-    width: 100%;
     position: absolute;
     bottom: 0;
     left: 0;
+    right: 0;
     display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    > .vp-time-bar-wrapper {
+    flex-direction: column;
+    > .vp-timebar-container {
       position: relative;
-      width: 100%;
-      > .vp-time-bar {
+      > .vp-timebar {
         width: 100%;
         margin: 0;
         background-color: dimgray;
@@ -56,7 +49,7 @@
           border: 2px solid #fff;
           outline: 2px solid #000;
           width: 3px;
-          height: var(--bar-height);
+          height: 20px;
         }
         &:hover + .vp-preview {
           display: block;
@@ -83,9 +76,12 @@
         }
       }
     }
-    > .vp-side {
+    > .vp-buttons-container {
       display: flex;
-      align-items: center;
+      justify-content: space-between;
+      // > .vp-buttons-side-container {
+
+      // }
       > .vp-volume {
         width: 100%;
       }

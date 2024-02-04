@@ -121,24 +121,10 @@ export default function VideoPlayer({
           <input type="reset" />
         </form>
         <div className="vp-control">
-          <div className="vp-side">
-            <input
-              ref={volumeBarRef}
-              className="vp-volume"
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              onInput={(e) => {
-                videoRef.current!.volume = e.currentTarget.valueAsNumber;
-                videoRef.current!.muted = false;
-              }}
-            />
-          </div>
-          <div className="vp-time-bar-wrapper">
+          <div className="vp-timebar-container">
             <input
               ref={timeBarRef}
-              className="vp-time-bar"
+              className="vp-timebar"
               type="range"
               min={0}
               onInput={(e) =>
@@ -166,19 +152,35 @@ export default function VideoPlayer({
               />
             </div>
           </div>
-          <div className="vp-side">
-            <button
-              type="button"
-              onClick={(e) =>
-                document.fullscreenElement
-                  ? document.exitFullscreen()
-                  : e.currentTarget
-                      .closest(".video-player")!
-                      .requestFullscreen()
-              }
-            >
-              F
-            </button>
+          <div className="vp-buttons-container">
+            <div className="vp-buttons-side-container">
+              <input
+                ref={volumeBarRef}
+                className="vp-volume"
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                onInput={(e) => {
+                  videoRef.current!.volume = e.currentTarget.valueAsNumber;
+                  videoRef.current!.muted = false;
+                }}
+              />
+            </div>
+            <div className="vp-buttons-side-container">
+              <button
+                type="button"
+                onClick={(e) =>
+                  document.fullscreenElement
+                    ? document.exitFullscreen()
+                    : e.currentTarget
+                        .closest(".video-player")!
+                        .requestFullscreen()
+                }
+              >
+                F
+              </button>
+            </div>
           </div>
         </div>
       </>)}
