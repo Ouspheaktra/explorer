@@ -65,7 +65,6 @@ function App() {
             "",
             `/?${objectToQuery({ file: newFile ? newFile.path : file?.dir })}`
           );
-          // FIXME if newFile is null, change history to /?dir=...
           setState({ dir, file: newFile });
         },
         updateFile: (file, details, newName) =>

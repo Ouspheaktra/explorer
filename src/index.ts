@@ -5,7 +5,6 @@ import { execSync } from "child_process";
 import bodyParser from "body-parser";
 import {
   iFile,
-  findMaxId,
   getFileDetail,
   getFileParts,
   mimeTypes,
@@ -54,7 +53,7 @@ app.get("/api/dir", (req, res) => {
 // TODO update file {dir, name, newName, details, newTags}
 app.post("/api/file", (req, res) => {
   const {
-    file: { dir, name, ext, id },
+    file: { dir, name, ext },
     details,
     newName,
   } = req.body as {
@@ -63,15 +62,15 @@ app.post("/api/file", (req, res) => {
     newName: string;
   };
   const hasDetails = Object.keys(details).length;
-  const newId = id || (hasDetails ? findMaxId(readFilesData(dir)) + 1 : id);
-  const newPath = dir + "/" + newName + (newId ? " - " + newId : "") + ext;
+  const newPath = dir + "/" + newName + ext;
   // rename
   if (typeof newName === "string")
-    fs.renameSync(dir + "/" + name + (id ? " - " + id : "") + ext, newPath);
+    fs.renameSync(dir + "/" + name + ext, newPath);
   // edit details
   if (hasDetails) {
     const data = readFilesData(dir);
-    data[newId!] = details;
+    delete data[name + ext];  // delete old details
+    data[(newName || name) + ext] = details;
     //
     writeFilesData(dir, data);
   }

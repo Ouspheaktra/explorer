@@ -27,7 +27,7 @@ export const mimeTypes: {
 
 type ObjectLiteral = { [key: string]: any };
 interface iFilesData {
-  [id: string]: ObjectLiteral;
+  [filename: string]: ObjectLiteral;
 }
 interface iFileParts {
   name: string;
@@ -35,7 +35,6 @@ interface iFileParts {
   dir: string;
 }
 export interface iFile extends iFileParts {
-  id: number | null;
   details: ObjectLiteral;
 }
 
@@ -56,20 +55,9 @@ export const getFileParts = (file: string): iFileParts => {
 
 export const getFileDetail = (file: string, filesData: iFilesData): iFile => {
   const parts = getFileParts(file);
-  let id = null,
-    name = parts.name;
-  if (parts.ext) {
-    const splitted = parts.name.split(" - ");
-    if (splitted.length > 1) {
-      id = parseInt(splitted.at(-1)!);
-      name = splitted.slice(0, -1).join(" - ");
-    }
-  }
   return {
     ...parts,
-    name,
-    id,
-    details: id ? filesData[id] : {},
+    details: filesData[parts.name + parts.ext] || {},
   };
 };
 
@@ -93,11 +81,3 @@ export const writeFilesData = (dir: string, data: iFilesData) => {
     } else throw err;
   }
 };
-
-export const findMaxId = (obj: { [id: string]: any }) =>
-  Math.max(
-    1,
-    ...Object.keys(obj)
-      .map((s) => parseInt(s))
-      .filter(Boolean)
-  );

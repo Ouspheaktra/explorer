@@ -48,7 +48,7 @@ export const postFile = (
 export const prepareFile = (file: iFile) => {
   file.type = extToType(file.ext);
   file.path = file.ext
-    ? file.dir + "/" + file.name + (file.id ? " - " + file.id : "") + file.ext
+    ? file.dir + "/" + file.name + file.ext
     : file.dir;
   return file;
 };
