@@ -18,10 +18,10 @@ const port = process.env.PORT || 5000;
 // app.set("views", path.join(__dirname, "views"));
 // app.set("view engine", "ejs");
 
-app.use(express.static(p.join(__dirname, '../client/dist')));
+app.use(express.static(p.join(__dirname, "../client/dist")));
 
-app.get('/', (req, res) => {
-  res.sendFile(p.join(__dirname, '../client/dist', 'index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(p.join(__dirname, "../client/dist", "index.html"));
 });
 
 app.use(bodyParser.json());
@@ -55,26 +55,34 @@ app.post("/api/file", (req, res) => {
   const {
     file: { dir, name, ext },
     details,
-    newName,
+    newName: originalNewName,
   } = req.body as {
     file: iFile;
     details: iFile["details"];
     newName: string;
   };
   const hasDetails = Object.keys(details).length;
-  const newPath = dir + "/" + newName + ext;
+  let newName = originalNewName;
   // rename
-  if (typeof newName === "string")
+  if (newName) {
+    // keep rename newName if exist
+    let newPath = "";
+    let suffix = 1;
+    while (fs.existsSync((newPath = dir + "/" + newName + ext)))
+      newName = originalNewName + " - " + ++suffix;
     fs.renameSync(dir + "/" + name + ext, newPath);
+  }
+  const data = readFilesData(dir);
   // edit details
   if (hasDetails) {
-    const data = readFilesData(dir);
-    delete data[name + ext];  // delete old details
+    delete data[name + ext]; // delete old details
     data[(newName || name) + ext] = details;
     //
     writeFilesData(dir, data);
   }
-  return res.json(getFileDetail(newPath, readFilesData(dir)));
+  return res.json(
+    getFileDetail(dir + "/" + (newName || name) + ext, data)
+  );
 });
 
 app.get("/file", (req, res) => {

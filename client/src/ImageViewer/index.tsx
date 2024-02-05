@@ -28,7 +28,7 @@ export default function ImageViewer() {
     <Viewer type="image">
       <img ref={image} id="image" src={fileUrl(path)} />
       <Info<iImageDetails>
-        formName={({ avatars }) => (avatars || []).join("-")}
+        formName={({ avatars }) => avatars && avatars.length ? avatars.join(" - ") : ""}
         detailsTypes={[
           {
             name: "avatars",
