@@ -10,6 +10,8 @@ export type UpdateFile = (
 ) => Promise<void>;
 
 export type iGlobalContext = iData & {
+  viewerMode: boolean;
+  setViewerMode: (viewerMode: boolean) => void;
   goto: Goto;
   setFile: SetFile;
   updateFile: UpdateFile;

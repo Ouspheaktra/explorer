@@ -8,6 +8,7 @@ export default function Explorer() {
     goto,
     file,
     setFile,
+    setViewerMode,
   } = useGlobal();
   const [order, setOrder] = useState("name");
   const orderedFiles = [...files];
@@ -15,6 +16,18 @@ export default function Explorer() {
     orderedFiles.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <List name="explorer" level={0} defaultOpen={true}>
+      {file && (
+        <button
+          onClick={() => setViewerMode(true)}
+          style={{
+            position: "absolute",
+            right: 20,
+            zIndex: 1,
+          }}
+        >
+          Viewer
+        </button>
+      )}
       {prevDir && (
         <li
           style={{
@@ -47,7 +60,8 @@ export default function Explorer() {
                 : undefined
             }
           >
-            {name}{ext}
+            {name}
+            {ext}
           </li>
         );
       })}

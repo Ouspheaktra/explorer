@@ -23,6 +23,7 @@ function App() {
     dir: iDir | null;
     file: iFile | null;
   }>({ dir: null, file: null });
+  const [viewerMode, setViewerMode] = useState(false);
   const goto: Goto = (dir, pushHistory = true) =>
     gotoDir(dir).then((data) => {
       if (pushHistory) history.pushState({}, "", `/?${objectToQuery({ dir })}`);
@@ -78,10 +79,12 @@ function App() {
             setState({ file: newFile, dir: newDir });
             setFile(newFile);
           }),
+        viewerMode,
+        setViewerMode,
       }}
     >
       {Viewer ? <Viewer /> : <div id="viewer"></div>}
-      <Explorer />
+      {!viewerMode && <Explorer />}
     </GlobalContext.Provider>
   );
 }
