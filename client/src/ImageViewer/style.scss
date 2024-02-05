@@ -1,8 +1,10 @@
 #image {
   width: 100%;
+  display: block;
 }
 
 #viewer.image {
+  overflow: hidden;
   display: flex;
   align-items: center;
 }

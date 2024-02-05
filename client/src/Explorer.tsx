@@ -30,7 +30,7 @@ export default function Explorer() {
       )}
       {file && <li onClick={() => setFile(null)}>===</li>}
       {orderedFiles.map((f, fid) => {
-        const { type, ext, name, id, dir, _id } = f;
+        const { type, ext, name, dir, _id } = f;
         const isCurrent = file && file._id === _id;
         return (
           <li
@@ -47,9 +47,7 @@ export default function Explorer() {
                 : undefined
             }
           >
-            {name}
-            {id ? " - " + id : ""}
-            {ext}
+            {name}{ext}
           </li>
         );
       })}

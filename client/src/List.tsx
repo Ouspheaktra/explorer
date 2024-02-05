@@ -14,17 +14,15 @@ export default function List({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <>
-      <ul {...props} className={"list" + (open ? " active" : "")}>
-        <button
-          className="list-opener"
-          style={{ top: level * 25 }}
-          onClick={() => setOpen(!open)}
-        >
-          {open ? "X" : name}
-        </button>
-        {open && children}
-      </ul>
-    </>
+    <ul {...props} className={"list" + (open ? " active" : "")}>
+      <button
+        className="list-opener"
+        style={{ top: level * 25 }}
+        onClick={() => setOpen(!open)}
+      >
+        {open ? "X" : name}
+      </button>
+      {open && children}
+    </ul>
   );
 }
