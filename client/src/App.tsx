@@ -60,12 +60,11 @@ function App() {
         goto,
         file: file as iFile,
         setFile: (newFile) => {
-          if (newFile)
-            history.pushState(
-              {},
-              "",
-              `/?${objectToQuery({ file: newFile.path })}`
-            );
+          history.pushState(
+            {},
+            "",
+            `/?${objectToQuery({ file: newFile ? newFile.path : file?.dir })}`
+          );
           // FIXME if newFile is null, change history to /?dir=...
           setState({ dir, file: newFile });
         },
