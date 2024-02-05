@@ -11,7 +11,7 @@ import {
   prepareFile,
 } from "./utils";
 import "./App.scss";
-import { GlobalContext, Goto } from "./contexts/GlobalContext";
+import { GlobalContext, Goto, SetFile } from "./contexts/GlobalContext";
 
 const VIEWER = {
   image: ImageViewer,
@@ -34,7 +34,15 @@ function App() {
       const newData = { file: null, dir: data };
       setState(newData);
       return newData as unknown as iData;
-    });
+    }),
+    setFile: SetFile = (newFile) => {
+      history.pushState(
+        {},
+        "",
+        `/?${objectToQuery({ file: newFile ? newFile.path : file?.dir })}`
+      );
+      setState({ dir, file: newFile });
+    }
   // query data
   useEffect(() => {
     const search = new URLSearchParams(location.search.slice(1));
@@ -59,14 +67,7 @@ function App() {
         dir,
         goto,
         file: file as iFile,
-        setFile: (newFile) => {
-          history.pushState(
-            {},
-            "",
-            `/?${objectToQuery({ file: newFile ? newFile.path : file?.dir })}`
-          );
-          setState({ dir, file: newFile });
-        },
+        setFile,
         updateFile: (file, details, newName) =>
           postFile(file, details, newName).then((newFileData) => {
             const newFile = prepareFile({ ...file, ...newFileData });
@@ -75,6 +76,7 @@ function App() {
               if (newDir.files[id]._id === newFile._id)
                 newDir.files[id] = newFile;
             setState({ file: newFile, dir: newDir });
+            setFile(newFile);
           }),
       }}
     >
