@@ -86,6 +86,10 @@ app.post("/api/file", (req, res) => {
 
 app.get("/file", (req, res) => {
   const { path = "" } = req.query as { path: string };
+  //
+  if (!fs.existsSync(path))
+    return res.sendStatus(404);
+  //
   const { ext } = getFileParts(path);
   // if is director, 404
   if (!ext) return res.sendStatus(404);
