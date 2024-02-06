@@ -4,6 +4,7 @@ import { fileUrl } from "../utils";
 import { useGlobal } from "../contexts/GlobalContext";
 import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
+import Album from "./Album";
 import "./style.scss";
 
 interface iImageDetails {
@@ -14,6 +15,7 @@ export default function ImageViewer() {
   let {
     dir: { files },
     file: { _id, path },
+    viewerMode,
   } = useGlobal();
   const image = useRef(null);
   const panzoomHandle = useRef<PanZoom>();
@@ -25,17 +27,22 @@ export default function ImageViewer() {
   }, [_id]);
   files = files.filter((o) => o.type === "image");
   return (
-    <Viewer type="image">
-      <img ref={image} id="image" src={fileUrl(path)} />
-      <Info<iImageDetails>
-        formName={({ avatars }) => avatars && avatars.length ? avatars.join(" - ") : ""}
-        detailsTypes={[
-          {
-            name: "avatars",
-            type: "string[]",
-          },
-        ]}
-      />
-    </Viewer>
+    <>
+      <Viewer type="image">
+        <img ref={image} id="image" src={fileUrl(path)} />
+        <Info<iImageDetails>
+          formName={({ avatars }) =>
+            avatars && avatars.length ? avatars.join(" - ") : ""
+          }
+          detailsTypes={[
+            {
+              name: "avatars",
+              type: "string[]",
+            },
+          ]}
+        />
+      </Viewer>
+      {viewerMode && <Album />}
+    </>
   );
 }

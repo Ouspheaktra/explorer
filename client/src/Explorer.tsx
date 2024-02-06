@@ -31,7 +31,7 @@ export default function Explorer() {
       );
   }
   return (
-    <List name="explorer" level={0} defaultOpen={true}>
+    <List>
       {file && (
         <button
           onClick={() => setViewerMode(true)}
