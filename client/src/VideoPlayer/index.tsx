@@ -1,7 +1,7 @@
 import { HTMLProps, useEffect, useRef } from "react";
 import panZoom, { PanZoom } from "panzoom";
-import "./style.scss";
 import { secondsToString } from "../utils";
+import "./style.scss";
 
 export default function VideoPlayer({
   controls,

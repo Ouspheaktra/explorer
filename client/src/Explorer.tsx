@@ -2,6 +2,10 @@ import { useState } from "react";
 import List from "./List";
 import { useGlobal } from "./contexts/GlobalContext";
 
+type OrderName = "name" | "date";
+type OrderOrder = "asc" | "desc";
+type Order = [OrderName, OrderOrder];
+
 export default function Explorer() {
   const {
     dir: { prevDir, files },
@@ -10,10 +14,22 @@ export default function Explorer() {
     setFile,
     setViewerMode,
   } = useGlobal();
-  const [order, setOrder] = useState("name");
+  const [[orderName, orderOrder], setOrder] = useState<Order>(["name", "asc"]);
   const orderedFiles = [...files];
-  if (order === "name")
-    orderedFiles.sort((a, b) => a.name.localeCompare(b.name));
+  if (orderName === "name") {
+    if (orderOrder === "asc")
+      orderedFiles.sort((a, b) => a.name.localeCompare(b.name));
+    else orderedFiles.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (orderName === "date") {
+    if (orderOrder === "asc")
+      orderedFiles.sort(
+        (a, b) => a.stat!.mtime.getTime() - b.stat!.mtime.getTime()
+      );
+    else
+      orderedFiles.sort(
+        (a, b) => b.stat!.mtime.getTime() - a.stat!.mtime.getTime()
+      );
+  }
   return (
     <List name="explorer" level={0} defaultOpen={true}>
       {file && (
@@ -74,11 +90,16 @@ export default function Explorer() {
       >
         Order:
         <ul>
-          {["name"].map((o) => (
+          {["name", "date"].map((o) => (
             <button
               key={o}
-              style={{ background: order === o ? "yellow" : "" }}
-              onClick={() => setOrder(o)}
+              style={{ background: orderName === o ? "yellow" : "" }}
+              onClick={() =>
+                setOrder([
+                  o as OrderName,
+                  orderOrder === "asc" ? "desc" : "asc",
+                ])
+              }
             >
               by {o}
             </button>

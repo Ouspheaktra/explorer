@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 app.use(bodyParser.json());
 
 app.get("/api/dir", (req, res) => {
-  const { dir = "" } = req.query as { dir: string };
+  const { getStat, dir = "" } = req.query as { dir: string, getStat?: string };
   //
   const filesData = readFilesData(dir);
   //
@@ -50,7 +50,6 @@ app.get("/api/dir", (req, res) => {
   });
 });
 
-// TODO update file {dir, name, newName, details, newTags}
 app.post("/api/file", (req, res) => {
   const {
     file: { dir, name, ext },

@@ -35,6 +35,7 @@ interface iFileParts {
   dir: string;
 }
 export interface iFile extends iFileParts {
+  stat: ObjectLiteral;
   details: ObjectLiteral;
 }
 
@@ -42,7 +43,10 @@ export const getFileParts = (file: string): iFileParts => {
   const parts = file.split("/"),
     filename = parts.at(-1)!,
     filenameSplit = filename.split("."),
-    name = filenameSplit.length > 1 ? filenameSplit.slice(0, -1).join(".") : filename,
+    name =
+      filenameSplit.length > 1
+        ? filenameSplit.slice(0, -1).join(".")
+        : filename,
     ext = filenameSplit.length > 1 ? "." + filenameSplit.at(-1) : "",
     dirs = ext ? parts.slice(0, -1) : parts,
     dir = dirs.join("/");
@@ -54,10 +58,13 @@ export const getFileParts = (file: string): iFileParts => {
 };
 
 export const getFileDetail = (file: string, filesData: iFilesData): iFile => {
-  const parts = getFileParts(file);
+  const { dir, name, ext } = getFileParts(file);
   return {
-    ...parts,
-    details: filesData[parts.name + parts.ext] || {},
+    dir,
+    name,
+    ext,
+    stat: fs.statSync(dir + "/" + name + ext),
+    details: filesData[name + ext] || {},
   };
 };
 

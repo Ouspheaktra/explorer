@@ -47,14 +47,13 @@ export const postFile = (
 
 export const prepareFile = (file: iFile) => {
   file.type = extToType(file.ext);
-  file.path = file.ext
-    ? file.dir + "/" + file.name + file.ext
-    : file.dir;
+  file.path = file.ext ? file.dir + "/" + file.name + file.ext : file.dir;
+  file.stat.mtime = new Date(file.stat.mtime);
   return file;
 };
 
 export const pad2 = (number: number) =>
-  Math.floor(number).toString().padStart(2, "0")
+  Math.floor(number).toString().padStart(2, "0");
 
 export const secondsToString = (seconds: number) =>
-  `${pad2(seconds/3600)}:${pad2(seconds/60%60)}:${pad2(seconds%60)}`;
+  `${pad2(seconds / 3600)}:${pad2((seconds / 60) % 60)}:${pad2(seconds % 60)}`;
