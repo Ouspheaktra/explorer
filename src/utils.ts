@@ -63,7 +63,7 @@ export const getFileDetail = (file: string, filesData: iFilesData): iFile => {
     dir,
     name,
     ext,
-    stat: fs.statSync(dir + "/" + name + ext),
+    stat: fs.statSync(ext ? dir + "/" + name + ext : dir),
     details: filesData[name + ext] || {},
   };
 };

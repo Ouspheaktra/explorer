@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 app.use(bodyParser.json());
 
 app.get("/api/dir", (req, res) => {
-  const { getStat, dir = "" } = req.query as { dir: string, getStat?: string };
+  const { dir = "" } = req.query as { dir: string };
   //
   const filesData = readFilesData(dir);
   //
