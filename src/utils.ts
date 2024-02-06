@@ -59,11 +59,15 @@ export const getFileParts = (file: string): iFileParts => {
 
 export const getFileDetail = (file: string, filesData: iFilesData): iFile => {
   const { dir, name, ext } = getFileParts(file);
+  let stat = {};
+  try {
+    stat = fs.statSync(ext ? dir + "/" + name + ext : dir);
+  } catch {}
   return {
     dir,
     name,
     ext,
-    stat: fs.statSync(ext ? dir + "/" + name + ext : dir),
+    stat,
     details: filesData[name + ext] || {},
   };
 };
