@@ -48,7 +48,8 @@ export const postFile = (
 export const prepareFile = (file: iFile) => {
   file.type = extToType(file.ext);
   file.path = file.ext ? file.dir + "/" + file.name + file.ext : file.dir;
-  file.stat.mtime = new Date(file.stat.mtime);
+  if (file.stat.mtime)
+    file.stat.mtime = new Date(file.stat.mtime);
   return file;
 };
 
@@ -57,3 +58,11 @@ export const pad2 = (number: number) =>
 
 export const secondsToString = (seconds: number) =>
   `${pad2(seconds / 3600)}:${pad2((seconds / 60) % 60)}:${pad2(seconds % 60)}`;
+
+export const toDateString = (date: Date) =>
+  date.toISOString().slice(0, 10);
+
+export const sameDate = (date1: Date, date2: Date) =>
+  date1.getFullYear() === date2.getFullYear() &&
+  date1.getMonth() === date2.getMonth() &&
+  date1.getDate() === date2.getDate();

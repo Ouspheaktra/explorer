@@ -17,24 +17,41 @@
     width: var(--list-width);
     overflow: hidden auto;
   }
-  li {
-    padding: 0 15px;
-    white-space: pre;
-    &.active {
-      background: blue;
+  > .list-group {
+    > .list-group-name {
+      display: block;
+      margin: 5px 0;
+      font-weight: bold;
     }
-    &.is-dir {
-      color: lime;
+    > .list-group-files {
+      list-style: none;
+      padding: 0;
+      > li {
+        padding: 0 10px;
+        white-space: pre;
+        &.active {
+          background: blue;
+        }
+        &.is-dir {
+          color: lime;
+        }
+        &.is-image {
+          color: aqua;
+        }
+        &.is-video {
+          color: orange;
+        }
+        &:not(.is-unknown, .active):hover {
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
     }
-    &.is-image {
-      color: aqua;
-    }
-    &.is-video {
-      color: orange;
-    }
-    &:not(.is-unknown, .active):hover {
-      text-decoration: underline;
-      cursor: pointer;
-    }
+  }
+
+  > .list-bottom {
+    position: sticky;
+    bottom: 0;
+    background: black;
   }
 }

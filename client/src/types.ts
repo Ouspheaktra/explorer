@@ -12,7 +12,7 @@ export interface iFile<DetailsType = ObjectLiteral> {
   path: string;
   type: FileType;
   stat: {
-    mtime: Date;
+    mtime?: Date;
   }
   details: DetailsType;
 }

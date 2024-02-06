@@ -1,31 +1,58 @@
-import { HTMLProps, ReactNode, useState } from "react";
-import "./List.scss";
+import { useState } from "react";
 import { useGlobal } from "./contexts/GlobalContext";
 import { iFile } from "./types";
+import { toDateString } from "./utils";
+import "./List.scss";
 
 type Order = "asc" | "desc";
+type SortedGroup = {
+  name: string;
+  files: iFile[];
+};
 type Sort = {
   name: string;
-  sort: (files: iFile[], order: Order) => iFile[];
+  sort: (files: iFile[], order: Order) => SortedGroup[];
 };
 
 const builtinSorts: Sort[] = [
   {
     name: "Name",
     sort: (files, order) => {
+      // sort
       if (order === "asc") files.sort((a, b) => a.name.localeCompare(b.name));
       else files.sort((a, b) => b.name.localeCompare(a.name));
-      return files;
+      //
+      return createSortedGroup(files, (file) => file.name[0].toUpperCase());
     },
   },
   {
     name: "Date",
     sort: (files, order) => {
+      //
+      const knowns: iFile[] = [],
+        unknowns: iFile[] = [];
+      for (let file of files)
+        if (file.stat.mtime) knowns.push(file);
+        else unknowns.push(file);
+      // sort
       if (order === "asc")
-        files.sort((a, b) => a.stat!.mtime.getTime() - b.stat!.mtime.getTime());
+        knowns.sort(
+          (a, b) => a.stat.mtime!.getTime() - b.stat.mtime!.getTime()
+        );
       else
-        files.sort((a, b) => b.stat!.mtime.getTime() - a.stat!.mtime.getTime());
-      return files;
+        knowns.sort(
+          (a, b) => b.stat.mtime!.getTime() - a.stat.mtime!.getTime()
+        );
+      // group
+      const groups = createSortedGroup(knowns, (file) =>
+        toDateString(file.stat.mtime!)
+      );
+      groups.push({
+        name: "unknown",
+        files: unknowns,
+      });
+      //
+      return groups;
     },
   },
 ];
@@ -43,7 +70,7 @@ export default function List({ sorts = [] }: { sorts?: Sort[] }) {
     "asc",
   ]);
   const allSorts = [...sorts, ...builtinSorts];
-  const sortedFiles = allSorts
+  const sortedGroups = allSorts
     .find((sort) => sort.name === sortName)!
     .sort([...files], sortOrder);
   return (
@@ -51,43 +78,48 @@ export default function List({ sorts = [] }: { sorts?: Sort[] }) {
       <button className="list-opener" onClick={() => setOpen(!open)}>
         {open ? "X" : "O"}
       </button>
-      {sortedFiles.map((f, fid) => {
-        const { type, ext, name, dir, _id } = f;
-        const isCurrent = file && file._id === _id;
+      {sortedGroups.map(({ name, files }, gid) => {
         return (
-          <li
-            key={fid}
-            className={`is-${type} ${isCurrent ? "active" : ""}`}
-            onClick={
-              type !== "unknown" && !isCurrent
-                ? () => {
-                    // is file, change file
-                    if (ext) setFile(f);
-                    // if directory, change dir
-                    else goto(dir);
-                  }
-                : undefined
-            }
-          >
-            {name}
-            {ext}
+          <li key={gid} className="list-group">
+            <span className="list-group-name">{name}</span>
+            <ul className="list-group-files">
+              {files.map((f, fid) => {
+                const { type, ext, name, dir, _id } = f;
+                const isCurrent = file && file._id === _id;
+                return (
+                  <li
+                    key={fid}
+                    className={`is-${type} ${isCurrent ? "active" : ""}`}
+                    onClick={
+                      type !== "unknown" && !isCurrent
+                        ? () => {
+                            // is file, change file
+                            if (ext) setFile(f);
+                            // if directory, change dir
+                            else goto(dir);
+                          }
+                        : undefined
+                    }
+                  >
+                    {name}
+                    {ext}
+                  </li>
+                );
+              })}
+            </ul>
           </li>
         );
       })}
-      <li
-        style={{
-          position: "sticky",
-          bottom: 0,
-          background: "black",
-        }}
-      >
+      <li className="list-bottom">
         Order:
         <ul>
           {allSorts.map(({ name }) => (
             <button
               key={name}
               style={{ background: sortName === name ? "yellow" : "" }}
-              onClick={() => setSort([name, sortOrder === "asc" ? "desc" : "asc"])}
+              onClick={() =>
+                setSort([name, sortOrder === "asc" ? "desc" : "asc"])
+              }
             >
               by {name}
             </button>
@@ -96,4 +128,22 @@ export default function List({ sorts = [] }: { sorts?: Sort[] }) {
       </li>
     </ul>
   );
+}
+
+function createSortedGroup(
+  files: iFile[],
+  makeGroupName: (file: iFile) => string
+) {
+  const groups: SortedGroup[] = [];
+  for (let file of files) {
+    const groupName = makeGroupName(file);
+    if (groups.at(-1) && groups.at(-1)!.name === groupName)
+      groups.at(-1)!.files.push(file);
+    else
+      groups.push({
+        name: groupName,
+        files: [file],
+      });
+  }
+  return groups;
 }
