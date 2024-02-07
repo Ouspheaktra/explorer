@@ -1,11 +1,3 @@
-.list-opener {
-  background: yellow;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
-}
-
 .list {
   background: var(--dark);
   position: relative;
@@ -21,6 +13,11 @@
   &.active {
     width: var(--list-width);
     overflow: hidden auto;
+  }
+  &.full {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: auto;
   }
   > .list-group {
     > .list-group-name {
@@ -55,7 +52,9 @@
     position: sticky;
     top: 0;
     background: black;
-    > ul {
+    > ul > .list-top-buttons {
+      display: flex;
+      justify-content: right;
     }
   }
   > .list-bottom {
