@@ -4,7 +4,7 @@ import { useGlobal } from "./GlobalContext";
 export default function Explorer() {
   const {
     dir: { prevDir },
-    goto,
+    setDir: goto,
     file,
     setFile,
     setViewerMode,

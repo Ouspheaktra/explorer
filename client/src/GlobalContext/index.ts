@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
-import { iData, iFile } from "../types";
+import { iData, iDir, iFile } from "../types";
 
 export type SetFile = (file: iFile | null) => any;
-export type Goto = (rawPath: string, pushHistory?: boolean) => Promise<iData>;
+export type setDir = (dir: string, pushHistory?: boolean) => Promise<iDir>;
 export type UpdateFile = (
   file: iFile,
   details: iFile["details"],
@@ -12,7 +12,7 @@ export type UpdateFile = (
 export type iGlobalContext = iData & {
   viewerMode: boolean;
   setViewerMode: (viewerMode: boolean) => void;
-  goto: Goto;
+  setDir: setDir;
   setFile: SetFile;
   updateFile: UpdateFile;
 };

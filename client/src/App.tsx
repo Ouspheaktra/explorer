@@ -1,17 +1,12 @@
 import { FC, useEffect, useState } from "react";
 import ImageViewer from "./ImageViewer";
 import VideoViewer from "./VideoViewer";
-import { iData, iDir, iFile } from "./types";
+import { iDir, iFile } from "./types";
 import Explorer from "./Explorer";
-import {
-  dirToPrevDir,
-  gotoDir,
-  objectToQuery,
-  postFile,
-  prepareFile,
-} from "./utils";
+import { dirToPrevDir, objectToQuery, prepareFile } from "./utils";
+import { GlobalContext, setDir, SetFile } from "./GlobalContext";
+import { getDir, postFile } from "./utils/api";
 import "./App.scss";
-import { GlobalContext, Goto, SetFile } from "./GlobalContext";
 
 const VIEWER = {
   image: ImageViewer,
@@ -24,40 +19,44 @@ function App() {
     file: iFile | null;
   }>({ dir: null, file: null });
   const [viewerMode, setViewerMode] = useState(false);
-  const goto: Goto = (dir, pushHistory = true) =>
-    gotoDir(dir).then((data) => {
-      if (pushHistory) history.pushState({}, "", `/?${objectToQuery({ dir })}`);
-      data.prevDir = dirToPrevDir(data.dir);
-      data.files.forEach((f, i) => {
-        f._id = i;
-        prepareFile(f);
-      });
-      const newData = { file: null, dir: data };
-      setState(newData);
-      return newData as unknown as iData;
-    }),
+  const setDir: setDir = (dir, pushHistory = true) =>
+      getDir(dir).then((data) => {
+        // push history
+        if (pushHistory)
+          history.pushState({}, "", `/?${objectToQuery({ dir })}`);
+        // prepare
+        data.prevDir = dirToPrevDir(data.dir);
+        data.files.forEach((f, i) => {
+          f._id = i;
+          prepareFile(f);
+        });
+        //
+        setState({ file: null, dir: data });
+        return data;
+      }),
     setFile: SetFile = (newFile) => {
       history.pushState(
         {},
         "",
-        `/?${objectToQuery({ file: newFile ? newFile.path : file?.dir })}`
+        `/?${objectToQuery({
+          dir: dir?.dir,
+          file: newFile ? newFile.name + newFile.ext : "",
+        })}`
       );
       setState({ dir, file: newFile });
-    }
+    };
   // query data
   useEffect(() => {
     const search = new URLSearchParams(location.search.slice(1));
-    const dirPath = search.get("dir");
-    const filePath = search.get("file");
-    if (dirPath) goto(dirPath, false);
-    else if (filePath)
-      goto(filePath.split("/").slice(0, -1).join("/"), false).then(({ dir }) =>
-        setState({
-          dir,
-          file: dir?.files.find((file) => file.path === filePath) || null,
-        })
-      );
-    else goto("", false);
+    const dirPath = search.get("dir")!;
+    console.log(dirPath)
+    setDir(dirPath, false).then((dir) => {
+      const filename = search.get("file")!;
+      if (filename) {
+        const file = dir.files.find((f) => f.name + f.ext === filename);
+        if (file) setState({ file, dir });
+      }
+    });
   }, []);
   //
   if (!dir) return "Loading...";
@@ -66,7 +65,7 @@ function App() {
     <GlobalContext.Provider
       value={{
         dir,
-        goto,
+        setDir,
         file: file as iFile,
         setFile,
         updateFile: (file, details, newName) =>

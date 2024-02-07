@@ -1,5 +1,5 @@
-import { FileType, ObjectLiteral, iDir, iFile } from "./types";
-import { mimeTypes } from "../../src/utils";
+import { FileType, ObjectLiteral, iDir, iFile } from "../types";
+import { mimeTypes } from "../../../src/utils";
 
 export const shuffleArray = (array: any[]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -24,26 +24,6 @@ export const fileUrl = (path: string) =>
 
 export const objectToQuery = (obj: ObjectLiteral) =>
   new URLSearchParams(obj).toString();
-
-export const gotoDir = (dir: string): Promise<iDir> =>
-  fetch(`/api/dir?${objectToQuery({ dir })}`).then((res) => res.json());
-
-export const postFile = (
-  file: iFile,
-  details: iFile["details"],
-  newName: string | null
-): Promise<iFile> =>
-  fetch("/api/file", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      file,
-      details,
-      newName,
-    }),
-  }).then((response) => response.json());
 
 export const prepareFile = (file: iFile) => {
   file.type = extToType(file.ext);

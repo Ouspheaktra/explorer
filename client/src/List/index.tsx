@@ -8,7 +8,7 @@ export default function List({ listTop, sorts = [] }: { listTop?: ReactNode, sor
   const [open, setOpen] = useState(true);
   const {
     dir: { files },
-    goto,
+    setDir: goto,
     file,
     setFile,
   } = useGlobal();
