@@ -71,6 +71,12 @@ export default function VideoPlayer({
         }}
         onMouseDown={(e) => {
           if (e.button === 2) isRightHold.current = true;
+// @ts-ignore
+if (e.button === 1) document.querySelector(".next")!.click()
+        }}
+onEnded={() => {
+// @ts-ignore
+document.querySelector(".prev")!.click()
         }}
         onMouseUp={({ currentTarget: video }) => {
           isRightHold.current = false;
