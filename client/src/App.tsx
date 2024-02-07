@@ -11,7 +11,7 @@ import {
   prepareFile,
 } from "./utils";
 import "./App.scss";
-import { GlobalContext, Goto, SetFile } from "./contexts/GlobalContext";
+import { GlobalContext, Goto, SetFile } from "./GlobalContext";
 
 const VIEWER = {
   image: ImageViewer,

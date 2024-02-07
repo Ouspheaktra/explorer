@@ -1,4 +1,4 @@
-import { useGlobal } from "../contexts/GlobalContext";
+import { useGlobal } from "../GlobalContext";
 import { iFile } from "../types";
 
 type DetailsType = "string" | "string[]";

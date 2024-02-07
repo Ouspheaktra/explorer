@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { useGlobal } from "../contexts/GlobalContext";
+import { useGlobal } from "../GlobalContext";
 
 export default function Viewer({
   type,

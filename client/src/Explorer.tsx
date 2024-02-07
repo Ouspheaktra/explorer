@@ -1,5 +1,5 @@
 import List from "./List";
-import { useGlobal } from "./contexts/GlobalContext";
+import { useGlobal } from "./GlobalContext";
 
 export default function Explorer() {
   const {

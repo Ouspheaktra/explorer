@@ -1,6 +1,6 @@
 import List from "../List";
 import { createSortedGroup } from "../List/utils";
-import { useGlobal } from "../contexts/GlobalContext";
+import { useGlobal } from "../GlobalContext";
 import { iFile } from "../types";
 import { iImageDetails } from "./types";
 

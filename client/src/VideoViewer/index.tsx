@@ -1,5 +1,5 @@
 import { fileUrl } from "../utils";
-import { useGlobal } from "../contexts/GlobalContext";
+import { useGlobal } from "../GlobalContext";
 import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
 import VideoPlayer from "../VideoPlayer";

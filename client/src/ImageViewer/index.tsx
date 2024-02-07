@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import panzoom, { PanZoom } from "panzoom";
 import { fileUrl } from "../utils";
-import { useGlobal } from "../contexts/GlobalContext";
+import { useGlobal } from "../GlobalContext";
 import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
 import Album from "./Album";

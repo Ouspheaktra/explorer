@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { useGlobal } from "../contexts/GlobalContext";
+import { useGlobal } from "../GlobalContext";
 import { Order, Sort } from "./types";
 import { builtinSorts } from "./builtin";
 import "./style.scss";
