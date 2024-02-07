@@ -1,4 +1,3 @@
-//import { useState } from "react";
 import List from "./List";
 import { useGlobal } from "./contexts/GlobalContext";
 
