@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { useGlobal } from "./contexts/GlobalContext";
 import { iFile } from "./types";
 import { toDateString } from "./utils";
@@ -60,7 +60,7 @@ const builtinSorts: Sort[] = [
   },
 ];
 
-export default function List({ sorts = [] }: { sorts?: Sort[] }) {
+export default function List({ listTop, sorts = [] }: { listTop?: ReactNode, sorts?: Sort[] }) {
   const [open, setOpen] = useState(true);
   const {
     dir: { files },
@@ -80,6 +80,11 @@ export default function List({ sorts = [] }: { sorts?: Sort[] }) {
       <button className="list-opener" onClick={() => setOpen(!open)}>
         {open ? "X" : "O"}
       </button>
+      <li className="list-top">
+        <ul>
+          {listTop}
+        </ul>
+      </li>
       {sortedGroups.map(({ name, files }, gid) => {
         return (
           <li key={gid} className="list-group">
