@@ -7,7 +7,7 @@ export type SortedGroup = {
 };
 export type Sort = {
   name: string;
-  sort: (files: iFile[], order: Order) => SortedGroup[];
+  sort: (files: iFile[]) => SortedGroup[];
 };
 
 export interface FileComponentProps {

@@ -30,7 +30,11 @@ export default function List({
   ]);
   const allSorts = [...sorts, ...builtinSorts];
   const sorter = allSorts.find((sort) => sort.name === sortName)!;
-  const sortedGroups = sorter.sort([...files], sortOrder);
+  const sortedGroups = sorter.sort(files);
+  if (sortOrder === "desc") {
+    sortedGroups.reverse();
+    sortedGroups.forEach((g) => g.files.reverse());
+  }
   return (
     <ul
       {...ulProps}
