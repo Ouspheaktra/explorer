@@ -11,12 +11,14 @@ type SortedGroup = {
 };
 type Sort = {
   name: string;
+  showLabel: boolean;
   sort: (files: iFile[], order: Order) => SortedGroup[];
 };
 
 const builtinSorts: Sort[] = [
   {
     name: "Name",
+    showLabel: false,
     sort: (files, order) => {
       // sort
       if (order === "asc") files.sort((a, b) => a.name.localeCompare(b.name));
@@ -27,6 +29,7 @@ const builtinSorts: Sort[] = [
   },
   {
     name: "Date",
+    showLabel: false,
     sort: (files, order) => {
       //
       const knowns: iFile[] = [],
@@ -70,9 +73,8 @@ export default function List({ sorts = [] }: { sorts?: Sort[] }) {
     "asc",
   ]);
   const allSorts = [...sorts, ...builtinSorts];
-  const sortedGroups = allSorts
-    .find((sort) => sort.name === sortName)!
-    .sort([...files], sortOrder);
+  const sorter = allSorts.find((sort) => sort.name === sortName)!
+  const sortedGroups = sorter.sort([...files], sortOrder);
   return (
     <ul className={"list" + (open ? " active" : "")}>
       <button className="list-opener" onClick={() => setOpen(!open)}>
@@ -81,7 +83,7 @@ export default function List({ sorts = [] }: { sorts?: Sort[] }) {
       {sortedGroups.map(({ name, files }, gid) => {
         return (
           <li key={gid} className="list-group">
-            <span className="list-group-name">{name}</span>
+            {sorter.showLabel && <span className="list-group-name">{name}</span>}
             <ul className="list-group-files">
               {files.map((f, fid) => {
                 const { type, ext, name, dir, _id } = f;
