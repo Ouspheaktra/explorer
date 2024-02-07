@@ -4,7 +4,7 @@ export type ObjectLiteral = {
   [key: string]: any;
 };
 
-export interface iFile<DetailsType = ObjectLiteral> {
+export interface iFile<DetailsType extends ObjectLiteral = ObjectLiteral> {
   _id: number;
   name: string;
   ext: string;

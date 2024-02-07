@@ -5,11 +5,8 @@ import { useGlobal } from "../contexts/GlobalContext";
 import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
 import Album from "./Album";
+import { iImageDetails } from "./types";
 import "./style.scss";
-
-interface iImageDetails {
-  avatars: string[];
-}
 
 export default function ImageViewer() {
   let {

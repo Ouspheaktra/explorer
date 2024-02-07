@@ -128,7 +128,7 @@ export default function List({ listTop, sorts = [] }: { listTop?: ReactNode, sor
                 setSort([name, sortOrder === "asc" ? "desc" : "asc"])
               }
             >
-              by {name}
+              {name}
             </button>
           ))}
         </ul>
@@ -137,7 +137,7 @@ export default function List({ listTop, sorts = [] }: { listTop?: ReactNode, sor
   );
 }
 
-function createSortedGroup(
+export function createSortedGroup(
   files: iFile[],
   makeGroupName: (file: iFile) => string
 ) {
