@@ -26,6 +26,7 @@ export const objectToQuery = (obj: ObjectLiteral) =>
   new URLSearchParams(obj).toString();
 
 export const prepareFile = (file: iFile) => {
+  file.fullname = file.name + file.ext;
   file.type = extToType(file.ext);
   file.path = file.ext ? file.dir + "/" + file.name + file.ext : file.dir;
   if (file.stat.mtime)

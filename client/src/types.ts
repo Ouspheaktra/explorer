@@ -9,6 +9,7 @@ export interface iFile<DetailsType extends ObjectLiteral = ObjectLiteral> {
   name: string;
   ext: string;
   dir: string;
+  fullname: string;
   path: string;
   type: FileType;
   stat: {

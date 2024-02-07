@@ -3,12 +3,32 @@ import { createSortedGroup } from "../List/utils";
 import { useGlobal } from "../GlobalContext";
 import { iFile } from "../types";
 import { iImageDetails } from "./types";
+import { FileComponentProps } from "../List/types";
+import { fileUrl } from "../utils";
+
+function FileRender({
+  fullMode,
+  file: { fullname, path },
+}: FileComponentProps) {
+  if (fullMode)
+    return (
+      <div className="image-thumbnail">
+        <img src={fileUrl(path)} />
+        <span>
+          {fullname}
+        </span>
+      </div>
+    );
+  else return fullname;
+}
 
 export default function ImageAlbum() {
   const { file, setViewerMode } = useGlobal();
   return (
     <List
-      listTop={<>{file && <li onClick={() => setViewerMode(false)}>===</li>}</>}
+      id="image-album"
+      FileComponent={FileRender}
+      listTop={file && <li onClick={() => setViewerMode(false)}>===</li>}
       sorts={[
         {
           name: "Avatar",

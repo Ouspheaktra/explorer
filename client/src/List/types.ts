@@ -10,3 +10,8 @@ export type Sort = {
   showLabel: boolean;
   sort: (files: iFile[], order: Order) => SortedGroup[];
 };
+
+export interface FileComponentProps {
+  fullMode: boolean;
+  file: iFile;
+}

@@ -43,3 +43,35 @@
     }
   }
 }
+
+#image-album.full {
+  display: flex;
+  flex-direction: column;
+  > .list-group {
+    margin-bottom: 20px;
+    > .list-group-files {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+  .image-thumbnail {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    position: relative;
+    > img {
+      width: 100%;
+    }
+    &:hover > span {
+      display: block;
+    }
+    > span {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: black;
+      display: none;
+    }
+  }
+}

@@ -1,13 +1,16 @@
-import { ReactNode, useState } from "react";
+import { FC, HTMLProps, ReactNode, useState } from "react";
 import { useGlobal } from "../GlobalContext";
-import { Order, Sort } from "./types";
+import { FileComponentProps, Order, Sort } from "./types";
 import { builtinSorts } from "./builtin";
 import "./style.scss";
 
 export default function List({
   listTop,
   sorts = [],
-}: {
+  FileComponent,
+  ...ulProps
+}: HTMLProps<HTMLUListElement> & {
+  FileComponent?: FC<FileComponentProps>;
   listTop?: ReactNode;
   sorts?: Sort[];
 }) {
@@ -28,6 +31,7 @@ export default function List({
   const sortedGroups = sorter.sort([...files], sortOrder);
   return (
     <ul
+      {...ulProps}
       className={"list" + (open ? " active" : "") + (fullMode ? " full" : "")}
     >
       <li className="list-top">
@@ -59,7 +63,7 @@ export default function List({
             )}
             <ul className="list-group-files">
               {files.map((f, fid) => {
-                const { type, ext, name, dir, _id } = f;
+                const { type, ext, fullname, dir, _id } = f;
                 const isCurrent = file && file._id === _id;
                 return (
                   <li
@@ -76,8 +80,11 @@ export default function List({
                         : undefined
                     }
                   >
-                    {name}
-                    {ext}
+                    {FileComponent ? (
+                      <FileComponent fullMode={fullMode} file={f} />
+                    ) : (
+                      fullname
+                    )}
                   </li>
                 );
               })}
