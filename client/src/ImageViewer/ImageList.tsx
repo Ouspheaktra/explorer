@@ -1,8 +1,6 @@
 import List from "../List";
 import { createSort } from "../List/utils";
 import { useGlobal } from "../GlobalContext";
-import { iFile } from "../types";
-import { iImageDetails } from "./types";
 import { FileComponentProps } from "../List/types";
 import { fileUrl } from "../utils";
 
@@ -13,20 +11,22 @@ function FileRender({
   if (fullMode)
     return (
       <div className="image-thumbnail">
-        <img src={fileUrl(path)} />
+        <img src={fileUrl(path)} loading="lazy" />
         <span>{fullname}</span>
       </div>
     );
   else return fullname;
 }
 
-export default function ImageAlbum() {
+export default function ImageList() {
   const { file, setViewerMode } = useGlobal();
   return (
     <List
-      id="image-album"
+      id="image-list"
       FileComponent={FileRender}
-      listTop={file && <li onClick={() => setViewerMode(false)}>===</li>}
+      topButtons={
+        file && <button onClick={() => setViewerMode(false)}>Close</button>
+      }
       sorts={[
         {
           name: "Avatar",

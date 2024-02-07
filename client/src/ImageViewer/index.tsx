@@ -4,7 +4,7 @@ import { fileUrl } from "../utils";
 import { useGlobal } from "../GlobalContext";
 import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
-import Album from "./Album";
+import Album from "./ImageList";
 import { iImageDetails } from "./types";
 import "./style.scss";
 
