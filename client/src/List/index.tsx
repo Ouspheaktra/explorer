@@ -58,9 +58,7 @@ export default function List({
       {sortedGroups.map(({ name, files }, gid) => {
         return (
           <li key={gid} className="list-group">
-            {sorter.showLabel && (
-              <span className="list-group-name">{name}</span>
-            )}
+            <span className="list-group-name">{name}</span>
             <ul className="list-group-files">
               {files.map((f, fid) => {
                 const { type, ext, fullname, dir, _id } = f;

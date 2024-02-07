@@ -6,7 +6,6 @@ import { createSortedGroup } from "./utils";
 export const builtinSorts: Sort[] = [
   {
     name: "Name",
-    showLabel: false,
     sort: (files, order) => {
       // sort
       if (order === "asc") files.sort((a, b) => a.name.localeCompare(b.name));
@@ -17,7 +16,6 @@ export const builtinSorts: Sort[] = [
   },
   {
     name: "Date",
-    showLabel: false,
     sort: (files, order) => {
       //
       const knowns: iFile[] = [],

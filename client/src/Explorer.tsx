@@ -11,6 +11,7 @@ export default function Explorer() {
   } = useGlobal();
   return (
     <List
+      id="explorer"
       listTop={
         <>
           {file && (

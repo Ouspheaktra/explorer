@@ -42,3 +42,10 @@ body {
 .next {
   right: 0;
 }
+
+#explorer {
+  .list-fuller,
+  .list-group-name {
+    display: none;
+  }
+}

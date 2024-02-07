@@ -32,7 +32,6 @@ export default function ImageAlbum() {
       sorts={[
         {
           name: "Avatar",
-          showLabel: true,
           sort: (files, order) => {
             //
             const knowns: iFile<iImageDetails>[] = [],

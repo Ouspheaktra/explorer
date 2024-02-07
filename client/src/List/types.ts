@@ -7,7 +7,6 @@ export type SortedGroup = {
 };
 export type Sort = {
   name: string;
-  showLabel: boolean;
   sort: (files: iFile[], order: Order) => SortedGroup[];
 };
 
