@@ -6,12 +6,14 @@ import "./style.scss";
 
 export default function List({
   listTop,
+  topButtons,
   sorts = [],
   FileComponent,
   ...ulProps
 }: HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;
   listTop?: ReactNode;
+  topButtons?: ReactNode;
   sorts?: Sort[];
 }) {
   const [open, setOpen] = useState(true);
@@ -37,6 +39,7 @@ export default function List({
       <li className="list-top">
         <ul>
           <li className="list-top-buttons">
+            {topButtons}
             <button
               className="list-fuller"
               onClick={() => setFullMode(!fullMode)}

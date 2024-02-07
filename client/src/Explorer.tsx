@@ -12,20 +12,11 @@ export default function Explorer() {
   return (
     <List
       id="explorer"
+      topButtons={
+        file && <button onClick={() => setViewerMode(true)}>Viewer</button>
+      }
       listTop={
         <>
-          {file && (
-            <button
-              onClick={() => setViewerMode(true)}
-              style={{
-                position: "absolute",
-                right: 20,
-                zIndex: 1,
-              }}
-            >
-              Viewer
-            </button>
-          )}
           {prevDir && <li onClick={() => goto(prevDir)}>&lt;&minus; Back</li>}
           {file && <li onClick={() => setFile(null)}>===</li>}
         </>
