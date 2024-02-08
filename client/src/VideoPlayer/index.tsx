@@ -56,19 +56,37 @@ export default function VideoPlayer({
     });
   }, [_id]);
   return (
-    <div className="video-player">
+    <div
+      className="video-player"
+      onWheel={({ deltaY }) => {
+        const video = videoRef.current!;
+        // scale
+        if (isRightHold.current)
+          video.style.scale = (
+            parseFloat(video.style.scale || "1") + (deltaY < 0 ? 0.02 : -0.02)
+          ).toString();
+        // skip
+        else video.currentTime += deltaY < 0 ? 5 : -5;
+      }}
+      onMouseDown={(e) => {
+        if (e.button === 2) isRightHold.current = true;
+      }}
+      onMouseUp={({ button }) => {
+        isRightHold.current = false;
+        if (button === 0) {
+          const video = videoRef.current!;
+          video.paused ? video.play() : video.pause();
+        } else if (button === 1) onNext?.();
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
+    >
       <video
         ref={videoRef}
         {...props}
-        onWheel={({ currentTarget: video, deltaY }) => {
-          // scale
-          if (isRightHold.current)
-            video.style.scale = (
-              parseFloat(video.style.scale || "1") + (deltaY < 0 ? 0.02 : -0.02)
-            ).toString();
-          // skip
-          else video.currentTime += deltaY < 0 ? 5 : -5;
-        }}
         onPause={() => {
           playRef.current!.style.display = "";
         }}
@@ -77,19 +95,6 @@ export default function VideoPlayer({
         }}
         onEnded={() => {
           onNext?.();
-        }}
-        onMouseDown={(e) => {
-          if (e.button === 2) isRightHold.current = true;
-        }}
-        onMouseUp={({ currentTarget: video, button }) => {
-          isRightHold.current = false;
-          if (button === 0) video.paused ? video.play() : video.pause();
-          else if (button === 1) onNext?.();
-        }}
-        onContextMenu={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
         }}
         onTimeUpdate={({ currentTarget: video }) => {
           if (timeBarRef.current)
