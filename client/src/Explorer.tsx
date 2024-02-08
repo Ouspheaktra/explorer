@@ -17,6 +17,6 @@ export default function Explorer() {
           {file && <li className="a" onClick={() => setFile(null)}>===</li>}
         </>
       }
-    ></List>
+    />
   );
 }
