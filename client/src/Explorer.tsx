@@ -7,14 +7,10 @@ export default function Explorer() {
     setDir: goto,
     file,
     setFile,
-    setViewerMode,
   } = useGlobal();
   return (
     <List
       id="explorer"
-      topButtons={
-        file && <button onClick={() => setViewerMode(true)}>Viewer</button>
-      }
       listTop={
         <>
           {prevDir && <li onClick={() => goto(prevDir)}>&lt;&minus; Back</li>}

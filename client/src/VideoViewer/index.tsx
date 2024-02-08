@@ -3,6 +3,7 @@ import { useGlobal } from "../GlobalContext";
 import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
 import VideoPlayer from "../VideoPlayer";
+import VideoList from "./VideoList";
 import "./style.scss";
 
 interface iVideoDetails {
@@ -10,26 +11,25 @@ interface iVideoDetails {
 }
 
 export default function VideoViewer() {
-  let {
+  const {
     file: { path, _id },
+    viewerMode,
   } = useGlobal();
   return (
-    <Viewer type="video">
-      <VideoPlayer
-        _id={_id}
-        src={fileUrl(path)}
-        autoPlay
-        controls
-      />
-      <Info<iVideoDetails>
-        formName={({ title }) => title}
-        detailsTypes={[
-          {
-            name: "title",
-            type: "string",
-          },
-        ]}
-      />
-    </Viewer>
+    <>
+      <Viewer type="video">
+        <VideoPlayer _id={_id} src={fileUrl(path)} autoPlay controls />
+        <Info<iVideoDetails>
+          formName={({ title }) => title}
+          detailsTypes={[
+            {
+              name: "title",
+              type: "string",
+            },
+          ]}
+        />
+      </Viewer>
+      {viewerMode && <VideoList />}
+    </>
   );
 }

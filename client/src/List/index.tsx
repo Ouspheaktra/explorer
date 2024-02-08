@@ -22,6 +22,8 @@ export default function List({
     dir: { files },
     setDir: goto,
     file,
+    viewerMode,
+    setViewerMode,
     setFile,
   } = useGlobal();
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
@@ -44,6 +46,7 @@ export default function List({
         <ul>
           <li className="list-top-buttons">
             {topButtons}
+            {file && <button onClick={() => setViewerMode(!viewerMode)}>{viewerMode ? "Close" : "Viewer"}</button>}
             <button
               className="list-fuller"
               onClick={() => setFullMode(!fullMode)}

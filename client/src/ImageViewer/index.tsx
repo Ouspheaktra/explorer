@@ -4,13 +4,12 @@ import { fileUrl } from "../utils";
 import { useGlobal } from "../GlobalContext";
 import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
-import Album from "./ImageList";
+import ImageList from "./ImageList";
 import { iImageDetails } from "./types";
 import "./style.scss";
 
 export default function ImageViewer() {
-  let {
-    dir: { files },
+  const {
     file: { _id, path },
     viewerMode,
   } = useGlobal();
@@ -22,7 +21,6 @@ export default function ImageViewer() {
       smoothScroll: false,
     });
   }, [_id]);
-  files = files.filter((o) => o.type === "image");
   return (
     <>
       <Viewer type="image">
@@ -39,7 +37,7 @@ export default function ImageViewer() {
           ]}
         />
       </Viewer>
-      {viewerMode && <Album />}
+      {viewerMode && <ImageList />}
     </>
   );
 }

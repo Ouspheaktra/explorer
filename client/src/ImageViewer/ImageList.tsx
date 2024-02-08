@@ -1,6 +1,5 @@
 import List from "../List";
 import { createSort } from "../List/utils";
-import { useGlobal } from "../GlobalContext";
 import { FileComponentProps } from "../List/types";
 import { fileUrl } from "../utils";
 
@@ -19,14 +18,10 @@ function FileRender({
 }
 
 export default function ImageList() {
-  const { file, setViewerMode } = useGlobal();
   return (
     <List
       id="image-list"
       FileComponent={FileRender}
-      topButtons={
-        file && <button onClick={() => setViewerMode(false)}>Close</button>
-      }
       sorts={[
         {
           name: "Avatar",
