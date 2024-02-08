@@ -48,8 +48,7 @@ function App() {
   // query data
   useEffect(() => {
     const search = new URLSearchParams(location.search.slice(1));
-    const dirPath = search.get("dir")!;
-    console.log(dirPath)
+    const dirPath = search.get("dir") || "";
     setDir(dirPath, false).then((dir) => {
       const filename = search.get("file")!;
       if (filename) {
