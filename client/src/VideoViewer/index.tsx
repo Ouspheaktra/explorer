@@ -7,6 +7,7 @@ import VideoList from "./VideoList";
 import { useRef } from "react";
 import { ListMethod } from "../List/types";
 import { iVideoDetails } from "./types";
+import PrevNext from "../PrevNext";
 import "./style.scss";
 
 export default function VideoViewer() {
@@ -28,16 +29,7 @@ export default function VideoViewer() {
           onNext={onNext}
           onPrev={onPrev}
         />
-        {listRef.current && (
-          <>
-            <button className="prev" onClick={onPrev}>
-              &lt;
-            </button>
-            <button className="next" onClick={onNext}>
-              &gt;
-            </button>
-          </>
-        )}
+        <PrevNext listRef={listRef} />
         <Info<iVideoDetails>
           formName={({ title }) => title}
           detailsTypes={[

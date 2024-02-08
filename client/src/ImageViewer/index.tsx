@@ -6,9 +6,12 @@ import Viewer from "../Viewer";
 import Info from "../Viewer/Info";
 import ImageList from "./ImageList";
 import { iImageDetails } from "./types";
+import { ListMethod } from "../List/types";
+import PrevNext from "../PrevNext";
 import "./style.scss";
 
 export default function ImageViewer() {
+  const listRef = useRef<ListMethod>(null);
   const {
     file: { _id, path },
     viewerMode,
@@ -25,6 +28,7 @@ export default function ImageViewer() {
     <>
       <Viewer type="image">
         <img ref={image} id="image" src={fileUrl(path)} />
+        <PrevNext listRef={listRef} />
         <Info<iImageDetails>
           formName={({ avatars }) =>
             avatars && avatars.length ? avatars.join(" - ") : ""
