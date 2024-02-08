@@ -41,7 +41,7 @@ export default function ImageViewer() {
           ]}
         />
       </Viewer>
-      {viewerMode && <ImageList />}
+      {viewerMode && <ImageList ref={listRef} />}
     </>
   );
 }
