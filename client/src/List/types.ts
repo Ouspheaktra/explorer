@@ -14,3 +14,7 @@ export interface FileComponentProps {
   fullMode: boolean;
   file: iFile;
 }
+
+export interface ListMethod {
+  next(plus: number): void;
+}

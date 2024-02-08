@@ -1,21 +1,27 @@
-import { FC, HTMLProps, ReactNode, useState } from "react";
+import {
+  FC,
+  HTMLProps,
+  ReactNode,
+  forwardRef,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { useGlobal } from "../GlobalContext";
-import { FileComponentProps, Order, Sort } from "./types";
+import { FileComponentProps, ListMethod, Order, Sort } from "./types";
 import { builtinSorts } from "./builtin";
 import "./style.scss";
 
-export default function List({
-  listTop,
-  topButtons,
-  sorts = [],
-  FileComponent,
-  ...ulProps
-}: HTMLProps<HTMLUListElement> & {
+type ListProps = HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;
   listTop?: ReactNode;
   topButtons?: ReactNode;
   sorts?: Sort[];
-}) {
+};
+
+const List = forwardRef<ListMethod, ListProps>(function List(
+  { listTop, topButtons, sorts = [], FileComponent, ...ulProps },
+  ref
+) {
   const [open, setOpen] = useState(true);
   const [fullMode, setFullMode] = useState(false);
   const {
@@ -37,6 +43,16 @@ export default function List({
     sortedGroups.reverse();
     sortedGroups.forEach((g) => g.files.reverse());
   }
+  useImperativeHandle(ref, () => {
+    return {
+      next(plus: number) {
+        if (!file) return;
+        const files = sortedGroups.map(({ files }) => files).flat();
+        const currentId = files.findIndex((f) => file._id === f._id);
+        if (currentId) setFile(files.at((currentId + plus) % files.length)!);
+      },
+    };
+  });
   return (
     <ul
       {...ulProps}
@@ -46,7 +62,11 @@ export default function List({
         <ul>
           <li className="list-top-buttons">
             {topButtons}
-            {file && <button onClick={() => setViewerMode(!viewerMode)}>{viewerMode ? "Close" : "Viewer"}</button>}
+            {file && (
+              <button onClick={() => setViewerMode(!viewerMode)}>
+                {viewerMode ? "Close" : "Viewer"}
+              </button>
+            )}
             <button
               className="list-fuller"
               onClick={() => setFullMode(!fullMode)}
@@ -118,4 +138,6 @@ export default function List({
       </li>
     </ul>
   );
-}
+});
+
+export default List;

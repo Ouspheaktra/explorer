@@ -6,8 +6,14 @@ import "./style.scss";
 export default function VideoPlayer({
   controls,
   _id,
+  onNext,
+  onPrev,
   ...props
-}: HTMLProps<HTMLVideoElement> & { _id: number }) {
+}: HTMLProps<HTMLVideoElement> & {
+  _id: number;
+  onNext?: () => void;
+  onPrev?: () => void;
+}) {
   const panzoomHandle = useRef<PanZoom>();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const previewRef = useRef<HTMLVideoElement | null>(null);
@@ -71,12 +77,10 @@ export default function VideoPlayer({
         }}
         onMouseDown={(e) => {
           if (e.button === 2) isRightHold.current = true;
-// @ts-ignore
-if (e.button === 1) document.querySelector(".next")!.click()
+          else if (e.button === 1) onNext?.();
         }}
-onEnded={() => {
-// @ts-ignore
-document.querySelector(".prev")!.click()
+        onEnded={() => {
+          onNext?.();
         }}
         onMouseUp={({ currentTarget: video }) => {
           isRightHold.current = false;
@@ -91,7 +95,9 @@ document.querySelector(".prev")!.click()
           if (timeBarRef.current)
             timeBarRef.current.value = video.currentTime.toString();
           if (currentTimeRef.current)
-            currentTimeRef.current.textContent = `${secondsToString(video.currentTime)} / ${secondsToString(video.duration)}`;
+            currentTimeRef.current.textContent = `${secondsToString(
+              video.currentTime
+            )} / ${secondsToString(video.duration)}`;
         }}
         onDurationChange={({ currentTarget: video }) =>
           timeBarRef.current
@@ -104,95 +110,136 @@ document.querySelector(".prev")!.click()
             : null
         }
       />
-      <div ref={playRef} className="vp-play">▶</div>
-      {controls && (<>
-        <form
-          className="vp-color"
-          onInput={({ currentTarget: form }) => {
-            videoRef.current!.style.filter = [
-              `contrast(${form.contrast.valueAsNumber}%)`,
-              `brightness(${form.brightness.valueAsNumber}%)`,
-              `saturate(${form.saturate.valueAsNumber}%)`,
-              `hue-rotate(${form.hue.valueAsNumber}deg)`
-            ].join(" ");
-          }}
-          onReset={({ currentTarget: form }) =>
-            setTimeout(() => form.dispatchEvent(
-              new Event("input", { bubbles: true })
-            ), 1)
-          }
-        >
-          bright__: <input name="brightness" type="number" min="0" step="4" defaultValue="100" /><br />
-          contrast: <input name="contrast" type="number" min="0" step="4" defaultValue="100" /><br />
-          saturate: <input name="saturate" type="number" min="0" step="4" defaultValue="100" /><br />
-          hue_____: <input name="hue" type="number" min="0" step="4" defaultValue="360" /><br />
-          <input type="reset" />
-        </form>
-        <div className="vp-control">
-          <div className="vp-timebar-container">
+      <div ref={playRef} className="vp-play">
+        ▶
+      </div>
+      {controls && (
+        <>
+          <form
+            className="vp-color"
+            onInput={({ currentTarget: form }) => {
+              videoRef.current!.style.filter = [
+                `contrast(${form.contrast.valueAsNumber}%)`,
+                `brightness(${form.brightness.valueAsNumber}%)`,
+                `saturate(${form.saturate.valueAsNumber}%)`,
+                `hue-rotate(${form.hue.valueAsNumber}deg)`,
+              ].join(" ");
+            }}
+            onReset={({ currentTarget: form }) =>
+              setTimeout(
+                () => form.dispatchEvent(new Event("input", { bubbles: true })),
+                1
+              )
+            }
+          >
+            bright__:{" "}
             <input
-              ref={timeBarRef}
-              className="vp-timebar"
-              type="range"
-              min={0}
-              onInput={(e) =>
-                (videoRef.current!.currentTime = e.currentTarget.valueAsNumber)
-              }
-              onMouseMove={({ currentTarget: range, clientX }) => {
-                const boundingRect = range.getBoundingClientRect();
-                const mouseX = clientX - boundingRect.left;
-                const ratio = mouseX / range.offsetWidth;
-                const potentialValue = Math.round(ratio*parseInt(range.max));
-                const preview = previewRef.current!;
-                preview.currentTime = potentialValue;
-                preview.parentElement!.style.left = mouseX + "px";
-                preview.previousElementSibling!.textContent = secondsToString(potentialValue);
-              }}
+              name="brightness"
+              type="number"
+              min="0"
+              step="4"
+              defaultValue="100"
             />
-            <div className="vp-preview">
-              <span className="vp-time"></span>
-              <video
-                ref={previewRef}
-                src={props.src}
-                autoPlay={false}
-                muted={true}
-                height={80}
-              />
-            </div>
-          </div>
-          <div className="vp-buttons-container">
-            <div className="vp-buttons-side-container">
-              <span ref={currentTimeRef} className="vp-time"></span>
-            </div>
-            <div className="vp-buttons-side-container">
+            <br />
+            contrast:{" "}
+            <input
+              name="contrast"
+              type="number"
+              min="0"
+              step="4"
+              defaultValue="100"
+            />
+            <br />
+            saturate:{" "}
+            <input
+              name="saturate"
+              type="number"
+              min="0"
+              step="4"
+              defaultValue="100"
+            />
+            <br />
+            hue_____:{" "}
+            <input
+              name="hue"
+              type="number"
+              min="0"
+              step="4"
+              defaultValue="360"
+            />
+            <br />
+            <input type="reset" />
+          </form>
+          <div className="vp-control">
+            <div className="vp-timebar-container">
               <input
-                ref={volumeBarRef}
-                className="vp-volume"
+                ref={timeBarRef}
+                className="vp-timebar"
                 type="range"
                 min={0}
-                max={1}
-                step={0.01}
-                onInput={(e) => {
-                  videoRef.current!.volume = e.currentTarget.valueAsNumber;
-                  videoRef.current!.muted = false;
+                onInput={(e) =>
+                  (videoRef.current!.currentTime =
+                    e.currentTarget.valueAsNumber)
+                }
+                onMouseMove={({ currentTarget: range, clientX }) => {
+                  const boundingRect = range.getBoundingClientRect();
+                  const mouseX = clientX - boundingRect.left;
+                  const ratio = mouseX / range.offsetWidth;
+                  const potentialValue = Math.round(
+                    ratio * parseInt(range.max)
+                  );
+                  const preview = previewRef.current!;
+                  preview.currentTime = potentialValue;
+                  preview.parentElement!.style.left = mouseX + "px";
+                  preview.previousElementSibling!.textContent =
+                    secondsToString(potentialValue);
                 }}
               />
-              <button
-                type="button"
-                onClick={(e) =>
-                  document.fullscreenElement
-                    ? document.exitFullscreen()
-                    : e.currentTarget
-                        .closest(".video-player")!
-                        .requestFullscreen()
-                }
-              >
-                F
-              </button>
+              <div className="vp-preview">
+                <span className="vp-time"></span>
+                <video
+                  ref={previewRef}
+                  src={props.src}
+                  autoPlay={false}
+                  muted={true}
+                  height={80}
+                />
+              </div>
+            </div>
+            <div className="vp-buttons-container">
+              <div className="vp-buttons-side-container">
+                <span ref={currentTimeRef} className="vp-time"></span>
+              </div>
+              <div className="vp-buttons-side-container">
+                <input
+                  ref={volumeBarRef}
+                  className="vp-volume"
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  onInput={(e) => {
+                    videoRef.current!.volume = e.currentTarget.valueAsNumber;
+                    videoRef.current!.muted = false;
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={(e) =>
+                    document.fullscreenElement
+                      ? document.exitFullscreen()
+                      : e.currentTarget
+                          .closest(".video-player")!
+                          .requestFullscreen()
+                  }
+                >
+                  F
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </>)}
+        </>
+      )}
     </div>
   );
 }
