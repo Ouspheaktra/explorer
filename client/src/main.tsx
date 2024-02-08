@@ -14,6 +14,10 @@ if (location.hostname !== "localhost") {
   );
 }
 
+window.addEventListener("fullscreenchange", () => {
+  document.body.classList.toggle("fullscreen", Boolean(document.fullscreenElement))
+})
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   // <React.StrictMode>
     <App />

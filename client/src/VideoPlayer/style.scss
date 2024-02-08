@@ -1,3 +1,7 @@
+body.fullscreen .vp-control {
+  opacity: 0;
+}
+
 .video-player {
   position: relative;
   > video {
@@ -32,7 +36,6 @@
     }
   }
   > .vp-control {
-    opacity: 0;
     &:hover {
       opacity: 1;
     }
