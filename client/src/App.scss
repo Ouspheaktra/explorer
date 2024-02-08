@@ -27,9 +27,9 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  border: 0;
   background: black;
-  padding: 50px 10px;
+  border: 2px solid orange;
+  padding: 50px 30px;
   color: white;
   opacity: 0;
   &:hover {
