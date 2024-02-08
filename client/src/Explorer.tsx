@@ -13,8 +13,8 @@ export default function Explorer() {
       id="explorer"
       listTop={
         <>
-          {prevDir && <li onClick={() => goto(prevDir)}>&lt;&minus; Back</li>}
-          {file && <li onClick={() => setFile(null)}>===</li>}
+          {prevDir && <li className="a" onClick={() => goto(prevDir)}>&lt;&minus; Back</li>}
+          {file && <li className="a" onClick={() => setFile(null)}>===</li>}
         </>
       }
     ></List>
