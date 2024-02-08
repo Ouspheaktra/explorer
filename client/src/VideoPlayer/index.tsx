@@ -75,16 +75,16 @@ export default function VideoPlayer({
         onPlay={() => {
           playRef.current!.style.display = "none";
         }}
-        onMouseDown={(e) => {
-          if (e.button === 2) isRightHold.current = true;
-          else if (e.button === 1) onNext?.();
-        }}
         onEnded={() => {
           onNext?.();
         }}
-        onMouseUp={({ currentTarget: video }) => {
+        onMouseDown={(e) => {
+          if (e.button === 2) isRightHold.current = true;
+        }}
+        onMouseUp={({ currentTarget: video, button }) => {
           isRightHold.current = false;
-          video.paused ? video.play() : video.pause();
+          if (button === 0) video.paused ? video.play() : video.pause();
+          else if (button === 1) onNext?.();
         }}
         onContextMenu={(e) => {
           e.preventDefault();
