@@ -1,4 +1,4 @@
-import { FileType, ObjectLiteral, iDir, iFile } from "../types";
+import { FileType, ObjectLiteral, iFile } from "../types";
 import { mimeTypes } from "../../../src/utils";
 
 export const shuffleArray = (array: any[]) => {
@@ -29,8 +29,7 @@ export const prepareFile = (file: iFile) => {
   file.fullname = file.name + file.ext;
   file.type = extToType(file.ext);
   file.path = file.ext ? file.dir + "/" + file.name + file.ext : file.dir;
-  if (file.stat.mtime)
-    file.stat.mtime = new Date(file.stat.mtime);
+  if (file.stat.mtime) file.stat.mtime = new Date(file.stat.mtime);
   return file;
 };
 
@@ -40,8 +39,7 @@ export const pad2 = (number: number) =>
 export const secondsToString = (seconds: number) =>
   `${pad2(seconds / 3600)}:${pad2((seconds / 60) % 60)}:${pad2(seconds % 60)}`;
 
-export const toDateString = (date: Date) =>
-  date.toISOString().slice(0, 10);
+export const toDateString = (date: Date) => date.toISOString().slice(0, 10);
 
 export const sameDate = (date1: Date, date2: Date) =>
   date1.getFullYear() === date2.getFullYear() &&
