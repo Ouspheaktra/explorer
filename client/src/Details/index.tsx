@@ -84,11 +84,14 @@ export default function Details<iDetails extends object>({
                 return (
                   <input
                     className={`${type}-input ${name}-input`}
-                    defaultValue={file.details[name] || ""}
+                    defaultValue={
+                      name === "title" ? file.name : file.details[name] || ""
+                    }
                     placeholder={name}
                     onKeyUp={(e) => {
                       if (e.key === "Enter") {
                         const value = e.currentTarget.value.trim();
+                        e.currentTarget.value = "";
                         if (name === "title")
                           updateFile(file, file.details, value);
                         else update(name, value);

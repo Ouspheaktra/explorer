@@ -139,8 +139,7 @@ export default function List<iDetailsType extends object>({
           </ul>
         </li>
       </ul>
-      
-      {details && <Details<iDetailsType> {...details} />}
+      {details && <Details<iDetailsType> key={file._id} {...details} />}
     </>
   );
 }
