@@ -21,8 +21,10 @@ function App() {
   const setDir: SetDir = (dir, pushHistory = true) =>
       getDir(dir).then((data) => {
         // push history
-        if (pushHistory)
+        if (pushHistory) {
           history.pushState({}, "", `/?${objectToQuery({ dir })}`);
+          document.title = dir;
+        }
         // prepare
         data.prevDir = dirToPrevDir(data.dir);
         data.files.forEach((f, i) => {
@@ -42,6 +44,7 @@ function App() {
           file: newFile ? newFile.fullname : "",
         })}`
       );
+      document.title = newFile ? newFile.name : dir?.dir || "Explorer";
       setState({ dir, file: newFile });
     };
   // query data
@@ -84,6 +87,7 @@ function App() {
                 file: newFile.fullname,
               })}`
             );
+            document.title = newFile.name;
             setState({ file: newFile, dir: newDir });
           }),
         viewerMode,
