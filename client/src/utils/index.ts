@@ -1,4 +1,4 @@
-import { FileType, ObjectLiteral, iFile } from "../types";
+import { AppState, FileType, ObjectLiteral, iFile } from "../types";
 import { mimeTypes } from "../../../src/utils";
 
 export const shuffleArray = (array: any[]) => {
@@ -45,3 +45,18 @@ export const sameDate = (date1: Date, date2: Date) =>
   date1.getFullYear() === date2.getFullYear() &&
   date1.getMonth() === date2.getMonth() &&
   date1.getDate() === date2.getDate();
+
+export const setTitle = ({ dir, file }: AppState) =>
+  (document.title = file ? file.fullname : dir ? dir.dir : "Explorer");
+
+export const pushHistory = (state: AppState, isPush: boolean = true) => {
+  const { dir, file, viewerMode } = state;
+  const q = objectToQuery({
+    dir: dir ? dir.dir : "",
+    file: file ? file.fullname : "",
+    viewerMode,
+  });
+  if (isPush) history.pushState({}, "", `/?${q}`);
+  else history.replaceState({}, "", `/?${q}`);
+  setTitle(state);
+};

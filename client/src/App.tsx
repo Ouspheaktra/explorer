@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { iDir, iFile } from "./types";
+import { AppState, iDir, iFile } from "./types";
 import Explorer from "./Explorer";
-import { dirToPrevDir, objectToQuery, prepareFile } from "./utils";
+import { dirToPrevDir, prepareFile, pushHistory, setTitle } from "./utils";
 import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
 import { getDir, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
@@ -12,19 +12,17 @@ import "./App.scss";
 const plugins = [ImagePlugin, VideoPlugin];
 
 function App() {
-  const [{ dir, file }, setState] = useState<{
-    dir: iDir | null;
-    file: iFile | null;
-  }>({ dir: null, file: null });
-  const [viewerMode, setViewerMode] = useState(false);
+  const [state, setState] = useState<AppState>({
+    dir: null,
+    file: null,
+    viewerMode: false,
+  });
+  const { dir, file, viewerMode } = state;
   const nextRef = useRef<Next>(() => {});
-  const setDir: SetDir = (dir, pushHistory = true) =>
+  const setDir: SetDir = (dir, pushIntoHistory = true) =>
       getDir(dir).then((data) => {
         // push history
-        if (pushHistory) {
-          history.pushState({}, "", `/?${objectToQuery({ dir })}`);
-          document.title = dir;
-        }
+        if (pushIntoHistory) pushHistory({ ...state, dir: data }, true);
         // prepare
         data.prevDir = dirToPrevDir(data.dir);
         data.files.forEach((f, i) => {
@@ -32,20 +30,12 @@ function App() {
           prepareFile(f);
         });
         //
-        setState({ file: null, dir: data });
+        setState({ file: null, dir: data, viewerMode });
         return data;
       }),
     setFile: SetFile = (newFile) => {
-      history.pushState(
-        {},
-        "",
-        `/?${objectToQuery({
-          dir: dir?.dir,
-          file: newFile ? newFile.fullname : "",
-        })}`
-      );
-      document.title = newFile ? newFile.name : dir?.dir || "Explorer";
-      setState({ dir, file: newFile });
+      pushHistory({ ...state, file: newFile });
+      setState({ viewerMode, dir, file: newFile });
     };
   // query data
   useEffect(() => {
@@ -55,8 +45,11 @@ function App() {
       const filename = search.get("file")!;
       if (filename) {
         const file = dir.files.find((f) => f.fullname === filename);
-        if (file) setState({ file, dir });
-      }
+        if (file) {
+          setState({ file, dir, viewerMode });
+          setTitle({ ...state, dir, file });
+        }
+      } else setTitle({ ...state, dir });
     });
   }, []);
   //
@@ -79,19 +72,14 @@ function App() {
                 newDir.files[id] = newFile;
                 break;
               }
-            history.replaceState(
-              {},
-              "",
-              `/?${objectToQuery({
-                dir: newDir.dir,
-                file: newFile.fullname,
-              })}`
-            );
-            document.title = newFile.name;
-            setState({ file: newFile, dir: newDir });
+            pushHistory({ ...state, dir: newDir, file: newFile }, false);
+            setState({ file: newFile, dir: newDir, viewerMode });
           }),
         viewerMode,
-        setViewerMode,
+        setViewerMode: (viewerMode) => {
+          pushHistory({ ...state, viewerMode }, false);
+          setState({ file, dir, viewerMode });
+        },
         next: (plus) => nextRef.current(plus),
         setNext: (next) => (nextRef.current = next),
       }}

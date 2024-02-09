@@ -31,6 +31,12 @@ export interface iData {
   file: iFile;
 }
 
+export type AppState = {
+  dir: iDir | null;
+  file: iFile | null;
+  viewerMode: boolean;
+}
+
 export interface Plugin {
   type: string;
   Viewer: FC;
