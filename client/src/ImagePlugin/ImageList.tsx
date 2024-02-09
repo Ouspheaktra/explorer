@@ -1,7 +1,6 @@
-import { forwardRef } from "react";
 import List from "../List";
 import { createSort } from "../List/utils";
-import { FileComponentProps, ListMethod } from "../List/types";
+import { FileComponentProps } from "../List/types";
 import { fileUrl } from "../utils";
 
 function FileRender({
@@ -18,10 +17,9 @@ function FileRender({
   else return fullname;
 }
 
-const ImageList = forwardRef<ListMethod>(function ImageList({}, ref) {
+export default function ImageList() {
   return (
     <List
-      ref={ref}
       fileType="image"
       id="image-list"
       FileComponent={FileRender}
@@ -36,6 +34,4 @@ const ImageList = forwardRef<ListMethod>(function ImageList({}, ref) {
       ]}
     />
   );
-});
-
-export default ImageList;
+}

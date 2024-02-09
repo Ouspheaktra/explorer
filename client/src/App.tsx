@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { iDir, iFile } from "./types";
 import Explorer from "./Explorer";
 import { dirToPrevDir, objectToQuery, prepareFile } from "./utils";
-import { GlobalContext, setDir, SetFile } from "./GlobalContext";
+import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
 import { getDir, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
+import PrevNext from "./PrevNext";
 import "./App.scss";
 
 const plugins = [ImagePlugin, VideoPlugin];
@@ -16,7 +17,8 @@ function App() {
     file: iFile | null;
   }>({ dir: null, file: null });
   const [viewerMode, setViewerMode] = useState(false);
-  const setDir: setDir = (dir, pushHistory = true) =>
+  const nextRef = useRef<Next>(() => {});
+  const setDir: SetDir = (dir, pushHistory = true) =>
       getDir(dir).then((data) => {
         // push history
         if (pushHistory)
@@ -79,9 +81,14 @@ function App() {
           }),
         viewerMode,
         setViewerMode,
+        next: (plus) => nextRef.current(plus),
+        setNext: (next) => (nextRef.current = next),
       }}
     >
-      <div id="viewer">{plugin && <plugin.Viewer />}</div>
+      <div id="viewer">
+        {plugin && <plugin.Viewer />}
+        {file && <PrevNext />}
+      </div>
       {viewerMode && plugin ? <plugin.List /> : <Explorer />}
     </GlobalContext.Provider>
   );

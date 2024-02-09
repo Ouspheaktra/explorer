@@ -1,14 +1,7 @@
-import {
-  FC,
-  HTMLProps,
-  ReactNode,
-  forwardRef,
-  useImperativeHandle,
-  useState,
-} from "react";
-import { useGlobal } from "../GlobalContext";
-import { FileComponentProps, ListMethod, Order, Sort } from "./types";
+import { FC, HTMLProps, ReactNode, useState } from "react";
+import { FileComponentProps, Order, Sort } from "./types";
 import { builtinSorts } from "./builtin";
+import { useGlobal } from "../GlobalContext";
 import "./style.scss";
 
 type ListProps = HTMLProps<HTMLUListElement> & {
@@ -19,10 +12,14 @@ type ListProps = HTMLProps<HTMLUListElement> & {
   fileType?: string;
 };
 
-const List = forwardRef<ListMethod, ListProps>(function List(
-  { listTop, topButtons, sorts = [], FileComponent, fileType, ...ulProps },
-  ref
-) {
+export default function List({
+  listTop,
+  topButtons,
+  sorts = [],
+  FileComponent,
+  fileType,
+  ...ulProps
+}: ListProps) {
   const [open, setOpen] = useState(true);
   const [fullMode, setFullMode] = useState(false);
   const {
@@ -32,6 +29,7 @@ const List = forwardRef<ListMethod, ListProps>(function List(
     viewerMode,
     setViewerMode,
     setFile,
+    setNext,
   } = useGlobal();
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
     builtinSorts[0].name,
@@ -46,15 +44,11 @@ const List = forwardRef<ListMethod, ListProps>(function List(
     sortedGroups.reverse();
     sortedGroups.forEach((g) => g.files.reverse());
   }
-  useImperativeHandle(ref, () => {
-    return {
-      next(plus: number) {
-        if (!file) return;
-        const files = sortedGroups.map(({ files }) => files).flat();
-        const currentId = files.findIndex((f) => file._id === f._id);
-        if (currentId) setFile(files.at((currentId + plus) % files.length)!);
-      },
-    };
+  setNext((plus) => {
+    if (!file) return;
+    const files = sortedGroups.map(({ files }) => files).flat();
+    const currentId = files.findIndex((f) => file._id === f._id);
+    if (currentId) setFile(files.at((currentId + plus) % files.length)!);
   });
   return (
     <ul
@@ -141,6 +135,4 @@ const List = forwardRef<ListMethod, ListProps>(function List(
       </li>
     </ul>
   );
-});
-
-export default List;
+}

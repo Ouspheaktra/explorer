@@ -1,18 +1,8 @@
-import { forwardRef } from "react";
 import List from "../List";
-import { ListMethod } from "../List/types";
 
-const VideoList = forwardRef<ListMethod>(function VideoList({}, ref) {
-  return (
-    <List
-      ref={ref}
-      id="video-list"
-      fileType="video"
-    />
-  );
-});
-
-export default VideoList;
+export default function VideoList() {
+  return <List id="video-list" fileType="video" />;
+}
 
 /*
 <Info<iVideoDetails>

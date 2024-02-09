@@ -7,6 +7,7 @@ import "./style.scss";
 export default function VideoViewer() {
   const {
     file: { path, _id },
+    next,
   } = useGlobal();
   const panzoomHandle = useRef<PanZoom>();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -80,7 +81,7 @@ export default function VideoViewer() {
           if (button === 0) {
             const video = videoRef.current!;
             video.paused ? video.play() : video.pause();
-          } //else if (button === 1) onNext?.();
+          } else if (button === 1) next(1);
         }}
         onContextMenu={(e) => {
           e.preventDefault();
@@ -94,7 +95,7 @@ export default function VideoViewer() {
           playRef.current!.style.display = "none";
         }}
         onEnded={() => {
-          //onNext?.();
+          next(1);
         }}
         onTimeUpdate={({ currentTarget: video }) => {
           if (timeBarRef.current)
