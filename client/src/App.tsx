@@ -39,7 +39,7 @@ function App() {
         "",
         `/?${objectToQuery({
           dir: dir?.dir,
-          file: newFile ? newFile.name + newFile.ext : "",
+          file: newFile ? newFile.fullname : "",
         })}`
       );
       setState({ dir, file: newFile });
@@ -51,7 +51,7 @@ function App() {
     setDir(dirPath, false).then((dir) => {
       const filename = search.get("file")!;
       if (filename) {
-        const file = dir.files.find((f) => f.name + f.ext === filename);
+        const file = dir.files.find((f) => f.fullname === filename);
         if (file) setState({ file, dir });
       }
     });
@@ -59,9 +59,7 @@ function App() {
   //
   if (!dir) return "Loading...";
   const plugin =
-    file && file.type
-      ? plugins.find((plugin) => plugin.type === file.type)
-      : undefined;
+    file && file.type && plugins.find((plugin) => plugin.type === file.type);
   return (
     <GlobalContext.Provider
       value={{
@@ -74,10 +72,19 @@ function App() {
             const newFile = prepareFile({ ...file, ...newFileData });
             const newDir: iDir = { ...dir!, files: [...dir!.files] };
             for (let id = 0; id < newDir.files.length; id++)
-              if (newDir.files[id]._id === newFile._id)
+              if (newDir.files[id]._id === newFile._id) {
                 newDir.files[id] = newFile;
+                break;
+              }
+            history.replaceState(
+              {},
+              "",
+              `/?${objectToQuery({
+                dir: newDir.dir,
+                file: newFile.fullname,
+              })}`
+            );
             setState({ file: newFile, dir: newDir });
-            setFile(newFile);
           }),
         viewerMode,
         setViewerMode,
