@@ -16,10 +16,11 @@ type ListProps = HTMLProps<HTMLUListElement> & {
   listTop?: ReactNode;
   topButtons?: ReactNode;
   sorts?: Sort[];
+  fileType?: string;
 };
 
 const List = forwardRef<ListMethod, ListProps>(function List(
-  { listTop, topButtons, sorts = [], FileComponent, ...ulProps },
+  { listTop, topButtons, sorts = [], FileComponent, fileType, ...ulProps },
   ref
 ) {
   const [open, setOpen] = useState(true);
@@ -38,7 +39,9 @@ const List = forwardRef<ListMethod, ListProps>(function List(
   ]);
   const allSorts = [...sorts, ...builtinSorts];
   const sorter = allSorts.find((sort) => sort.name === sortName)!;
-  const sortedGroups = sorter.sort(files);
+  const sortedGroups = sorter.sort(
+    fileType ? files.filter((f) => f.type === fileType) : files
+  );
   if (sortOrder === "desc") {
     sortedGroups.reverse();
     sortedGroups.forEach((g) => g.files.reverse());

@@ -7,6 +7,7 @@ const VideoList = forwardRef<ListMethod>(function VideoList({}, ref) {
     <List
       ref={ref}
       id="video-list"
+      fileType="video"
     />
   );
 });

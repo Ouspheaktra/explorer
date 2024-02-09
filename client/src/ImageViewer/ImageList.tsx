@@ -22,6 +22,7 @@ const ImageList = forwardRef<ListMethod>(function ImageList({}, ref) {
   return (
     <List
       ref={ref}
+      fileType="image"
       id="image-list"
       FileComponent={FileRender}
       sorts={[
