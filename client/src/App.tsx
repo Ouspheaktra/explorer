@@ -1,17 +1,14 @@
-import { FC, useEffect, useState } from "react";
-import ImageViewer from "./ImageViewer";
-import VideoViewer from "./VideoViewer";
+import { useEffect, useState } from "react";
 import { iDir, iFile } from "./types";
 import Explorer from "./Explorer";
 import { dirToPrevDir, objectToQuery, prepareFile } from "./utils";
 import { GlobalContext, setDir, SetFile } from "./GlobalContext";
 import { getDir, postFile } from "./utils/api";
+import ImagePlugin from "./ImagePlugin";
+import VideoPlugin from "./VideoPlugin";
 import "./App.scss";
 
-const VIEWER = {
-  image: ImageViewer,
-  video: VideoViewer,
-};
+const plugins = [ImagePlugin, VideoPlugin];
 
 function App() {
   const [{ dir, file }, setState] = useState<{
@@ -59,7 +56,10 @@ function App() {
   }, []);
   //
   if (!dir) return "Loading...";
-  const Viewer: FC | null = file ? VIEWER[file.type as "image"] : null;
+  const plugin =
+    file && file.type
+      ? plugins.find((plugin) => plugin.type === file.type)
+      : undefined;
   return (
     <GlobalContext.Provider
       value={{
@@ -81,8 +81,8 @@ function App() {
         setViewerMode,
       }}
     >
-      {Viewer ? <Viewer /> : <div id="viewer"></div>}
-      {!viewerMode && <Explorer />}
+      <div id="viewer">{plugin && <plugin.Viewer />}</div>
+      {viewerMode && plugin ? <plugin.List /> : <Explorer />}
     </GlobalContext.Provider>
   );
 }

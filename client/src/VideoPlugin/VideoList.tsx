@@ -13,3 +13,15 @@ const VideoList = forwardRef<ListMethod>(function VideoList({}, ref) {
 });
 
 export default VideoList;
+
+/*
+<Info<iVideoDetails>
+          formName={({ title }) => title}
+          detailsTypes={[
+            {
+              name: "title",
+              type: "string",
+            },
+          ]}
+        />
+*/

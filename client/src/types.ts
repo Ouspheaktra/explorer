@@ -1,3 +1,5 @@
+import { FC } from "react";
+
 export type FileType = "image" | "video" | "unknown" | "dir";
 
 export type ObjectLiteral = {
@@ -14,7 +16,7 @@ export interface iFile<DetailsType extends ObjectLiteral = ObjectLiteral> {
   type: FileType;
   stat: {
     mtime?: Date;
-  }
+  };
   details: DetailsType;
 }
 
@@ -27,4 +29,10 @@ export interface iDir {
 export interface iData {
   dir: iDir;
   file: iFile;
+}
+
+export interface Plugin {
+  type: string;
+  Viewer: FC;
+  List: FC;
 }
