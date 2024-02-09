@@ -1,9 +1,8 @@
 import { useGlobal } from "../GlobalContext";
-import { iFile } from "../types";
 
 type DetailsType = "string" | "string[]";
 
-export default function Info<iDetails extends object>({
+export default function Details<iDetails extends object>({
   detailsTypes,
   formName,
 }: {
@@ -18,12 +17,12 @@ export default function Info<iDetails extends object>({
     dir: { files },
     updateFile,
   } = useGlobal();
-  const update = (details: iFile["details"]) => {
-    const newDetails = { ...file.details, ...details };
+  const update = (name: string, value: any) => {
+    const newDetails = { ...file.details, [name]: value };
     updateFile(file, newDetails, formName(newDetails as iDetails));
   };
   return (
-    <div id="info">
+    <div id="details">
       {detailsTypes.map((detailsType) => {
         let { name, type } = detailsType as {
           name: string;
@@ -43,9 +42,10 @@ export default function Info<iDetails extends object>({
                         <button
                           className="x"
                           onClick={() =>
-                            update({
-                              [pluralName]: data.filter((a) => a !== one),
-                            })
+                            update(
+                              pluralName,
+                              data.filter((a) => a !== one)
+                            )
                           }
                         >
                           &times;
@@ -56,20 +56,18 @@ export default function Info<iDetails extends object>({
                     <input
                       className={`${type}-input ${name}-input`}
                       placeholder={name}
-                      list={`info-${pluralName}`}
+                      list={`details-${pluralName}`}
                       onKeyUp={(e) => {
                         if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                          update({
-                            [pluralName]: [
-                              ...data,
-                              e.currentTarget.value.trim(),
-                            ].sort(),
-                          });
+                          update(
+                            pluralName,
+                            [...data, e.currentTarget.value.trim()].sort()
+                          );
                           e.currentTarget.value = "";
                         }
                       }}
                     />
-                    <datalist id={`info-${pluralName}`}>
+                    <datalist id={`details-${pluralName}`}>
                       {[
                         ...new Set(
                           files
@@ -89,10 +87,11 @@ export default function Info<iDetails extends object>({
                     defaultValue={file.details[name] || ""}
                     placeholder={name}
                     onKeyUp={(e) => {
-                      if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                        update({
-                          [name]: e.currentTarget.value.trim(),
-                        });
+                      if (e.key === "Enter") {
+                        const value = e.currentTarget.value.trim();
+                        if (name === "title")
+                          updateFile(file, file.details, value);
+                        else update(name, value);
                       }
                     }}
                   />

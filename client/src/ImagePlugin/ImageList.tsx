@@ -2,6 +2,7 @@ import List from "../List";
 import { createSort } from "../List/utils";
 import { FileComponentProps } from "../List/types";
 import { fileUrl } from "../utils";
+import { iImageDetails } from "./types";
 
 function FileRender({
   fullMode,
@@ -19,7 +20,7 @@ function FileRender({
 
 export default function ImageList() {
   return (
-    <List
+    <List<iImageDetails>
       fileType="image"
       id="image-list"
       FileComponent={FileRender}
@@ -32,6 +33,16 @@ export default function ImageList() {
           ),
         },
       ]}
+      details={{
+        formName: ({ avatars }) =>
+          avatars && avatars.length ? avatars.join(" - ") : "",
+        detailsTypes: [
+          {
+            name: "avatars",
+            type: "string[]",
+          },
+        ],
+      }}
     />
   );
 }

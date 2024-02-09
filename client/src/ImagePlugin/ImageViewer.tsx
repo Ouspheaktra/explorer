@@ -17,17 +17,3 @@ export default function ImageViewer() {
   }, [_id]);
   return <img id="image" ref={imageRef} src={fileUrl(path)} />;
 }
-
-/*
-<Info<iImageDetails>
-          formName={({ avatars }) =>
-            avatars && avatars.length ? avatars.join(" - ") : ""
-          }
-          detailsTypes={[
-            {
-              name: "avatars",
-              type: "string[]",
-            },
-          ]}
-        />
-*/
