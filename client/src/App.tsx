@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AppState, iDir, iFile } from "./types";
+import { AppState, iDir } from "./types";
 import Explorer from "./Explorer";
 import { dirToPrevDir, prepareFile, pushHistory, setTitle } from "./utils";
 import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
@@ -45,6 +45,7 @@ function App() {
       const filename = search.get("file")!;
       if (filename) {
         const file = dir.files.find((f) => f.fullname === filename);
+        const viewerMode = search.get("viewerMode") === "true";
         if (file) {
           setState({ file, dir, viewerMode });
           setTitle({ ...state, dir, file });
@@ -61,7 +62,7 @@ function App() {
       value={{
         dir,
         setDir,
-        file: file as iFile,
+        file: file!,
         setFile,
         updateFile: (file, details, newName) =>
           postFile(file, details, newName).then((newFileData) => {
