@@ -14,6 +14,7 @@ import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
 import PrevNext from "./PrevNext";
 import "./App.scss";
+import { scrollFileIntoView } from "./List/utils";
 
 const plugins = [ImagePlugin, VideoPlugin];
 
@@ -54,6 +55,7 @@ function App() {
         const viewerMode = search.get("viewerMode") === "true";
         if (file) {
           setState({ file, dir, viewerMode });
+          scrollFileIntoView(file._id);
           setTitle({ ...state, dir, file });
         }
       } else setTitle({ ...state, dir });

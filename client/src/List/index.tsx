@@ -6,6 +6,7 @@ import "./style.scss";
 import Details from "../Details";
 import { iFile } from "../types";
 import { toggleValue } from "../utils";
+import { scrollFileIntoView } from "./utils";
 
 type ListProps = HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;
@@ -84,13 +85,7 @@ export default function List<iDetailsType extends object>({
                     ? ""
                     : "none";
                   setSelecteds(fullMode ? null : [file]);
-                  setTimeout(
-                    () =>
-                      document
-                        .querySelector(`[data-file-id="${file._id}"]`)!
-                        .scrollIntoView(),
-                    1
-                  );
+                  scrollFileIntoView(file._id);
                 }}
                 style={{ backgroundColor: "aqua" }}
               >
@@ -155,9 +150,10 @@ export default function List<iDetailsType extends object>({
               <button
                 key={name}
                 style={{ background: sortName === name ? "yellow" : "" }}
-                onClick={() =>
+                onClick={() => {
                   setSort([name, sortOrder === "asc" ? "desc" : "asc"])
-                }
+                  scrollFileIntoView(file._id);
+                }}
               >
                 {name}
               </button>

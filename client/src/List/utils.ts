@@ -28,3 +28,9 @@ export const createSort =
         .concat({ name: "unknown", files: unknown })
     );
   };
+
+export const scrollFileIntoView = (_id: number) =>
+  setTimeout(
+    () => document.querySelector(`[data-file-id="${_id}"]`)?.scrollIntoView(),
+    1
+  );
