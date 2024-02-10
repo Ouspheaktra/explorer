@@ -24,7 +24,10 @@ export default function List<iDetailsType extends object>({
   details,
   ...ulProps
 }: ListProps & {
-  details?: Pick<ComponentProps<typeof Details<iDetailsType>>, "detailsTypes" | "formName">;
+  details?: Pick<
+    ComponentProps<typeof Details<iDetailsType>>,
+    "detailsTypes" | "formName"
+  >;
 }) {
   const [open, setOpen] = useState(true);
   // null means fullMode
@@ -81,10 +84,17 @@ export default function List<iDetailsType extends object>({
                     ? ""
                     : "none";
                   setSelecteds(fullMode ? null : [file]);
+                  setTimeout(
+                    () =>
+                      document
+                        .querySelector(`[data-file-id="${file._id}"]`)!
+                        .scrollIntoView(),
+                    1
+                  );
                 }}
                 style={{ backgroundColor: "aqua" }}
               >
-                {fullMode ? "S" : "M"}
+                {fullMode ? "S" : "F"}
               </button>
               <button
                 className="list-opener"
@@ -102,14 +112,15 @@ export default function List<iDetailsType extends object>({
             <li key={gid} className="list-group">
               <span className="list-group-name">{name}</span>
               <ul className="list-group-files">
-                {files.map((f, fid) => {
+                {files.map((f) => {
                   const { type, ext, fullname, dir, _id } = f;
                   const isCurrent = fullMode
                     ? selecteds!.some((file) => file._id === _id)
                     : file?._id === _id;
                   return (
                     <li
-                      key={fid}
+                      key={_id}
+                      data-file-id={_id}
                       className={`is-${type} ${isCurrent ? "active" : ""}`}
                       onClick={(e) => {
                         if (type === "unknown") return;

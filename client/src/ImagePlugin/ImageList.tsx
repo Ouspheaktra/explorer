@@ -12,7 +12,7 @@ function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
   useEffect(() => {
     const scroll = () => {
       const elY = elRef.current!.offsetTop;
-      if (window.scrollY < elY && elY < window.scrollY + window.innerHeight) {
+      if (window.scrollY - 50 < elY && elY < window.scrollY + window.innerHeight) {
         setToLoad(true);
         window.removeEventListener("scroll", scroll);
       }
