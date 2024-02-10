@@ -28,6 +28,7 @@
         white-space: pre;
         &.active {
           background: blue;
+          outline: 3px solid blue;
         }
         &.is-dir {
           color: lime;

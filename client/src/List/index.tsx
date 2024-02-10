@@ -4,6 +4,8 @@ import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
 import "./style.scss";
 import Details from "../Details";
+import { iFile } from "../types";
+import { toggleValue } from "../utils";
 
 type ListProps = HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;
@@ -25,7 +27,9 @@ export default function List<iDetailsType extends object>({
   details?: ComponentProps<typeof Details<iDetailsType>>;
 }) {
   const [open, setOpen] = useState(true);
-  const [fullMode, setFullMode] = useState(false);
+  // null means fullMode
+  // [] means selected file
+  const [selecteds, setSelecteds] = useState<iFile[] | null>(null);
   const {
     dir: { files },
     setDir: goto,
@@ -54,6 +58,7 @@ export default function List<iDetailsType extends object>({
     const currentId = files.findIndex((f) => file._id === f._id);
     if (currentId) setFile(files.at((currentId + plus) % files.length)!);
   });
+  const fullMode = selecteds !== null;
   return (
     <>
       <ul
@@ -72,8 +77,10 @@ export default function List<iDetailsType extends object>({
               <button
                 className="list-fuller"
                 onClick={() => {
-                  document.getElementById("viewer")!.style.display = fullMode ? "" : "none";
-                  setFullMode(!fullMode);
+                  document.getElementById("viewer")!.style.display = fullMode
+                    ? ""
+                    : "none";
+                  setSelecteds(fullMode ? null : [file]);
                 }}
                 style={{ backgroundColor: "aqua" }}
               >
@@ -97,21 +104,26 @@ export default function List<iDetailsType extends object>({
               <ul className="list-group-files">
                 {files.map((f, fid) => {
                   const { type, ext, fullname, dir, _id } = f;
-                  const isCurrent = file && file._id === _id;
+                  const isCurrent = fullMode
+                    ? selecteds!.some((file) => file._id === _id)
+                    : file?._id === _id;
                   return (
                     <li
                       key={fid}
                       className={`is-${type} ${isCurrent ? "active" : ""}`}
-                      onClick={
-                        type !== "unknown" && !isCurrent
-                          ? () => {
-                              // is file, change file
-                              if (ext) setFile(f);
-                              // if directory, change dir
-                              else goto(dir);
-                            }
-                          : undefined
-                      }
+                      onClick={(e) => {
+                        if (type === "unknown") return;
+                        if (fullMode) {
+                          if (e.ctrlKey)
+                            setSelecteds(toggleValue([...selecteds!], f));
+                          else setSelecteds([f]);
+                        } else if (!isCurrent) {
+                          // is file, change file
+                          if (ext) setFile(f);
+                          // if directory, change dir
+                          else goto(dir);
+                        }
+                      }}
                     >
                       {FileComponent ? (
                         <FileComponent fullMode={fullMode} file={f} />

@@ -9,6 +9,13 @@ export const shuffleArray = (array: any[]) => {
   return array;
 };
 
+export const toggleValue = (array: any[], value: any) => {
+  const index = array.indexOf(value);
+  if (index !== -1) array.splice(index, 1);
+  else array.push(value);
+  return array;
+}
+
 export const extToType = (ext: string) =>
   (ext
     ? (Object.entries(mimeTypes).find(([_type, mimes]) =>
