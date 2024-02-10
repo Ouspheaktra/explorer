@@ -46,20 +46,20 @@
       }
     }
   }
-
-  > .list-top {
-    position: sticky;
-    top: 0;
+  > .list-top,
+  > .list-bottom {
+    position: fixed;
+    bottom: 0;
+    right: 0;
     background: black;
+  }
+  > .list-top {
+    top: 0;
+    bottom: initial;
     > ul > .list-top-buttons {
       display: flex;
       justify-content: right;
       gap: 5px;
     }
-  }
-  > .list-bottom {
-    position: sticky;
-    bottom: 0;
-    background: black;
   }
 }
