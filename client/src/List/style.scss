@@ -1,7 +1,6 @@
 .list {
   background: var(--dark);
   position: relative;
-  height: 100vh;
   margin: 0;
   width: 0;
   padding: 0;
@@ -11,6 +10,7 @@
     padding: 0;
   }
   &.active {
+    height: 100vh;
     width: var(--list-width);
     overflow: hidden auto;
   }
