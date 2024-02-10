@@ -46,16 +46,20 @@
     > .list-group-files {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 10px 0;
     }
   }
   .image-thumbnail {
     display: flex;
     flex-direction: column;
     width: 200px;
+    height: 250px;
     position: relative;
+    overflow: hidden;
     > img {
       width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
     &:hover > span {
       display: block;
@@ -63,7 +67,7 @@
     > span {
       position: absolute;
       bottom: 0;
-      right: 0;
+      left: 0;
       background: black;
       display: none;
     }

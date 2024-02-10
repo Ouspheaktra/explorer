@@ -2,21 +2,19 @@
   background: var(--dark);
   position: relative;
   margin: 0;
-  width: 0;
   padding: 0;
+  display: none;
+  width: var(--list-width);
   list-style: none;
+  overflow: hidden auto;
   ul {
     list-style: none;
     padding: 0;
   }
   &.active {
-    height: 100vh;
-    width: var(--list-width);
-    overflow: hidden auto;
+    display: block;
   }
   &.full {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
     width: auto;
   }
   > .list-group {

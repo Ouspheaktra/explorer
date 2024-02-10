@@ -71,7 +71,10 @@ export default function List<iDetailsType extends object>({
               )}
               <button
                 className="list-fuller"
-                onClick={() => setFullMode(!fullMode)}
+                onClick={() => {
+                  document.getElementById("viewer")!.style.display = fullMode ? "" : "none";
+                  setFullMode(!fullMode);
+                }}
                 style={{ backgroundColor: "aqua" }}
               >
                 {fullMode ? "S" : "M"}

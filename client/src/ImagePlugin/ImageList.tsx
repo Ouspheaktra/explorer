@@ -1,21 +1,39 @@
-import List from "../List";
-import { createSort } from "../List/utils";
+import { useEffect, useRef, useState } from "react";
 import { FileComponentProps } from "../List/types";
+import { createSort } from "../List/utils";
+import List from "../List";
 import { fileUrl } from "../utils";
 import { iImageDetails } from "./types";
+import { iFile } from "../types";
 
-function FileRender({
-  fullMode,
-  file: { fullname, path },
-}: FileComponentProps) {
-  if (fullMode)
-    return (
-      <div className="image-thumbnail">
-        <img src={fileUrl(path)} loading="lazy" />
-        <span>{fullname}</span>
-      </div>
-    );
-  else return fullname;
+function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
+  const [loadImg, setToLoad] = useState(false);
+  const elRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const scroll = () => {
+      const elY = elRef.current!.offsetTop;
+      if (window.scrollY < elY && elY < window.scrollY + window.innerHeight) {
+        setToLoad(true);
+        window.removeEventListener("scroll", scroll);
+      }
+    };
+    window.addEventListener("scroll", scroll);
+    scroll();
+    return () => {
+      window.removeEventListener("scroll", scroll);
+    };
+  }, []);
+  return (
+    <div className="image-thumbnail" ref={elRef}>
+      {loadImg && <img src={fileUrl(path)} />}
+      <span>{fullname}</span>
+    </div>
+  );
+}
+
+function FileRender({ fullMode, file }: FileComponentProps) {
+  if (fullMode) return <FileFullMode file={file} />;
+  else return file.fullname;
 }
 
 export default function ImageList() {

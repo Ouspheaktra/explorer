@@ -12,13 +12,16 @@ body {
 * {
   box-sizing: border-box;
 }
+
 #root {
   display: flex;
+  justify-content: right;
 }
 
 #viewer {
-  position: relative;
-  width: 100%;
+  position: fixed;
+  width: calc(100% - var(--list-width));
+  top: 0; left: 0;
   height: 100vh;
   overflow: hidden;
 }
