@@ -1,13 +1,12 @@
 import { createContext, useContext } from "react";
 import { iData, iDir, iFile } from "../types";
+import type { postFile } from "../utils/api";
 
 export type SetFile = (file: iFile | null) => any;
 export type SetDir = (dir: string, pushHistory?: boolean) => Promise<iDir>;
-export type UpdateFile = (
-  file: iFile,
-  details: iFile["details"],
-  newName: string | null
-) => Promise<void>;
+export type UpdateFiles = (
+  postFiles: Parameters<typeof postFile>[]
+) => Promise<iFile[]>;
 export type Next = (plus: number) => void;
 export type SetNext = (next: Next) => void;
 
@@ -16,7 +15,7 @@ export type iGlobalContext = iData & {
   setViewerMode: (viewerMode: boolean) => void;
   setDir: SetDir;
   setFile: SetFile;
-  updateFile: UpdateFile;
+  updateFiles: UpdateFiles;
   next: Next;
   setNext: SetNext;
 };

@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { AppState, iDir } from "./types";
 import Explorer from "./Explorer";
-import { dirToPrevDir, prepareFile, pushHistory, setTitle } from "./utils";
+import {
+  dirToPrevDir,
+  prepareFile,
+  promisesAllOneByOne,
+  pushHistory,
+  setTitle,
+} from "./utils";
 import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
 import { getDir, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
@@ -64,18 +70,21 @@ function App() {
         setDir,
         file: file!,
         setFile,
-        updateFile: (file, details, newName) =>
-          postFile(file, details, newName).then((newFileData) => {
-            const newFile = prepareFile({ ...file, ...newFileData });
-            const newDir: iDir = { ...dir!, files: [...dir!.files] };
-            for (let id = 0; id < newDir.files.length; id++)
-              if (newDir.files[id]._id === newFile._id) {
-                newDir.files[id] = newFile;
-                break;
-              }
-            pushHistory({ ...state, dir: newDir, file: newFile }, false);
-            setState({ file: newFile, dir: newDir, viewerMode });
-          }),
+        updateFiles: (args) =>
+          promisesAllOneByOne(args.map((arg) => postFile(...arg))).then(
+            (newFiles) => {
+              const newFile = prepareFile({ ...file, ...newFiles[0] });
+              const newDir: iDir = { ...dir!, files: [...dir!.files] };
+              for (let id = 0; id < newDir.files.length; id++)
+                if (newDir.files[id]._id === newFile._id) {
+                  newDir.files[id] = newFile;
+                  break;
+                }
+              pushHistory({ ...state, dir: newDir, file: newFile }, false);
+              setState({ file: newFile, dir: newDir, viewerMode });
+              return newFiles;
+            }
+          ),
         viewerMode,
         setViewerMode: (viewerMode) => {
           pushHistory({ ...state, viewerMode }, false);

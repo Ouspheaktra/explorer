@@ -1,25 +1,30 @@
 import { useGlobal } from "../GlobalContext";
+import { iFile } from "../types";
 
 type DetailsType = "string" | "string[]";
 
 export default function Details<iDetails extends object>({
+  files,
   detailsTypes,
   formName,
 }: {
+  files: iFile[];
   detailsTypes: {
     name: keyof iDetails;
     type: DetailsType;
   }[];
   formName: (details: iDetails) => string;
 }) {
-  const {
-    file,
-    dir: { files },
-    updateFile,
-  } = useGlobal();
+  const { dir, updateFiles } = useGlobal();
   const update = (name: string, value: any) => {
-    const newDetails = { ...file.details, [name]: value };
-    updateFile(file, newDetails, formName(newDetails as iDetails));
+    if (name === "title")
+      return updateFiles(files.map((file) => [file, file.details, value]));
+    return updateFiles(
+      files.map((file) => {
+        const newDetails = { ...file.details, [name]: value };
+        return [file, newDetails, formName(newDetails as iDetails)];
+      })
+    );
   };
   return (
     <div id="details">
@@ -34,7 +39,8 @@ export default function Details<iDetails extends object>({
               if (type === "string[]") {
                 const pluralName = name;
                 if (name.endsWith("s")) name = name.slice(0, -1);
-                const data: string[] = file.details[pluralName] || [];
+                const data: string[] =
+                  files.length === 1 ? files[0].details[pluralName] || [] : [];
                 return (
                   <>
                     {data.map((one) => (
@@ -70,7 +76,7 @@ export default function Details<iDetails extends object>({
                     <datalist id={`details-${pluralName}`}>
                       {[
                         ...new Set(
-                          files
+                          dir.files
                             .map((file) => file.details[pluralName] || [])
                             .flat()
                         ),
@@ -81,20 +87,20 @@ export default function Details<iDetails extends object>({
                   </>
                 );
               } else if (type === "string") {
+                const file = files.length === 1 ? files[0] : null;
                 return (
                   <input
                     className={`${type}-input ${name}-input`}
                     defaultValue={
-                      name === "title" ? file.name : file.details[name] || ""
+                      (name === "title" ? file?.name : file?.details[name]) ||
+                      ""
                     }
                     placeholder={name}
                     onKeyUp={(e) => {
                       if (e.key === "Enter") {
                         const value = e.currentTarget.value.trim();
                         e.currentTarget.value = "";
-                        if (name === "title")
-                          updateFile(file, file.details, value);
-                        else update(name, value);
+                        update(name, value);
                       }
                     }}
                   />

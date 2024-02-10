@@ -60,7 +60,6 @@ app.post("/api/file", (req, res) => {
     details: iFile["details"];
     newName: string;
   };
-  const hasDetails = Object.keys(details).length;
   let newName = originalNewName;
   // rename
   if (newName) {
@@ -73,12 +72,12 @@ app.post("/api/file", (req, res) => {
   }
   const data = readFilesData(dir);
   // edit details
-  if (hasDetails) {
-    delete data[name + ext]; // delete old details
+  delete data[name + ext]; // delete old details
+  if (Object.keys(details).length)
     data[(newName || name) + ext] = details;
-    //
-    writeFilesData(dir, data);
-  }
+  //
+  writeFilesData(dir, data);
+  //
   return res.json(
     getFileDetail(dir + "/" + (newName || name) + ext, data)
   );

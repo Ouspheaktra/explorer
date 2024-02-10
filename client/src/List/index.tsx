@@ -24,7 +24,7 @@ export default function List<iDetailsType extends object>({
   details,
   ...ulProps
 }: ListProps & {
-  details?: ComponentProps<typeof Details<iDetailsType>>;
+  details?: Pick<ComponentProps<typeof Details<iDetailsType>>, "detailsTypes" | "formName">;
 }) {
   const [open, setOpen] = useState(true);
   // null means fullMode
@@ -154,7 +154,13 @@ export default function List<iDetailsType extends object>({
           </ul>
         </li>
       </ul>
-      {details && <Details<iDetailsType> key={file._id} {...details} />}
+      {details && (
+        <Details<iDetailsType>
+          key={file._id}
+          {...details}
+          files={selecteds || [file]}
+        />
+      )}
     </>
   );
 }

@@ -14,7 +14,18 @@ export const toggleValue = (array: any[], value: any) => {
   if (index !== -1) array.splice(index, 1);
   else array.push(value);
   return array;
-}
+};
+
+export const promisesAllOneByOne = async <T>(
+  promises: Iterable<T | PromiseLike<T>>
+): Promise<Awaited<T>[]> => {
+  const results = [];
+  for (const promise of promises) {
+    const result = await promise;
+    results.push(result);
+  }
+  return results;
+};
 
 export const extToType = (ext: string) =>
   (ext
