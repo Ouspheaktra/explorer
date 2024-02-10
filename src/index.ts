@@ -52,7 +52,7 @@ app.get("/api/dir", (req, res) => {
 
 app.post("/api/file", (req, res) => {
   const {
-    file: { dir, name, ext },
+    file,
     details,
     newName: originalNewName,
   } = req.body as {
@@ -60,6 +60,7 @@ app.post("/api/file", (req, res) => {
     details: iFile["details"];
     newName: string;
   };
+  const { dir, name, ext } = file;
   let newName = originalNewName;
   // rename
   if (newName) {
@@ -73,21 +74,20 @@ app.post("/api/file", (req, res) => {
   const data = readFilesData(dir);
   // edit details
   delete data[name + ext]; // delete old details
-  if (Object.keys(details).length)
-    data[(newName || name) + ext] = details;
+  if (Object.keys(details).length) data[(newName || name) + ext] = details;
   //
   writeFilesData(dir, data);
   //
-  return res.json(
-    getFileDetail(dir + "/" + (newName || name) + ext, data)
-  );
+  return res.json({
+    ...file,
+    ...getFileDetail(dir + "/" + (newName || name) + ext, data),
+  });
 });
 
 app.get("/file", (req, res) => {
   const { path = "" } = req.query as { path: string };
   //
-  if (!fs.existsSync(path))
-    return res.sendStatus(404);
+  if (!fs.existsSync(path)) return res.sendStatus(404);
   //
   const { ext } = getFileParts(path);
   // if is director, 404

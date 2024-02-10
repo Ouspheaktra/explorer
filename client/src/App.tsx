@@ -73,15 +73,14 @@ function App() {
         updateFiles: (args) =>
           promisesAllOneByOne(args.map((arg) => postFile(...arg))).then(
             (newFiles) => {
-              const newFile = prepareFile({ ...file, ...newFiles[0] });
               const newDir: iDir = { ...dir!, files: [...dir!.files] };
-              for (let id = 0; id < newDir.files.length; id++)
-                if (newDir.files[id]._id === newFile._id) {
-                  newDir.files[id] = newFile;
-                  break;
-                }
-              pushHistory({ ...state, dir: newDir, file: newFile }, false);
-              setState({ file: newFile, dir: newDir, viewerMode });
+              const { files } = newDir;
+              for (let newFile of newFiles) {
+                const id = files.findIndex((file) => newFile._id === file._id);
+                files[id] = prepareFile(newFile);
+              }
+              pushHistory({ ...state, dir: newDir, file: newFiles[0] }, false);
+              setState({ file: newFiles[0], dir: newDir, viewerMode });
               return newFiles;
             }
           ),
