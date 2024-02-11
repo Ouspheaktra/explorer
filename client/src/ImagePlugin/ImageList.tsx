@@ -38,7 +38,7 @@ function FileFullMode({
   return (
     <div
       className={
-        "image-thumbnail" + (details.editeds?.length ? " editeds" : "")
+        "image-thumbnail" + (details.editeds?.length ? " edited" : "")
       }
       ref={elRef}
     >
@@ -49,9 +49,34 @@ function FileFullMode({
 }
 
 function FileRender({ fullMode, file }: FileComponentProps) {
-  editedsRef.current.push(...(file.details.editeds || []));
+  const editeds = file.details.editeds || [];
+  editedsRef.current.push(...editeds);
   if (fullMode) return <FileFullMode file={file} />;
-  else return file.fullname;
+  else
+    return (
+      <span className={editeds.length ? "edited" : ""}>{file.fullname}</span>
+    );
+}
+
+function AvatarOnly() {
+  const [avatarOnly, setAvatarOnly] = useState(false);
+  return (
+    <button
+      onClick={() => {
+        const styleId = "avatar-only-style";
+        document.getElementById(styleId)?.remove();
+        if (!avatarOnly) {
+          const style = document.createElement("style");
+          style.id = styleId;
+          style.innerHTML = "ul.list-group-files > li > :not(.edited) { display: none !important; }";
+          document.head.append(style);
+        }
+        setAvatarOnly(!avatarOnly);
+      }}
+    >
+      {avatarOnly ? "show all" : "avatar only"}
+    </button>
+  );
 }
 
 export default function ImageList() {
@@ -85,6 +110,7 @@ export default function ImageList() {
           ),
         },
       ]}
+      bottomButtons={<AvatarOnly />}
       details={{
         formName: ({ avatars }) =>
           avatars && avatars.length ? avatars.join(" - ") : "",

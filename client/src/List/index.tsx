@@ -12,6 +12,7 @@ type ListProps = HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;
   listTop?: ReactNode;
   topButtons?: ReactNode;
+  bottomButtons?: ReactNode;
   sorts?: Sort[];
   fileType?: string;
 };
@@ -19,6 +20,7 @@ type ListProps = HTMLProps<HTMLUListElement> & {
 export default function List<iDetailsType extends object>({
   listTop,
   topButtons,
+  bottomButtons,
   sorts = [],
   FileComponent,
   fileType,
@@ -160,6 +162,7 @@ export default function List<iDetailsType extends object>({
               </button>
             ))}
           </ul>
+          {bottomButtons}
         </li>
       </ul>
       {details && (
