@@ -5,6 +5,12 @@
   > img {
     position: absolute;
   }
+  &[data-edited-number]::after {
+    content: attr(data-edited-number);
+    position: absolute;
+    bottom: 20px; left: 20px;
+    z-index: 2;
+  }
 }
 
 #details {

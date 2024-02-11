@@ -21,6 +21,7 @@ export default function ImageViewer() {
     });
     const { naturalWidth, naturalHeight } = imageRef.current!;
     setOrientation(naturalWidth > naturalHeight ? "landscape" : "portrait");
+    setEditedId(0);
   }, [_id]);
   const editeds: string[] = details.editeds || [];
   const style: CSSProperties =
@@ -40,29 +41,34 @@ export default function ImageViewer() {
   return (
     <div
       id="image"
-      ref={wrapperRef}
-      onClick={
-        editeds.length
-          ? (e) => e.button === 1 && setEditedId(editedId + 1)
-          : undefined
+      data-edited-number={
+        editeds.length ? `${editedId + 1} / ${editeds.length}` : undefined
       }
-      onMouseMove={
+      ref={wrapperRef}
+      onMouseDown={
         editeds.length
           ? (e) => {
-              const { x: imgX, width } =
-                imageRef.current!.getBoundingClientRect();
-              const offsetX = e.clientX - imgX;
-              const x = (offsetX / width) * 100;
-              imageRef.current!.style.clipPath = `polygon(0 0, ${x}% 0, ${x}% 100%, 0 100%)`;
+              if (e.button === 1) {
+                e.preventDefault();
+                setEditedId((editedId + 1) % editeds.length);
+              }
             }
           : undefined
       }
+      onMouseMove={(e) => {
+        if (editeds.length) {
+          const { x: imgX, width } = imageRef.current!.getBoundingClientRect();
+          const offsetX = e.clientX - imgX;
+          const x = (offsetX / width) * 100;
+          imageRef.current!.style.clipPath = `polygon(0 0, ${x}% 0, ${x}% 100%, 0 100%)`;
+        } else imageRef.current!.style.clipPath = "";
+      }}
     >
       {editeds.length ? (
         <img
           className="edited"
           style={style}
-          src={fileUrl(dir + "/" + editeds[editedId % editeds.length])}
+          src={fileUrl(dir + "/" + editeds[editedId])}
         />
       ) : null}
       <img ref={imageRef} src={fileUrl(path)} style={style} />
