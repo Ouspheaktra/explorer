@@ -46,7 +46,7 @@ export const objectToQuery = (obj: ObjectLiteral) =>
 export const prepareFile = (file: iFile) => {
   file.fullname = file.name + file.ext;
   file.type = extToType(file.ext);
-  file.path = file.ext ? file.dir + "/" + file.name + file.ext : file.dir;
+  file.path = file.ext ? file.dir + "/" + file.fullname : file.dir;
   if (file.stat.mtime) file.stat.mtime = new Date(file.stat.mtime);
   return file;
 };

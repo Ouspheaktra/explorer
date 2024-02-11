@@ -38,6 +38,7 @@ export default function Details<iDetails extends object>({
               selecteds={files}
               detailsType={detailsType}
               update={update}
+              updateFiles={updateFiles}
             />
           </div>
         );

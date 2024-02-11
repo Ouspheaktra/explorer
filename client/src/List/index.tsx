@@ -116,6 +116,7 @@ export default function List<iDetailsType extends object>({
                     <li
                       key={_id}
                       data-file-id={_id}
+                      data-file-fullname={fullname}
                       className={`is-${type} ${isCurrent ? "active" : ""}`}
                       onClick={(e) => {
                         if (type === "unknown") return;

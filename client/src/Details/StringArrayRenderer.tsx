@@ -6,7 +6,6 @@ export default function StringArrayRenderer<iDetails extends object>({
   update,
   detailsType,
 }: DetailProps<iDetails>) {
-  const { Renderer: type } = detailsType;
   let name = detailsType.name as string;
   const pluralName = name;
   if (name.endsWith("s")) name = name.slice(0, -1);
@@ -15,7 +14,7 @@ export default function StringArrayRenderer<iDetails extends object>({
   return (
     <>
       {data.map((one) => (
-        <span key={one} className={`${type} ${name}`}>
+        <span key={one} className={`${name}`}>
           <button
             className="x"
             onClick={() =>
@@ -32,7 +31,7 @@ export default function StringArrayRenderer<iDetails extends object>({
         </span>
       ))}
       <input
-        className={`${type}-input ${name}-input`}
+        className={`${name}-input`}
         placeholder={name}
         list={`details-${pluralName}`}
         onKeyUp={(e) => {

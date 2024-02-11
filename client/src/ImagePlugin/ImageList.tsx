@@ -6,8 +6,16 @@ import { fileUrl } from "../utils";
 import { iImageDetails } from "./types";
 import { iFile } from "../types";
 import StringArrayRenderer from "../Details/StringArrayRenderer";
+import EditedsRenderer from "./EditedsRenderer";
 
-function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
+const styleId = "image-list-style";
+const editedsRef: { current: string[] } = { current: [] };
+
+function FileFullMode({
+  file: { fullname, path, details },
+}: {
+  file: iFile<iImageDetails>;
+}) {
   const [loadImg, setToLoad] = useState(false);
   const elRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -28,7 +36,12 @@ function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
     };
   }, []);
   return (
-    <div className="image-thumbnail" ref={elRef}>
+    <div
+      className={
+        "image-thumbnail" + (details.editeds?.length ? " editeds" : "")
+      }
+      ref={elRef}
+    >
       {loadImg && <img src={fileUrl(path)} />}
       <span>{fullname}</span>
     </div>
@@ -36,11 +49,28 @@ function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
 }
 
 function FileRender({ fullMode, file }: FileComponentProps) {
+  editedsRef.current.push(...(file.details.editeds || []));
   if (fullMode) return <FileFullMode file={file} />;
   else return file.fullname;
 }
 
 export default function ImageList() {
+  editedsRef.current = [];
+  useEffect(() => {
+    document.getElementById(styleId)?.remove();
+    if (editedsRef.current.length) {
+      const style = document.createElement("style");
+      style.id = styleId;
+      style.innerHTML =
+        editedsRef.current
+          .map(
+            (fullname) =>
+              `ul.list-group-files > li[data-file-fullname="${fullname}"]`
+          )
+          .join(",") + "{display:none}";
+      document.head.append(style);
+    }
+  });
   return (
     <List<iImageDetails>
       fileType="image"
@@ -63,6 +93,10 @@ export default function ImageList() {
             name: "avatars",
             Renderer: StringArrayRenderer,
             toFormName: true,
+          },
+          {
+            name: "editeds",
+            Renderer: EditedsRenderer,
           },
         ],
       }}

@@ -56,6 +56,9 @@
     height: 250px;
     position: relative;
     overflow: hidden;
+    &.editeds {
+      border: 5px solid yellow;
+    }
     > img {
       width: 100%;
       height: 100%;
