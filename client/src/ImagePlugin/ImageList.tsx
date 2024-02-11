@@ -58,6 +58,7 @@ export default function ImageList() {
           {
             name: "avatars",
             type: "string[]",
+            toFormName: true,
           },
         ],
       }}

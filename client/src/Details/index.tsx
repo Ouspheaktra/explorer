@@ -1,7 +1,12 @@
 import { useGlobal } from "../GlobalContext";
 import { iFile } from "../types";
 
-type DetailsType = "string" | "string[]";
+type DetailsTypeType = "string" | "string[]";
+type DetailsType<iDetails extends object> = {
+  name: keyof iDetails;
+  type: DetailsTypeType;
+  toFormName?: boolean;
+};
 
 export default function Details<iDetails extends object>({
   files,
@@ -9,30 +14,33 @@ export default function Details<iDetails extends object>({
   formName,
 }: {
   files: iFile[];
-  detailsTypes: {
-    name: keyof iDetails;
-    type: DetailsType;
-  }[];
+  detailsTypes: DetailsType<iDetails>[];
   formName: (details: iDetails) => string;
 }) {
   const { dir, updateFiles } = useGlobal();
-  const update = (name: string, value: any) => {
+  const update = (
+    name: string,
+    value: any,
+    { toFormName }: DetailsType<iDetails>
+  ) => {
     if (name === "title")
       return updateFiles(files.map((file) => [file, file.details, value]));
     return updateFiles(
       files.map((file) => {
         const newDetails = { ...file.details, [name]: value };
-        return [file, newDetails, formName(newDetails as iDetails)];
+        return [
+          file,
+          newDetails,
+          toFormName ? formName(newDetails as iDetails) : null,
+        ];
       })
     );
   };
   return (
     <div id="details">
       {detailsTypes.map((detailsType) => {
-        let { name, type } = detailsType as {
-          name: string;
-          type: DetailsType;
-        };
+        const { type } = detailsType;
+        let name = detailsType.name as string;
         return (
           <div key={name} className={`${type}-wrapper ${name}-wrapper`}>
             {(() => {
@@ -50,7 +58,8 @@ export default function Details<iDetails extends object>({
                           onClick={() =>
                             update(
                               pluralName,
-                              data.filter((a) => a !== one)
+                              data.filter((a) => a !== one),
+                              detailsType
                             )
                           }
                         >
@@ -67,7 +76,8 @@ export default function Details<iDetails extends object>({
                         if (e.key === "Enter" && e.currentTarget.value.trim()) {
                           update(
                             pluralName,
-                            [...data, e.currentTarget.value.trim()].sort()
+                            [...data, e.currentTarget.value.trim()].sort(),
+                            detailsType
                           );
                           e.currentTarget.value = "";
                         }
@@ -100,7 +110,7 @@ export default function Details<iDetails extends object>({
                       if (e.key === "Enter") {
                         const value = e.currentTarget.value.trim();
                         e.currentTarget.value = "";
-                        update(name, value);
+                        update(name, value, detailsType);
                       }
                     }}
                   />
