@@ -86,6 +86,7 @@ export default function List<iDetailsType extends object>({
                   document.getElementById("viewer")!.style.display = fullMode
                     ? ""
                     : "none";
+                  if (fullMode) setFile(selecteds[0]);
                   setSelecteds(fullMode ? null : [file]);
                   scrollFileIntoView(file._id);
                 }}
@@ -154,7 +155,7 @@ export default function List<iDetailsType extends object>({
                 key={name}
                 style={{ background: sortName === name ? "yellow" : "" }}
                 onClick={() => {
-                  setSort([name, sortOrder === "asc" ? "desc" : "asc"])
+                  setSort([name, sortOrder === "asc" ? "desc" : "asc"]);
                   scrollFileIntoView(file._id);
                 }}
               >
