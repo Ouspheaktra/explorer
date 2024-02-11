@@ -83,7 +83,7 @@ function App() {
               }
               pushHistory({ ...state, dir: newDir, file: newFiles[0] }, false);
               setState({ file: newFiles[0], dir: newDir, viewerMode });
-              scrollFileIntoView(newFiles[0]._id);
+              // scrollFileIntoView(newFiles[0]._id);
               return newFiles;
             }
           ),

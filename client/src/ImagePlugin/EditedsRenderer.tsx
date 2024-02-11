@@ -8,6 +8,7 @@ export default function EditedsRenderer<iDetails extends object>({
     const [file, ...editeds] = selecteds;
     return (
       <button
+        style={{float: "right"}}
         onClick={() => {
           updateFiles([
             [
@@ -16,8 +17,8 @@ export default function EditedsRenderer<iDetails extends object>({
                 ...file.details,
                 editeds: [
                   ...new Set([
-                    ...(file.details.edited || []),
-                    editeds.map((f) => f.fullname),
+                    ...(file.details.editeds || []),
+                    ...editeds.map((f) => f.fullname),
                   ]),
                 ],
               },
