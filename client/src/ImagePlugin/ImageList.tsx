@@ -5,6 +5,7 @@ import List from "../List";
 import { fileUrl } from "../utils";
 import { iImageDetails } from "./types";
 import { iFile } from "../types";
+import StringArrayRenderer from "../Details/StringArrayRenderer";
 
 function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
   const [loadImg, setToLoad] = useState(false);
@@ -12,7 +13,10 @@ function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
   useEffect(() => {
     const scroll = () => {
       const elY = elRef.current!.offsetTop;
-      if (window.scrollY - 50 < elY && elY < window.scrollY + window.innerHeight) {
+      if (
+        window.scrollY - 50 < elY &&
+        elY < window.scrollY + window.innerHeight
+      ) {
         setToLoad(true);
         window.removeEventListener("scroll", scroll);
       }
@@ -57,7 +61,7 @@ export default function ImageList() {
         detailsTypes: [
           {
             name: "avatars",
-            type: "string[]",
+            Renderer: StringArrayRenderer,
             toFormName: true,
           },
         ],

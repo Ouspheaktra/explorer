@@ -1,3 +1,4 @@
+import StringArrayRenderer from "../Details/StringArrayRenderer";
 import List from "../List";
 import { iVideoDetails } from "./types";
 
@@ -7,11 +8,11 @@ export default function VideoList() {
       id="video-list"
       fileType="video"
       details={{
-        formName: ({ title }) => title,
+        formName: () => "",
         detailsTypes: [
           {
             name: "title",
-            type: "string",
+            Renderer: StringArrayRenderer,
           },
         ],
       }}
