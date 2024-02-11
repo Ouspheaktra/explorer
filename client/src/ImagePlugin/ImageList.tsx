@@ -7,9 +7,7 @@ import { iImageDetails } from "./types";
 import { iFile } from "../types";
 import StringArrayRenderer from "../Details/StringArrayRenderer";
 import EditedsRenderer from "./EditedsRenderer";
-
-const styleId = "image-list-style";
-const editedsRef: { current: string[] } = { current: [] };
+import { useGlobal } from "../GlobalContext";
 
 function FileFullMode({
   file: { fullname, path, details },
@@ -37,9 +35,7 @@ function FileFullMode({
   }, []);
   return (
     <div
-      className={
-        "image-thumbnail" + (details.editeds?.length ? " edited" : "")
-      }
+      className={"image-thumbnail" + (details.editeds?.length ? " edited" : "")}
       ref={elRef}
     >
       {loadImg && <img src={fileUrl(path)} />}
@@ -49,13 +45,8 @@ function FileFullMode({
 }
 
 function FileRender({ fullMode, file }: FileComponentProps) {
-  const editeds = file.details.editeds || [];
-  editedsRef.current.push(...editeds);
   if (fullMode) return <FileFullMode file={file} />;
-  else
-    return (
-      <span className={editeds.length ? "edited" : ""}>{file.fullname}</span>
-    );
+  else return file.fullname;
 }
 
 function AvatarOnly() {
@@ -68,7 +59,8 @@ function AvatarOnly() {
         if (!avatarOnly) {
           const style = document.createElement("style");
           style.id = styleId;
-          style.innerHTML = "ul.list-group-files > li > :not(.edited) { display: none !important; }";
+          style.innerHTML =
+            "ul.list-group-files > li > :not(.edited) { display: none !important; }";
           document.head.append(style);
         }
         setAvatarOnly(!avatarOnly);
@@ -80,26 +72,19 @@ function AvatarOnly() {
 }
 
 export default function ImageList() {
-  editedsRef.current = [];
-  useEffect(() => {
-    document.getElementById(styleId)?.remove();
-    if (editedsRef.current.length) {
-      const style = document.createElement("style");
-      style.id = styleId;
-      style.innerHTML =
-        editedsRef.current
-          .map(
-            (fullname) =>
-              `ul.list-group-files > li[data-file-fullname="${fullname}"]`
-          )
-          .join(",") + "{display:none}";
-      document.head.append(style);
-    }
-  });
+  const {
+    dir: { files },
+  } = useGlobal();
+  const editeds = files
+    .filter((file) => file.details.editeds?.length)
+    .map((file) => file.details.editeds)
+    .flat();
   return (
     <List<iImageDetails>
-      fileType="image"
       id="image-list"
+      filteredFiles={files.filter(
+        (file) => file.type === "image" && !editeds.includes(file.fullname)
+      )}
       FileComponent={FileRender}
       sorts={[
         {

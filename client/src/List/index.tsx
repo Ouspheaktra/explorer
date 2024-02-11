@@ -14,7 +14,7 @@ type ListProps = HTMLProps<HTMLUListElement> & {
   topButtons?: ReactNode;
   bottomButtons?: ReactNode;
   sorts?: Sort[];
-  fileType?: string;
+  filteredFiles: iFile[];
 };
 
 export default function List<iDetailsType extends object>({
@@ -23,7 +23,7 @@ export default function List<iDetailsType extends object>({
   bottomButtons,
   sorts = [],
   FileComponent,
-  fileType,
+  filteredFiles,
   details,
   ...ulProps
 }: ListProps & {
@@ -37,8 +37,7 @@ export default function List<iDetailsType extends object>({
   // [] means selected file
   const [selecteds, setSelecteds] = useState<iFile[] | null>(null);
   const {
-    dir: { files },
-    setDir: goto,
+    setDir,
     file,
     viewerMode,
     setViewerMode,
@@ -51,9 +50,7 @@ export default function List<iDetailsType extends object>({
   ]);
   const allSorts = [...sorts, ...builtinSorts];
   const sorter = allSorts.find((sort) => sort.name === sortName)!;
-  const sortedGroups = sorter.sort(
-    fileType ? files.filter((f) => f.type === fileType) : files
-  );
+  const sortedGroups = sorter.sort(filteredFiles);
   if (sortOrder === "desc") {
     sortedGroups.reverse();
     sortedGroups.forEach((g) => g.files.reverse());
@@ -131,7 +128,7 @@ export default function List<iDetailsType extends object>({
                           // is file, change file
                           if (ext) setFile(f);
                           // if directory, change dir
-                          else goto(dir);
+                          else setDir(dir);
                         }
                       }}
                     >

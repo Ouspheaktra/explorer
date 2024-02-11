@@ -3,7 +3,7 @@ import { useGlobal } from "./GlobalContext";
 
 export default function Explorer() {
   const {
-    dir: { prevDir },
+    dir: { prevDir, files },
     setDir: goto,
     file,
     setFile,
@@ -11,6 +11,7 @@ export default function Explorer() {
   return (
     <List
       id="explorer"
+      filteredFiles={files}
       listTop={
         <>
           {prevDir && <li className="a" onClick={() => goto(prevDir)}>&lt;&minus; Back</li>}
