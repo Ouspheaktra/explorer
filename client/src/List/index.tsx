@@ -2,11 +2,11 @@ import { ComponentProps, FC, HTMLProps, ReactNode, useState } from "react";
 import { FileComponentProps, Order, Sort } from "./types";
 import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
-import "./style.scss";
 import Details from "../Details";
 import { iFile } from "../types";
 import { toggleValue } from "../utils";
 import { scrollFileIntoView } from "./utils";
+import "./style.scss";
 
 type ListProps = HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;

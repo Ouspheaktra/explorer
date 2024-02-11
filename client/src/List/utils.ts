@@ -31,6 +31,9 @@ export const createSort =
 
 export const scrollFileIntoView = (_id: number) =>
   setTimeout(
-    () => document.querySelector(`[data-file-id="${_id}"]`)?.scrollIntoView(),
-    1
+    () => {
+      document.querySelector(`[data-file-id="${_id}"]`)?.scrollIntoView()
+      window.scrollBy(0, -50);
+    },
+    2
   );
