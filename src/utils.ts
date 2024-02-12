@@ -74,7 +74,7 @@ export const getFileDetail = (file: string, filesData: iFilesData): iFile => {
 
 export const readFilesData = (dir: string): iFilesData => {
   try {
-    const json = fs.readFileSync(dir + "/.explorer/files.json", "utf8");
+    const json = fs.readFileSync(dir + "/.explorer.json", "utf8");
     return JSON.parse(json);
   } catch (e: any) {
     if (e.code !== "ENOENT") throw e;
@@ -82,13 +82,5 @@ export const readFilesData = (dir: string): iFilesData => {
   return {};
 };
 
-export const writeFilesData = (dir: string, data: iFilesData) => {
-  try {
-    fs.writeFileSync(dir + "/.explorer/files.json", JSON.stringify(data));
-  } catch (err: any) {
-    if (err.code === "ENOENT") {
-      fs.mkdirSync(dir + "/.explorer/", { recursive: true });
-      writeFilesData(dir, data);
-    } else throw err;
-  }
-};
+export const writeFilesData = (dir: string, data: iFilesData) =>
+  fs.writeFileSync(dir + "/.explorer.json", JSON.stringify(data));
