@@ -36,14 +36,8 @@ export default function List<iDetailsType extends object>({
   // null means fullMode
   // [] means selected file
   const [selecteds, setSelecteds] = useState<iFile[] | null>(null);
-  const {
-    setDir,
-    file,
-    viewerMode,
-    setViewerMode,
-    setFile,
-    setNext,
-  } = useGlobal();
+  const { setDir, file, viewerMode, setViewerMode, setFile, setNext } =
+    useGlobal();
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
     builtinSorts[0].name,
     "asc",
@@ -66,7 +60,7 @@ export default function List<iDetailsType extends object>({
     <>
       <ul
         {...ulProps}
-        className={"list" + (open ? " active" : "") + (fullMode ? " full" : "")}
+        className={"list" + (open ? "" : " hide") + (fullMode ? " full" : "")}
       >
         <li className="list-top">
           <ul>
@@ -93,7 +87,12 @@ export default function List<iDetailsType extends object>({
               </button>
               <button
                 className="list-opener"
-                onClick={() => setOpen(!open)}
+                onClick={() => {
+                  document
+                    .getElementById("viewer")!
+                    .classList.toggle("full", open);
+                  setOpen(!open);
+                }}
                 style={{ backgroundColor: "pink" }}
               >
                 {open ? "X" : "O"}

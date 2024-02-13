@@ -21,9 +21,13 @@ body {
 #viewer {
   position: fixed;
   width: calc(100% - var(--list-width));
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   height: 100vh;
   overflow: hidden;
+  &.full {
+    width: 100vw;
+  }
 }
 
 .prev,
