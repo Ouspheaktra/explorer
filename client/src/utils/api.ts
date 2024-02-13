@@ -20,3 +20,15 @@ export const postFile = (
       newName,
     }),
   }).then((response) => response.json());
+
+export const postThumbnails = (file: iFile, datas: string[]): Promise<Response> =>
+  fetch("/api/thumbnails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      file,
+      datas,
+    }),
+  });

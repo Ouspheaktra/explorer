@@ -92,3 +92,12 @@ export const writeFilesData = (dir: string, data: iFilesData) => {
     } else throw err;
   }
 };
+
+export const dataURLtoFile = (dataUrl: string, filePath: string) => {
+  const dataBuffer = Buffer.from(
+    dataUrl.slice("data:image/jpeg;base64,".length),
+    "base64"
+  );
+  fs.writeFileSync(filePath, dataBuffer);
+  return filePath;
+};

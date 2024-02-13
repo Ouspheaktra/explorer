@@ -10,6 +10,7 @@ import {
   mimeTypes,
   readFilesData,
   writeFilesData,
+  dataURLtoFile,
 } from "./utils";
 
 const app = express();
@@ -24,7 +25,7 @@ app.get("/", (req, res) => {
   res.sendFile(p.join(__dirname, "../client/dist", "index.html"));
 });
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "1mb" }));
 
 app.get("/api/dir", (req, res) => {
   const { dir = "" } = req.query as { dir: string };
@@ -82,6 +83,37 @@ app.post("/api/file", (req, res) => {
     ...file,
     ...getFileDetail(dir + "/" + (newName || name) + ext, data),
   });
+});
+
+app.post("/api/thumbnails", (req, res) => {
+  const {
+    file: { dir, name, ext },
+    datas,
+  } = req.body as {
+    file: iFile;
+    datas: string[];
+  };
+  const thumbnailsDir = dir + "/.explorer/thumbnails/";
+  fs.mkdirSync(thumbnailsDir, { recursive: true });
+  for (let id = 0; id < datas.length; id++)
+    dataURLtoFile(
+      datas[id],
+      thumbnailsDir + name + ext + "_" + ("" + id).padStart(2, "0") + ".jpg"
+    );
+  return res.sendStatus(200);
+});
+
+app.get("/thumbnail", (req, res) => {
+  const { dir, filename, id } = req.query as {
+    dir: string;
+    filename: string;
+    id: string;
+  };
+  const thumbnailsDir = dir + "/.explorer/thumbnails/";
+  fs.mkdirSync(thumbnailsDir, { recursive: true });
+  const path = thumbnailsDir + filename + "_" + id.padStart(2, "0") + ".jpg";
+  if (!fs.existsSync(path)) return res.sendStatus(404);
+  return res.sendFile(path);
 });
 
 app.get("/file", (req, res) => {

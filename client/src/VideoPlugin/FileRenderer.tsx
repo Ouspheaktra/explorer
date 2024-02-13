@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { FileComponentProps } from "../List/types";
 import { iFile } from "../types";
-import { fileUrl } from "../utils";
+import { fileUrl, thumbnailUrl } from "../utils";
+import { postThumbnails } from "../utils/api";
 
 export default function FileRender({ fullMode, file }: FileComponentProps) {
   if (fullMode) return <FileFullMode file={file} />;
   else return file.fullname;
 }
 
-function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
+function FileFullMode({ file }: { file: iFile }) {
   const [toLoad, setToLoad] = useState(false);
+  const thumbnailId = useRef(0);
   const elRef = useRef<HTMLDivElement | null>(null);
   const intervalRef = useRef(0);
-  const timeRef = useRef(0);
+  const errorNumberRef = useRef(0);
   useEffect(() => {
     const scroll = () => {
       const elY = elRef.current!.offsetTop;
@@ -35,24 +37,54 @@ function FileFullMode({ file: { fullname, path } }: { file: iFile }) {
       className={"video-thumbnail"}
       ref={elRef}
       onMouseEnter={(e) => {
-        const video = e.currentTarget.firstElementChild! as HTMLVideoElement;
-        if (video.tagName !== "VIDEO") return;
+        const img = e.currentTarget.firstElementChild! as HTMLImageElement;
+        if (img.tagName !== "IMG" && img.complete) return;
         intervalRef.current = setInterval(() => {
-          video.currentTime = timeRef.current =
-            (timeRef.current + video.duration / 10) % video.duration;
+          thumbnailId.current = (thumbnailId.current + 1) % 10;
+          img.src = thumbnailUrl(file, thumbnailId.current);
         }, 1000) as unknown as number;
       }}
       onMouseLeave={() => clearInterval(intervalRef.current)}
     >
       {toLoad && (
-        <video
-          src={fileUrl(path)}
-          onDurationChange={({ currentTarget: video }) => {
-            video.currentTime = timeRef.current = video.duration / 10;
+        <img
+          src={thumbnailUrl(file, thumbnailId.current)}
+          onError={async (e) => {
+            if (errorNumberRef.current++ > 0) return;
+            const mainImg = e.currentTarget;
+            const video = document.createElement("video");
+            video.src = fileUrl(file.path);
+            video.ondurationchange = async () => {
+              const interval = 9.5; // Interval in percentage
+              const numThumbnails = 10; // Number of thumbnails
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d")!;
+              const { videoWidth, videoHeight } = video;
+              if (videoWidth > videoHeight) {
+                canvas.width = (200 / videoHeight) * videoWidth;
+                canvas.height = 200;
+              } else {
+                canvas.width = 200;
+                canvas.height = (200 / videoWidth) * videoHeight;
+              }
+              const datas: string[] = [];
+              for (let i = 1; i <= numThumbnails; i++)
+                await new Promise<void>((resolve) => {
+                  video.currentTime = ((i * interval) / 100) * video.duration;
+                  video.onseeked = function () {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    datas.push(canvas.toDataURL("image/jpeg"));
+                    resolve();
+                  };
+                });
+              postThumbnails(file, datas).then(
+                () => (mainImg.src = thumbnailUrl(file, thumbnailId.current))
+              );
+            };
           }}
         />
       )}
-      <span>{fullname}</span>
+      <span>{file.fullname}</span>
     </div>
   );
 }
