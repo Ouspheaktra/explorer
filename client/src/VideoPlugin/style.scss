@@ -105,3 +105,41 @@ body.fullscreen .vp-control {
     font-size: large;
   }
 }
+
+#video-list.full {
+  display: flex;
+  flex-direction: column;
+  > .list-group {
+    margin-bottom: 20px;
+    > .list-group-files {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+}
+
+.video-thumbnail {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  > video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+  &:hover > span {
+    display: block;
+  }
+  > span {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: black;
+    display: none;
+  }
+}
