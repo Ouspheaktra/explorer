@@ -45,7 +45,7 @@ export default function List<iDetailsType extends object>({
   ]);
   const allSorts = [...sorts, ...builtinSorts];
   const sorter = allSorts.find((sort) => sort.name === sortName)!;
-  const sortedGroups = sorter.sort(filteredFiles);
+  const sortedGroups = sorter.sort(filteredFiles.filter(f => !f.deleted));
   if (sortOrder === "desc") {
     sortedGroups.reverse();
     sortedGroups.forEach((g) => g.files.reverse());
@@ -108,7 +108,6 @@ export default function List<iDetailsType extends object>({
               <span className="list-group-name">{name}</span>
               <ul className="list-group-files">
                 {files.map((f) => {
-                  if (f.deleted) return null;
                   const { type, ext, fullname, dir, _id } = f;
                   const isCurrent = fullMode
                     ? selecteds!.some((file) => file._id === _id)

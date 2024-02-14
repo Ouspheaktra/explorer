@@ -105,13 +105,20 @@ app.delete("/api/file", (req, res) => {
   };
   const fullname = name + ext;
   const path = dir + "/" + fullname;
+  // remove file
   if (!fs.existsSync(path)) return res.sendStatus(404);
   fs.renameSync(path, "C:/Users/Ouspheaktra/Desktop/trash/" + fullname);
+  // remove thumbnail
   const thumbnailDir = dir + "/.explorer/thumbnails/";
   fs.readdirSync(thumbnailDir).forEach(
     (filename) =>
       filename.startsWith(fullname) && fs.rmSync(thumbnailDir + filename)
   );
+  // remove data
+  const data = readFilesData(dir);
+  delete data[fullname];
+  writeFilesData(dir, data);
+  //
   return res.sendStatus(200);
 });
 

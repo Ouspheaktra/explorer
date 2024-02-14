@@ -2,11 +2,15 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import panzoom, { PanZoom } from "panzoom";
 import { useGlobal } from "../GlobalContext";
 import { fileUrl } from "../utils";
+import { deleteFile } from "../utils/api";
 
 export default function ImageViewer() {
   const {
-    file: { _id, path, dir, details },
+    file,
+    dir: { files },
+    updateFiles,
   } = useGlobal();
+  const { _id, path, dir, details } = file;
   const [editedId, setEditedId] = useState(0);
   const [orientation, setOrientation] = useState<"portrait" | "landscape">(
     "portrait"
@@ -70,6 +74,27 @@ export default function ImageViewer() {
           style={style}
           src={fileUrl(dir + "/" + editeds[editedId])}
         />
+      ) : null}
+      {editeds.length ? (
+        <button
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+          }}
+          onClick={async () => {
+            const edit = files.find((f) => f.fullname === editeds[editedId])!;
+            await deleteFile(edit);
+            edit.deleted = true;
+            const newEditeds = [...editeds];
+            newEditeds.splice(editedId, 1);
+            await updateFiles([
+              [file, { ...details, editeds: newEditeds }, null],
+            ]);
+          }}
+        >
+          Delete edit
+        </button>
       ) : null}
       <img ref={imageRef} src={fileUrl(path)} style={style} />
     </div>
