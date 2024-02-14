@@ -21,7 +21,21 @@ export const postFile = (
     }),
   }).then((response) => response.json());
 
-export const postThumbnails = (file: iFile, datas: string[]): Promise<Response> =>
+export const deleteFile = (file: iFile): Promise<Response> =>
+  fetch("/api/file", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      file,
+    }),
+  });
+
+export const postThumbnails = (
+  file: iFile,
+  datas: string[]
+): Promise<Response> =>
   fetch("/api/thumbnails", {
     method: "POST",
     headers: {

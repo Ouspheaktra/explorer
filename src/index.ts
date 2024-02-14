@@ -97,6 +97,24 @@ app.post("/api/file", (req, res) => {
   });
 });
 
+app.delete("/api/file", (req, res) => {
+  const {
+    file: { dir, name, ext },
+  } = req.body as {
+    file: iFile;
+  };
+  const fullname = name + ext;
+  const path = dir + "/" + fullname;
+  if (!fs.existsSync(path)) return res.sendStatus(404);
+  fs.renameSync(path, "C:/Users/Ouspheaktra/Desktop/trash/" + fullname);
+  const thumbnailDir = dir + "/.explorer/thumbnails/";
+  fs.readdirSync(thumbnailDir).forEach(
+    (filename) =>
+      filename.startsWith(fullname) && fs.rmSync(thumbnailDir + filename)
+  );
+  return res.sendStatus(200);
+});
+
 app.post("/api/thumbnails", (req, res) => {
   const {
     file: { dir, name, ext },

@@ -7,6 +7,7 @@ import { iFile } from "../types";
 import { toggleValue } from "../utils";
 import { scrollFileIntoView } from "./utils";
 import "./style.scss";
+import TrashButton from "../Details/TrashButton";
 
 type ListProps = HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;
@@ -107,6 +108,7 @@ export default function List<iDetailsType extends object>({
               <span className="list-group-name">{name}</span>
               <ul className="list-group-files">
                 {files.map((f) => {
+                  if (f.deleted) return null;
                   const { type, ext, fullname, dir, _id } = f;
                   const isCurrent = fullMode
                     ? selecteds!.some((file) => file._id === _id)
@@ -165,7 +167,14 @@ export default function List<iDetailsType extends object>({
       {details && (
         <Details<iDetailsType>
           key={file._id}
-          {...details}
+          detailsTypes={[
+            ...details.detailsTypes,
+            {
+              name: "trash" as keyof iDetailsType,
+              Renderer: TrashButton,
+            }
+          ]}
+          formName={details.formName}
           files={selecteds || [file]}
         />
       )}
