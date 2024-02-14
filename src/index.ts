@@ -62,15 +62,27 @@ app.post("/api/file", (req, res) => {
     newName: string;
   };
   const { dir, name, ext } = file;
+  const oldFullname = name + ext;
   let newName = originalNewName;
+  let newFullname = newName + ext;
   // rename
   if (newName) {
     // keep rename newName if exist
     let newPath = "";
     let suffix = 1;
-    while (fs.existsSync((newPath = dir + "/" + newName + ext)))
+    while (fs.existsSync((newPath = dir + "/" + (newFullname = newName + ext))))
       newName = originalNewName + " - " + ++suffix;
-    fs.renameSync(dir + "/" + name + ext, newPath);
+    fs.renameSync(dir + "/" + oldFullname, newPath);
+    // rename thumbnail
+    const thumbnailDir = dir + "/.explorer/thumbnails/";
+    fs.readdirSync(thumbnailDir).forEach(
+      (filename) =>
+        filename.startsWith(oldFullname) &&
+        fs.renameSync(
+          thumbnailDir + filename,
+          thumbnailDir + newFullname + filename.slice(oldFullname.length)
+        )
+    );
   }
   const data = readFilesData(dir);
   // edit details
