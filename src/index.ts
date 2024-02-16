@@ -167,12 +167,13 @@ app.get("/file", (req, res) => {
   else if (Object.keys(mimeTypes.video).includes(ext)) {
     const size = fs.statSync(path).size;
     const range = req.headers.range;
+    let fileStream: fs.ReadStream;
     if (range) {
       const parts = range.replace(/bytes=/, "").split("-");
       const start = parseInt(parts[0], 10);
       const end = parts[1] ? parseInt(parts[1], 10) : size - 1;
       const chunksize = end - start + 1;
-      const fileStream = fs.createReadStream(path, { start, end });
+      fileStream = fs.createReadStream(path, { start, end });
       const head = {
         "Content-Range": `bytes ${start}-${end}/${size}`,
         "Accept-Ranges": "bytes",
@@ -180,15 +181,19 @@ app.get("/file", (req, res) => {
         "Content-Type": mimeTypes.video[ext],
       };
       res.writeHead(206, head);
-      fileStream.pipe(res);
     } else {
+      fileStream = fs.createReadStream(path);
       const head = {
         "Content-Length": size,
         "Content-Type": mimeTypes.video[ext],
       };
       res.writeHead(200, head);
-      fs.createReadStream(path).pipe(res);
     }
+    fileStream.on("error", (err) => {
+      console.log("ERROR FILE", path);
+      console.error(err);
+    });
+    fileStream.pipe(res);
   } else return res.send("no viewer for extension: " + ext);
 });
 
