@@ -45,7 +45,7 @@ export default function List<iDetailsType extends object>({
   if (
     sortName !== toSortStore.current.sortName ||
     sortOrder !== toSortStore.current.sortOrder ||
-    filteredFiles !== filteredFiles
+    filteredFiles !== toSortStore.current.filteredFiles
   ) {
     console.log("RE SORT");
     const sorter = allSorts.find((sort) => sort.name === sortName)!;

@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import StringArrayRenderer from "../Details/StringArrayRenderer";
 import { useGlobal } from "../GlobalContext";
 import List from "../List";
@@ -9,10 +10,13 @@ export default function VideoList() {
   const {
     dir: { files },
   } = useGlobal();
+  const filesStore = useRef(files);
+  if (files !== filesStore.current)
+    filesStore.current = files.filter((file) => file.type === "video");
   return (
     <List<iVideoDetails>
       id="video-list"
-      filteredFiles={files.filter((file) => file.type === "video")}
+      filteredFiles={filesStore.current}
       FileComponent={FileRender}
       sorts={[
         {

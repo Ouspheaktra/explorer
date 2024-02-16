@@ -5,21 +5,26 @@ import StringArrayRenderer from "../Details/StringArrayRenderer";
 import EditedsRenderer from "./EditedsRenderer";
 import { useGlobal } from "../GlobalContext";
 import FileRender from "./FileRenderer";
+import { useRef } from "react";
 
 export default function ImageList() {
   const {
     dir: { files },
   } = useGlobal();
-  const editeds = files
-    .filter((file) => file.details.editeds?.length)
-    .map((file) => file.details.editeds)
-    .flat();
+  const filesStore = useRef(files);
+  if (files !== filesStore.current) {
+    const editeds = files
+      .filter((file) => file.details.editeds?.length)
+      .map((file) => file.details.editeds)
+      .flat();
+    filesStore.current = files.filter(
+      (file) => file.type === "image" && !editeds.includes(file.fullname)
+    );
+  }
   return (
     <List<iImageDetails>
       id="image-list"
-      filteredFiles={files.filter(
-        (file) => file.type === "image" && !editeds.includes(file.fullname)
-      )}
+      filteredFiles={filesStore.current}
       FileComponent={FileRender}
       sorts={[
         {
