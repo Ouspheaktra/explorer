@@ -60,9 +60,9 @@
       align-items: center;
       gap: 10px 0;
       > li {
-        order: 1;
+        // order: 1;
         &:has(> .image-thumbnail.portrait) {
-          order: 2;
+          // order: 2;
         }
       }
     }

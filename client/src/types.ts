@@ -16,6 +16,7 @@ export interface iFile<DetailsType extends ObjectLiteral = ObjectLiteral> {
   type: FileType;
   stat: {
     mtime?: Date;
+    size: number;
   };
   details: DetailsType;
 }

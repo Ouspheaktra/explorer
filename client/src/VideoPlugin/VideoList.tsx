@@ -19,7 +19,7 @@ export default function VideoList() {
           name: "Avatar",
           sort: createSort(
             (file) => (file.details.avatars ? file.details.avatars[0] : false),
-            (a, b) => a.details.avatars[0].localeCompare(b.details.avatars[0])
+            (a, b) => a.stat.size - b.stat.size
           ),
         },
       ]}

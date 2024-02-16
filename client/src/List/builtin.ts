@@ -17,4 +17,11 @@ export const builtinSorts: Sort[] = [
       (a, b) => a.stat.mtime!.getTime() - b.stat.mtime!.getTime()
     )
   },
+  {
+    name: "Size",
+    sort: createSort(
+      (file) => file.stat.size ? "File" : false,
+      (a, b) => a.stat.size - b.stat.size
+    )
+  }
 ];

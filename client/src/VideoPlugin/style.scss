@@ -117,9 +117,9 @@ body.fullscreen .vp-control {
       flex-wrap: wrap;
       gap: 10px;
       > li {
-        order: 1;
+        // order: 1;
         &:has(> .video-thumbnail.portrait) {
-          order: 2;
+          // order: 2;
         }
       }
     }
