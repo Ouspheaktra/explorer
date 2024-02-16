@@ -6,8 +6,8 @@ import Details from "../Details";
 import { iFile } from "../types";
 import { toggleValue } from "../utils";
 import { scrollFileIntoView } from "./utils";
-import "./style.scss";
 import TrashButton from "../Details/TrashButton";
+import "./style.scss";
 
 type ListProps = HTMLProps<HTMLUListElement> & {
   FileComponent?: FC<FileComponentProps>;
@@ -45,7 +45,7 @@ export default function List<iDetailsType extends object>({
   ]);
   const allSorts = [...sorts, ...builtinSorts];
   const sorter = allSorts.find((sort) => sort.name === sortName)!;
-  const sortedGroups = sorter.sort(filteredFiles.filter(f => !f.deleted));
+  const sortedGroups = sorter.sort(filteredFiles);
   if (sortOrder === "desc") {
     sortedGroups.reverse();
     sortedGroups.forEach((g) => g.files.reverse());

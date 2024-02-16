@@ -18,10 +18,17 @@ export const builtinSorts: Sort[] = [
     )
   },
   {
-    name: "Size",
+    name: "Randomly",
     sort: createSort(
-      (file) => file.stat.size ? "File" : false,
-      (a, b) => a.stat.size - b.stat.size
+      (file) => file.ext ? "Files" : false,
+      () => Math.random() - 0.5
     )
   }
+  // {
+  //   name: "Size",
+  //   sort: createSort(
+  //     (file) => file.stat.size ? "File" : false,
+  //     (a, b) => a.stat.size - b.stat.size
+  //   )
+  // }
 ];
