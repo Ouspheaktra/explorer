@@ -6,7 +6,7 @@ export default function TrashButton({ selecteds }: DetailProps<any>) {
   return (
     <button
       onClick={() => {
-        const yes = confirm("Delete: " + selecteds.map(f => f.name).join(", ") + " ?");
+        const yes = confirm("Delete " + selecteds.length + " files ?");
         if (yes)
           deleteFiles(selecteds);
       }}
