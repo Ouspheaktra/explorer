@@ -13,6 +13,7 @@ export default function FileRender({ fullMode, file }: FileComponentProps) {
 function FileFullMode({ file }: { file: iFile<iImageDetails> }) {
   const { fullname, details } = file;
   const [toLoad, setToLoad] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(true);
   const elRef = useRef<HTMLDivElement | null>(null);
   const errorNumberRef = useRef(0);
   useEffect(() => {
@@ -34,12 +35,17 @@ function FileFullMode({ file }: { file: iFile<iImageDetails> }) {
   }, []);
   return (
     <div
-      className={"image-thumbnail" + (details.editeds?.length ? " edited" : "")}
+      className={"image-thumbnail" + (details.editeds?.length ? " edited" : "") + (isLandscape ? "" : " portrait")}
       ref={elRef}
     >
       {toLoad && (
         <img
           src={thumbnailUrl(file, 0)}
+          onLoad={(e) => {
+            const {naturalWidth, naturalHeight} = e.currentTarget;
+            if (naturalWidth < naturalHeight)
+              setIsLandscape(false);
+          }}
           onError={(e) => {
             if (errorNumberRef.current++ > 0) return;
             const mainImg = e.currentTarget;

@@ -34,8 +34,7 @@
       > li {
         white-space: pre;
         &.active {
-          background: blue;
-          outline: 3px solid blue;
+          outline: 5px solid lime;
         }
         &.is-dir {
           color: lime;

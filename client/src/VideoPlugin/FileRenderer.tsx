@@ -11,6 +11,7 @@ export default function FileRender({ fullMode, file }: FileComponentProps) {
 
 function FileFullMode({ file }: { file: iFile }) {
   const [toLoad, setToLoad] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(true);
   const thumbnailId = useRef(0);
   const elRef = useRef<HTMLDivElement | null>(null);
   const intervalRef = useRef(0);
@@ -34,7 +35,7 @@ function FileFullMode({ file }: { file: iFile }) {
   }, []);
   return (
     <div
-      className={"video-thumbnail"}
+      className={"video-thumbnail" + (isLandscape ? "" : " portrait")}
       ref={elRef}
       onMouseEnter={(e) => {
         const img = e.currentTarget.firstElementChild! as HTMLImageElement;
@@ -49,6 +50,11 @@ function FileFullMode({ file }: { file: iFile }) {
       {toLoad && (
         <img
           src={thumbnailUrl(file, thumbnailId.current)}
+          onLoad={(e) => {
+            const {naturalWidth, naturalHeight} = e.currentTarget;
+            if (naturalWidth < naturalHeight)
+              setIsLandscape(false);
+          }}
           onError={async (e) => {
             if (errorNumberRef.current++ > 0) return;
             const mainImg = e.currentTarget;
