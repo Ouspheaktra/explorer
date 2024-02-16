@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ListProps, Order } from "./types";
+import { useRef, useState } from "react";
+import { ListProps, Order, SortedGroup } from "./types";
 import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
 import Details from "../Details";
@@ -29,13 +29,39 @@ export default function List<iDetailsType extends object>({
     builtinSorts[0].name,
     "asc",
   ]);
+  const toSortStore = useRef<{
+    sortName: string;
+    sortOrder: string;
+    filteredFiles: iFile[];
+    sortedGroups: SortedGroup[];
+  }>({
+    sortName: "",
+    sortOrder,
+    filteredFiles,
+    sortedGroups: [],
+  });
+
   const allSorts = [...sorts, ...builtinSorts];
-  const sorter = allSorts.find((sort) => sort.name === sortName)!;
-  const sortedGroups = sorter.sort(filteredFiles);
-  if (sortOrder === "desc") {
-    sortedGroups.reverse();
-    sortedGroups.forEach((g) => g.files.reverse());
+  if (
+    sortName !== toSortStore.current.sortName ||
+    sortOrder !== toSortStore.current.sortOrder ||
+    filteredFiles !== filteredFiles
+  ) {
+    console.log("RE SORT");
+    const sorter = allSorts.find((sort) => sort.name === sortName)!;
+    const sortedGroups = sorter.sort(filteredFiles);
+    if (sortOrder === "desc") {
+      sortedGroups.reverse();
+      sortedGroups.forEach((g) => g.files.reverse());
+    }
+    Object.assign(toSortStore.current, {
+      sortName,
+      sortOrder,
+      sortedGroups,
+      filteredFiles,
+    });
   }
+  const { sortedGroups } = toSortStore.current;
   setNext((plus) => {
     if (!file) return;
     const files = sortedGroups.map(({ files }) => files).flat();
@@ -157,7 +183,7 @@ export default function List<iDetailsType extends object>({
             {
               name: "trash" as keyof iDetailsType,
               Renderer: TrashButton,
-            }
+            },
           ]}
           formName={details.formName}
           files={selecteds || [file]}
