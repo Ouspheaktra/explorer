@@ -158,20 +158,27 @@ export default function List<iDetailsType extends object>({
         })}
         <li className="list-bottom">
           Order:
-          <ul>
-            {allSorts.map(({ name }) => (
-              <button
-                key={name}
-                style={{ background: sortName === name ? "yellow" : "" }}
-                onClick={() => {
-                  setSort([name, sortOrder === "asc" ? "desc" : "asc"]);
-                  scrollFileIntoView(file._id);
-                }}
-              >
-                {name}
-              </button>
-            ))}
-          </ul>
+          <br />
+          {allSorts.map(({ name }) => (
+            <button
+              key={name}
+              data-order={sortOrder}
+              className={"order-btn" + (sortName === name ? " active" : "")}
+              onClick={() => {
+                setSort([
+                  name,
+                  sortName !== name
+                    ? "asc"
+                    : sortOrder === "asc"
+                    ? "desc"
+                    : "asc",
+                ]);
+                scrollFileIntoView(file._id);
+              }}
+            >
+              {name}
+            </button>
+          ))}
           {bottomButtons}
         </li>
       </ul>
