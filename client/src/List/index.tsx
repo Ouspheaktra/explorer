@@ -37,7 +37,7 @@ export default function List<iDetailsType extends object>({
   }>({
     sortName: "",
     sortOrder,
-    filteredFiles,
+    filteredFiles: [],
     sortedGroups: [],
   });
 

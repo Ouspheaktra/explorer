@@ -5,12 +5,13 @@ import List from "../List";
 import { createSort } from "../List/utils";
 import FileRender from "./FileRenderer";
 import { iVideoDetails } from "./types";
+import { iFile } from "../types";
 
 export default function VideoList() {
   const {
     dir: { files },
   } = useGlobal();
-  const filesStore = useRef(files);
+  const filesStore = useRef<iFile[]>([]);
   if (files !== filesStore.current)
     filesStore.current = files.filter((file) => file.type === "video");
   return (

@@ -6,12 +6,13 @@ import EditedsRenderer from "./EditedsRenderer";
 import { useGlobal } from "../GlobalContext";
 import FileRender from "./FileRenderer";
 import { useRef } from "react";
+import { iFile } from "../types";
 
 export default function ImageList() {
   const {
     dir: { files },
   } = useGlobal();
-  const filesStore = useRef(files);
+  const filesStore = useRef<iFile[]>([]);
   if (files !== filesStore.current) {
     const editeds = files
       .filter((file) => file.details.editeds?.length)
