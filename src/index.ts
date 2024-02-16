@@ -107,7 +107,7 @@ app.delete("/api/file", (req, res) => {
   const path = dir + "/" + fullname;
   // remove file
   if (!fs.existsSync(path)) return res.sendStatus(404);
-  fs.renameSync(path, "C:/Users/Ouspheaktra/Desktop/trash/" + fullname);
+  fs.rmSync(path);
   // remove thumbnail
   const thumbnailDir = dir + "/.explorer/thumbnails/";
   fs.readdirSync(thumbnailDir).forEach(

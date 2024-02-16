@@ -9,7 +9,7 @@ import {
   setTitle,
 } from "./utils";
 import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
-import { getDir, postFile } from "./utils/api";
+import { deleteFile, getDir, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
 import PrevNext from "./PrevNext";
@@ -85,6 +85,19 @@ function App() {
               setState({ file: newFiles[0], dir: newDir, viewerMode });
               // scrollFileIntoView(newFiles[0]._id);
               return newFiles;
+            }
+          ),
+        deleteFiles: (files) =>
+          promisesAllOneByOne(files.map((file) => deleteFile(file))).then(
+            () => {
+              setState({
+                file,
+                dir: {
+                  ...dir,
+                  files: dir.files.filter((f) => !files.includes(f)),
+                },
+                viewerMode,
+              });
             }
           ),
         viewerMode,

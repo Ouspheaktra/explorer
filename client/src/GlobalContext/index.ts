@@ -7,6 +7,7 @@ export type SetDir = (dir: string, pushHistory?: boolean) => Promise<iDir>;
 export type UpdateFiles = (
   postFiles: Parameters<typeof postFile>[]
 ) => Promise<iFile[]>;
+export type DeleteFiles = (files: iFile[]) => Promise<any>;
 export type Next = (plus: number) => void;
 export type SetNext = (next: Next) => void;
 
@@ -16,6 +17,7 @@ export type iGlobalContext = iData & {
   setDir: SetDir;
   setFile: SetFile;
   updateFiles: UpdateFiles;
+  deleteFiles: DeleteFiles;
   next: Next;
   setNext: SetNext;
 };

@@ -2,13 +2,13 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import panzoom, { PanZoom } from "panzoom";
 import { useGlobal } from "../GlobalContext";
 import { fileUrl } from "../utils";
-import { deleteFile } from "../utils/api";
 
 export default function ImageViewer() {
   const {
     file,
     dir: { files },
     updateFiles,
+    deleteFiles,
   } = useGlobal();
   const { _id, path, dir, details } = file;
   const [editedId, setEditedId] = useState(0);
@@ -84,8 +84,7 @@ export default function ImageViewer() {
           }}
           onClick={async () => {
             const edit = files.find((f) => f.fullname === editeds[editedId])!;
-            await deleteFile(edit);
-            edit.deleted = true;
+            await deleteFiles([edit]);
             const newEditeds = [...editeds];
             newEditeds.splice(editedId, 1);
             await updateFiles([
