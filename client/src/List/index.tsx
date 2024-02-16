@@ -1,5 +1,5 @@
-import { ComponentProps, FC, HTMLProps, ReactNode, useState } from "react";
-import { FileComponentProps, Order, Sort } from "./types";
+import { useState } from "react";
+import { ListProps, Order } from "./types";
 import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
 import Details from "../Details";
@@ -8,15 +8,6 @@ import { toggleValue } from "../utils";
 import { scrollFileIntoView } from "./utils";
 import TrashButton from "../Details/TrashButton";
 import "./style.scss";
-
-type ListProps = HTMLProps<HTMLUListElement> & {
-  FileComponent?: FC<FileComponentProps>;
-  listTop?: ReactNode;
-  topButtons?: ReactNode;
-  bottomButtons?: ReactNode;
-  sorts?: Sort[];
-  filteredFiles: iFile[];
-};
 
 export default function List<iDetailsType extends object>({
   listTop,
@@ -27,12 +18,7 @@ export default function List<iDetailsType extends object>({
   filteredFiles,
   details,
   ...ulProps
-}: ListProps & {
-  details?: Pick<
-    ComponentProps<typeof Details<iDetailsType>>,
-    "detailsTypes" | "formName"
-  >;
-}) {
+}: ListProps<iDetailsType>) {
   const [open, setOpen] = useState(true);
   // null means fullMode
   // [] means selected file
