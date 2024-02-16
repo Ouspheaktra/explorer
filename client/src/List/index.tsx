@@ -50,10 +50,13 @@ export default function List<iDetailsType extends object>({
     console.log("RE SORT");
     const sorter = allSorts.find((sort) => sort.name === sortName)!;
     const sortedGroups = sorter.sort(filteredFiles);
+    const unknown = sortedGroups.pop()!;
     if (sortOrder === "desc") {
       sortedGroups.reverse();
       sortedGroups.forEach((g) => g.files.reverse());
+      unknown.files.reverse();
     }
+    sortedGroups.push(unknown);
     Object.assign(toSortStore.current, {
       sortName,
       sortOrder,
