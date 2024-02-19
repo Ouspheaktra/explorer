@@ -4,16 +4,14 @@ import { updateFileName } from "./utils";
 
 export function FilenameDetails<iDetails extends object>({
   selecteds,
-  detailsType,
 }: RendererProps<iDetails>) {
   const { updateFiles } = useGlobal();
-  const name = detailsType.name as string;
   const file = selecteds.length === 1 ? selecteds[0] : null;
   return (
     <input
       className={`filename-input`}
       defaultValue={file?.name}
-      placeholder={name}
+      placeholder={"Filename"}
       onKeyUp={(e) => {
         if (e.key === "Enter") {
           updateFileName(selecteds, updateFiles, e.currentTarget.value.trim());
