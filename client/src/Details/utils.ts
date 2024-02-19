@@ -3,13 +3,13 @@ import { DetailsProps } from "./types";
 import { iFile } from "../types";
 
 export const update = (
-  files: iFile[],
+  seleteds: iFile[],
   updateFiles: UpdateFiles,
   newMoreDetails: object,
   formName?: DetailsProps<any>["formName"] | false
 ) =>
   updateFiles(
-    files.map((file) => {
+    seleteds.map((file) => {
       const newDetails = { ...file.details, ...newMoreDetails };
       return [file, newDetails, formName ? formName(newDetails) : null];
     })

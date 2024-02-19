@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import StringArrayRenderer from "../Details/StringArrayRenderer";
+import StringRenderer from "../Details/StringRenderer";
 import { useGlobal } from "../GlobalContext";
 import List from "../List";
 import { createSort } from "../List/utils";
@@ -30,19 +31,17 @@ export default function VideoList() {
       ]}
       details={{
         formName: ({ avatars, title }) =>
-          avatars && avatars.length
-            ? [title, ...avatars].filter(Boolean).join(" - ")
-            : "",
+          [...(avatars || []), title].filter(Boolean).join(" - "),
         detailsTypes: [
           {
             name: "avatars",
             Renderer: StringArrayRenderer,
             toFormName: true,
           },
-          // {
-          //   name: "title",
-          //   Renderer: StringArrayRenderer,
-          // },
+          {
+            name: "title",
+            Renderer: StringRenderer,
+          },
         ],
       }}
     />

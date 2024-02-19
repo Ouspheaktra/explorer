@@ -6,10 +6,7 @@ export function FilenameDetails<iDetails extends object>({
   selecteds,
   detailsType,
 }: RendererProps<iDetails>) {
-  const {
-    dir: { files },
-    updateFiles,
-  } = useGlobal();
+  const { updateFiles } = useGlobal();
   const name = detailsType.name as string;
   const file = selecteds.length === 1 ? selecteds[0] : null;
   return (
@@ -19,7 +16,7 @@ export function FilenameDetails<iDetails extends object>({
       placeholder={name}
       onKeyUp={(e) => {
         if (e.key === "Enter") {
-          updateFileName(files, updateFiles, e.currentTarget.value.trim());
+          updateFileName(selecteds, updateFiles, e.currentTarget.value.trim());
           e.currentTarget.value = "";
         }
       }}

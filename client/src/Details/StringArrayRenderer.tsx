@@ -8,7 +8,7 @@ export default function StringArrayRenderer<iDetails extends object>({
   formName,
 }: RendererProps<iDetails>) {
   const {
-    dir: { files },
+    dir: { files: allFiles },
     updateFiles,
   } = useGlobal();
   let name = detailsType.name as string;
@@ -18,7 +18,7 @@ export default function StringArrayRenderer<iDetails extends object>({
     selecteds.length === 1 ? selecteds[0].details[pluralName] || [] : [];
   const myUpdate = (name: string, value: string[]) =>
     update(
-      files,
+      selecteds,
       updateFiles,
       { [name]: value },
       detailsType.toFormName && formName
@@ -61,7 +61,7 @@ export default function StringArrayRenderer<iDetails extends object>({
       <datalist id={`details-${pluralName}`}>
         {[
           ...new Set(
-            files.map((file) => file.details[pluralName] || []).flat()
+            allFiles.map((file) => file.details[pluralName] || []).flat()
           ),
         ].map((one) => (
           <option key={one}>{one}</option>
