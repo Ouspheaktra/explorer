@@ -41,6 +41,7 @@ export default function VideoList() {
           {
             name: "title",
             Renderer: StringRenderer,
+            toFormName: true,
           },
         ],
       }}
