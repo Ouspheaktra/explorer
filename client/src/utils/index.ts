@@ -79,5 +79,13 @@ export const pushHistory = (state: AppState, isPush: boolean = true) => {
   setTitle(state);
 };
 
-export const thumbnailUrl = ({ dir, fullname }: iFile, id: number) => 
-  `/thumbnail?${new URLSearchParams({ dir, filename: fullname, id: "" + id }).toString()}`
+export const thumbnailUrl = ({ dir, fullname }: iFile, id: number) =>
+  `/file?${new URLSearchParams({
+    path:
+      dir +
+      "/.explorer/thumbnails/" +
+      fullname +
+      "_" +
+      id.toString().padStart(2, "0") +
+      ".jpg",
+  }).toString()}`;

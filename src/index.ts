@@ -140,19 +140,6 @@ app.post("/api/thumbnails", (req, res) => {
   return res.sendStatus(200);
 });
 
-app.get("/thumbnail", (req, res) => {
-  const { dir, filename, id } = req.query as {
-    dir: string;
-    filename: string;
-    id: string;
-  };
-  const thumbnailsDir = dir + "/.explorer/thumbnails/";
-  fs.mkdirSync(thumbnailsDir, { recursive: true });
-  const path = thumbnailsDir + filename + "_" + id.padStart(2, "0") + ".jpg";
-  if (!fs.existsSync(path)) return res.sendStatus(404);
-  return res.sendFile(path);
-});
-
 app.get("/file", (req, res) => {
   const { path = "" } = req.query as { path: string };
   //
