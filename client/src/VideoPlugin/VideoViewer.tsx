@@ -10,6 +10,7 @@ export default function VideoViewer() {
     next,
   } = useGlobal();
   const panzoomHandle = useRef<PanZoom>();
+  const isPlayingRef = useRef(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const previewRef = useRef<HTMLVideoElement | null>(null);
   const timeBarRef = useRef<HTMLInputElement | null>(null);
@@ -17,6 +18,12 @@ export default function VideoViewer() {
   const playRef = useRef<HTMLInputElement | null>(null);
   const currentTimeRef = useRef<HTMLSpanElement | null>(null);
   const isRightHold = useRef(false);
+  const toggleVideoPlayState = (play?: boolean) => {
+    const video = videoRef.current!;
+    if (play === undefined) video.paused ? video.play() : video.pause();
+    else play ? video.play() : video.pause();
+    isPlayingRef.current = !video.paused;
+  };
   useEffect(() => {
     panzoomHandle.current?.dispose();
     const video = videoRef.current!;
@@ -43,12 +50,8 @@ export default function VideoViewer() {
     // which if pan, we don't want to toggle play state
     // so we store play state on panstart and use it on panend
     let isVideoPaused = false;
-    panzoom.on("panstart", () => {
-      isVideoPaused = video.paused;
-    });
-    panzoom.on("panend", () => {
-      isVideoPaused ? video.pause() : video.play();
-    });
+    panzoom.on("panstart", () => (isVideoPaused = video.paused));
+    panzoom.on("panend", () => toggleVideoPlayState(!isVideoPaused));
   }, [_id]);
   const src = fileUrl(path);
   return (
@@ -78,10 +81,8 @@ export default function VideoViewer() {
         }}
         onMouseUp={({ button }) => {
           isRightHold.current = false;
-          if (button === 0) {
-            const video = videoRef.current!;
-            video.paused ? video.play() : video.pause();
-          } else if (button === 1) next(1);
+          if (button === 0) toggleVideoPlayState();
+          else if (button === 1) next(1);
         }}
         onContextMenu={(e) => {
           e.preventDefault();
@@ -105,11 +106,12 @@ export default function VideoViewer() {
               video.currentTime
             )} / ${secondsToString(video.duration)}`;
         }}
-        onDurationChange={({ currentTarget: video }) =>
+        onDurationChange={({ currentTarget: video }) => {
           timeBarRef.current
             ? (timeBarRef.current.max = video.duration.toString())
-            : null
-        }
+            : null;
+          toggleVideoPlayState(isPlayingRef.current);
+        }}
         onLoadedData={({ currentTarget: video }) =>
           volumeBarRef.current
             ? (volumeBarRef.current.value = video.volume.toString())
