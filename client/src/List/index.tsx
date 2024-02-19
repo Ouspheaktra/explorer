@@ -196,7 +196,7 @@ export default function List<iDetailsType extends object>({
             },
           ]}
           formName={details.formName}
-          files={selecteds || [file]}
+          selecteds={selecteds || [file]}
         />
       )}
     </>

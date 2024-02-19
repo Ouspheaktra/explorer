@@ -1,24 +1,19 @@
 import { FC } from "react";
 import { iFile } from "../types";
-import { UpdateFiles } from "../GlobalContext";
 
-export interface DetailProps<iDetails extends object> {
-  allFiles: iFile[];
+export interface DetailsProps<iDetails extends object> {
   selecteds: iFile[];
-  detailsType: DetailsType<iDetails>;
-  update: UpdateFn<iDetails>;
-  updateFiles: UpdateFiles;
+  detailsTypes: DetailsType<iDetails>[];
+  formName: (details: iDetails) => string;
 }
 
+export interface RendererProps<iDetails extends object>
+  extends Pick<DetailsProps<iDetails>, "formName" | "selecteds"> {
+  detailsType: DetailsType<iDetails>;
+}
 
 export type DetailsType<iDetails extends object> = {
   name: keyof iDetails;
-  Renderer: FC<DetailProps<iDetails>>;
+  Renderer: FC<RendererProps<iDetails>>;
   toFormName?: boolean;
 };
-
-export type UpdateFn<iDetails extends object> = (
-  name: string,
-  value: any,
-  detailsType: DetailsType<iDetails>
-) => void;

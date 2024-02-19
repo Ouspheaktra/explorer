@@ -1,7 +1,7 @@
 import { useGlobal } from "../GlobalContext";
-import { DetailProps } from "./types";
+import { RendererProps } from "./types";
 
-export default function TrashButton({ selecteds }: DetailProps<any>) {
+export default function TrashButton({ selecteds }: RendererProps<any>) {
   const { deleteFiles } = useGlobal();
   return (
     <button

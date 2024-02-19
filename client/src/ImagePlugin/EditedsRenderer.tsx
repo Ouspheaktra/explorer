@@ -1,14 +1,15 @@
-import { DetailProps } from "../Details/types";
+import { RendererProps } from "../Details/types";
+import { useGlobal } from "../GlobalContext";
 
 export default function EditedsRenderer<iDetails extends object>({
   selecteds,
-  updateFiles,
-}: DetailProps<iDetails>) {
+}: RendererProps<iDetails>) {
+  const { updateFiles } = useGlobal();
   if (selecteds.length > 1) {
     const [file, ...editeds] = selecteds;
     return (
       <button
-        style={{float: "right"}}
+        style={{ float: "right" }}
         onClick={() => {
           updateFiles([
             [

@@ -1,11 +1,10 @@
 import { useGlobal } from "../GlobalContext";
 import { RendererProps } from "./types";
-import { update } from "./utils";
+import { updateFileName } from "./utils";
 
-export function StringDetail<iDetails extends object>({
+export function FilenameDetails<iDetails extends object>({
   selecteds,
   detailsType,
-  formName,
 }: RendererProps<iDetails>) {
   const {
     dir: { files },
@@ -15,17 +14,12 @@ export function StringDetail<iDetails extends object>({
   const file = selecteds.length === 1 ? selecteds[0] : null;
   return (
     <input
-      className={`${name}-input`}
-      defaultValue={file?.details[name] || ""}
+      className={`filename-input`}
+      defaultValue={file?.name}
       placeholder={name}
       onKeyUp={(e) => {
         if (e.key === "Enter") {
-          update(
-            files,
-            updateFiles,
-            { [name]: e.currentTarget.value.trim() },
-            detailsType.toFormName && formName
-          );
+          updateFileName(files, updateFiles, e.currentTarget.value.trim());
           e.currentTarget.value = "";
         }
       }}
