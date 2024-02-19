@@ -9,11 +9,10 @@ export default function StringDetail<iDetails extends object>({
 }: RendererProps<iDetails>) {
   const { updateFiles } = useGlobal();
   const name = detailsType.name as string;
-  const file = selecteds.length === 1 ? selecteds[0] : null;
   return (
     <input
       className={`${name}-input`}
-      defaultValue={file?.details[name] || ""}
+      defaultValue={selecteds[0].details[name] || ""}
       placeholder={name}
       onKeyUp={(e) => {
         if (e.key === "Enter") {

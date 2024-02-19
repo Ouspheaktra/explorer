@@ -14,8 +14,7 @@ export default function StringArrayRenderer<iDetails extends object>({
   let name = detailsType.name as string;
   const pluralName = name;
   if (name.endsWith("s")) name = name.slice(0, -1);
-  const data: string[] =
-    selecteds.length === 1 ? selecteds[0].details[pluralName] || [] : [];
+  const data: string[] = selecteds[0].details[pluralName] || [];
   const myUpdate = (name: string, value: string[]) =>
     update(
       selecteds,
