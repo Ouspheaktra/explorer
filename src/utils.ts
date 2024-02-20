@@ -101,3 +101,19 @@ export const dataURLtoFile = (dataUrl: string, filePath: string) => {
   fs.writeFileSync(filePath, dataBuffer);
   return filePath;
 };
+
+export const removeThumbnails = ({ dir, name, ext }: iFile) => {
+  const thumbnailDir = dir + "/.explorer/thumbnails/",
+    fullname = name + ext;
+  fs.readdirSync(thumbnailDir).forEach(
+    (filename) =>
+      filename.startsWith(fullname) && fs.rmSync(thumbnailDir + filename)
+  );
+};
+
+export const replaceAll = (string: string, find: string, replace: string) =>
+  string.replace(new RegExp(escapeRegExp(find), "g"), replace);
+
+function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}

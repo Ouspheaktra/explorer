@@ -7,6 +7,7 @@ import { createSort } from "../List/utils";
 import FileRender from "./FileRenderer";
 import { iVideoDetails } from "./types";
 import { iFile } from "../types";
+import RotateRenderer from "./RotateRenderer";
 
 export default function VideoList() {
   const {
@@ -60,6 +61,10 @@ export default function VideoList() {
           {
             name: "tags",
             Renderer: StringArrayRenderer,
+          },
+          {
+            name: "rotate" as any,
+            Renderer: RotateRenderer,
           },
         ],
       }}

@@ -1,7 +1,7 @@
 import express from "express";
 import p from "path";
 import fs from "fs";
-import { execSync } from "child_process";
+import { execSync, exec } from "child_process";
 import bodyParser from "body-parser";
 import {
   iFile,
@@ -11,6 +11,8 @@ import {
   readFilesData,
   writeFilesData,
   dataURLtoFile,
+  removeThumbnails,
+  replaceAll,
 } from "./utils";
 
 const app = express();
@@ -98,22 +100,17 @@ app.post("/api/file", (req, res) => {
 });
 
 app.delete("/api/file", (req, res) => {
-  const {
-    file: { dir, name, ext },
-  } = req.body as {
+  const { file } = req.body as {
     file: iFile;
   };
+  const { dir, name, ext } = file;
   const fullname = name + ext;
   const path = dir + "/" + fullname;
   // remove file
   if (!fs.existsSync(path)) return res.sendStatus(404);
   fs.rmSync(path);
   // remove thumbnail
-  const thumbnailDir = dir + "/.explorer/thumbnails/";
-  fs.readdirSync(thumbnailDir).forEach(
-    (filename) =>
-      filename.startsWith(fullname) && fs.rmSync(thumbnailDir + filename)
-  );
+  removeThumbnails(file);
   // remove data
   const data = readFilesData(dir);
   delete data[fullname];
@@ -138,6 +135,42 @@ app.post("/api/thumbnails", (req, res) => {
       thumbnailsDir + name + ext + "_" + ("" + id).padStart(2, "0") + ".jpg"
     );
   return res.sendStatus(200);
+});
+
+app.post("/api/command", (req, res) => {
+  const { file, command: originalCommand } = req.body as {
+    file: iFile;
+    command: string;
+  };
+  const { dir, name, ext } = file;
+  // copy file into .explorer
+  const explorerDir = dir + "/.explorer/",
+    outputName = name + ext,
+    inputName = name + "_temp" + ext;
+  fs.renameSync(dir + "/" + outputName, explorerDir + inputName);
+  // prepare command
+  let command = originalCommand;
+  for (let [placeholder, value] of [
+    ["input", explorerDir + inputName],
+    ["output", explorerDir + outputName],
+  ])
+    command = replaceAll(command, `{${placeholder}}`, value);
+  //
+  console.log("Start Command:\n\t", originalCommand, "\n\t", outputName);
+  exec(command, function (err) {
+    if (err) console.error(err);
+    else {
+      console.log("Command succeeded:\n\t", originalCommand, "\n\t", outputName);
+      // remove thumbnails
+      removeThumbnails(file);
+      // move file back
+      fs.renameSync(explorerDir + outputName, dir + "/" + outputName);
+      // remove input file
+      fs.rmSync(explorerDir + inputName);
+    }
+  });
+  //
+  res.sendStatus(200);
 });
 
 app.get("/file", (req, res) => {
