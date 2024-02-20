@@ -28,6 +28,20 @@ export default function VideoList() {
             (a, b) => a.stat.size - b.stat.size
           ),
         },
+        {
+          name: "Title",
+          sort: createSort(
+            (file) => (file.details.title ? file.details.title[0] : false),
+            (a, b) => a.details.title!.localeCompare(b.details.title!)
+          ),
+        },
+        {
+          name: "Tag",
+          sort: createSort(
+            (file) => (file.details.tags ? file.details.tags[0] : false),
+            (a, b) => a.stat.size - b.stat.size
+          ),
+        },
       ]}
       details={{
         formName: ({ avatars, title }) =>
@@ -42,6 +56,10 @@ export default function VideoList() {
             name: "title",
             Renderer: StringRenderer,
             toFormName: true,
+          },
+          {
+            name: "tags",
+            Renderer: StringArrayRenderer,
           },
         ],
       }}
