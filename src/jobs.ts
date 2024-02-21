@@ -3,7 +3,7 @@ type Job = (done: () => void) => void;
 class Jobs {
   jobs: Job[] = [];
   private run = (id: number) => {
-    console.log(`Run job id=${id}`)
+    console.log(`Run job ${id}/${this.jobs.length}`)
     this.jobs[id - 1](() => {
       const jobsCount = this.jobs.length;
       if (id === jobsCount) {
@@ -18,7 +18,7 @@ class Jobs {
   add = (job: Job) => {
     this.jobs.push(job);
     const id = this.jobs.length;
-    console.log(`Job added id=${id}`);
+    console.log(`Job added ${id}`);
     if (id === 1)
       this.run(id);
     return this;

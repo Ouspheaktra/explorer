@@ -17,7 +17,7 @@ import {
 } from "./utils";
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || (__filename.endsWith(".js") ? 5555 : 5000);
 
 // app.set("views", path.join(__dirname, "views"));
 // app.set("view engine", "ejs");
