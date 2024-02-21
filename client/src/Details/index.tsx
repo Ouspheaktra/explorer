@@ -1,4 +1,5 @@
 import { DetailsProps } from "./types";
+import "./style.scss";
 
 export default function Details<iDetails extends object>({
   detailsTypes,
@@ -7,15 +8,13 @@ export default function Details<iDetails extends object>({
   return (
     <div id="details">
       {detailsTypes.map((detailsType) => {
-        const { Renderer } = detailsType;
-        let name = detailsType.name as string;
+        const { name, Renderer } = detailsType;
         return (
-          <div key={name} className={`${name}-wrapper`}>
-            <Renderer
-              {...rendererProps}
-              detailsType={detailsType}
-            />
-          </div>
+          <Renderer
+            key={name as string}
+            {...rendererProps}
+            detailsType={detailsType}
+          />
         );
       })}
     </div>

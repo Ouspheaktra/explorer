@@ -23,10 +23,10 @@ export default function StringArrayRenderer<iDetails extends object>({
       detailsType.toFormName && formName
     );
   return (
-    <>
+    <div className={`${pluralName}-wrapper string-array-wrapper`}>
       {/* LIST */}
       {data.map((one) => (
-        <span key={one} className={`${name}`}>
+        <span key={one} className={`${name} string-array`}>
           <button
             className="x"
             onClick={() =>
@@ -43,7 +43,7 @@ export default function StringArrayRenderer<iDetails extends object>({
       ))}
       {/* INPUT */}
       <input
-        className={`${name}-input`}
+        className={`${name}-input string-array-input`}
         placeholder={name}
         list={`details-${pluralName}`}
         onKeyUp={(e) => {
@@ -66,6 +66,6 @@ export default function StringArrayRenderer<iDetails extends object>({
           <option key={one}>{one}</option>
         ))}
       </datalist>
-    </>
+    </div>
   );
 }

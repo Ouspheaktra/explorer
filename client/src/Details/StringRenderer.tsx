@@ -11,7 +11,7 @@ export default function StringDetail<iDetails extends object>({
   const name = detailsType.name as string;
   return (
     <input
-      className={`${name}-input`}
+      className={`${name}-input string-input`}
       defaultValue={selecteds[0].details[name] || ""}
       placeholder={name}
       onKeyUp={(e) => {
