@@ -10,12 +10,13 @@
   top: 0;
   background: #ffffff55;
   color: black;
-  opacity: 1;
-  > span {
-    text-align: right;
-  }
+  opacity: 0;
   &:hover {
     opacity: 1;
+  }
+  > span {
+    text-align: right;
+    background: white;
   }
   input {
     font-size: inherit;
