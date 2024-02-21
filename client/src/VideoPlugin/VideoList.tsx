@@ -8,6 +8,7 @@ import FileRender from "./FileRenderer";
 import { iVideoDetails } from "./types";
 import { iFile } from "../types";
 import RotateRenderer from "./RotateRenderer";
+import CropToPortraitRenderer from "./CropToPortrat";
 
 export default function VideoList() {
   const {
@@ -66,6 +67,10 @@ export default function VideoList() {
             name: "rotate" as any,
             Renderer: RotateRenderer,
           },
+          {
+            name: "crop to portrait" as any,
+            Renderer: CropToPortraitRenderer,
+          }
         ],
       }}
     />
