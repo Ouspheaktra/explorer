@@ -158,13 +158,13 @@ app.post("/api/command", (req, res) => {
     command = replaceAll(command, `{${placeholder}}`, value);
   //
   jobs.add((next) => {
-    console.log("Start Command on file", outputName);
+    console.log("Command on file", outputName);
     exec(command, function (err) {
       if (err) {
         console.error(err);
       } else {
         console.log(
-          "Command succeeded:\n  ",
+          "Command finished:\n  ",
           outputName,
           "\n  ",
           originalCommand
