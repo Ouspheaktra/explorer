@@ -2,6 +2,15 @@ body.fullscreen .vp-control {
   opacity: 0;
 }
 
+.video-player[data-is-paused="paused"] {
+  > .vp-play {
+    display: flex;
+  }
+  .vp-play-btn::before {
+    content: "▶️" !important;
+  }
+}
+
 .video-player {
   width: 100%;
   height: 100%;
@@ -19,7 +28,7 @@ body.fullscreen .vp-control {
     left: 20px;
     transform: translateY(-50%);
     border-radius: 50%;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     background: dimgray;
@@ -94,6 +103,13 @@ body.fullscreen .vp-control {
         display: flex;
         align-items: center;
         gap: 10px;
+        > .vp-play-btn {
+          background-color: gray;
+          border: none;
+          &::before {
+            content: "⏸️";
+          }
+        }
       }
       > .vp-volume {
         width: 100%;

@@ -11,11 +11,11 @@ export default function VideoViewer() {
   } = useGlobal();
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
+  const mainRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const previewRef = useRef<HTMLVideoElement | null>(null);
   const timeBarRef = useRef<HTMLInputElement | null>(null);
   const volumeBarRef = useRef<HTMLInputElement | null>(null);
-  const playRef = useRef<HTMLInputElement | null>(null);
   const currentTimeRef = useRef<HTMLSpanElement | null>(null);
   const isRightHold = useRef(false);
   const toggleVideoPlayState = (play?: boolean) => {
@@ -55,7 +55,7 @@ export default function VideoViewer() {
   }, [_id]);
   const src = fileUrl(path);
   return (
-    <div className="video-player">
+    <div className="video-player" ref={mainRef}>
       <video
         ref={videoRef}
         src={src}
@@ -90,10 +90,10 @@ export default function VideoViewer() {
           return false;
         }}
         onPause={() => {
-          playRef.current!.style.display = "";
+          mainRef.current!.dataset.isPaused = "paused";
         }}
         onPlay={() => {
-          playRef.current!.style.display = "none";
+          mainRef.current!.dataset.isPaused = "";
         }}
         onEnded={() => {
           next(1);
@@ -118,8 +118,8 @@ export default function VideoViewer() {
             : null
         }
       />
-      <div ref={playRef} className="vp-play">
-        ▶
+      <div className="vp-play">
+        ▶️
       </div>
       <form
         className="vp-color"
@@ -205,6 +205,7 @@ export default function VideoViewer() {
         </div>
         <div className="vp-buttons-container">
           <div className="vp-buttons-side-container">
+            <button onClick={() => toggleVideoPlayState()} className="vp-play-btn"></button>
             <span ref={currentTimeRef} className="vp-time"></span>
           </div>
           <div className="vp-buttons-side-container">
