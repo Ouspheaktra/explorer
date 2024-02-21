@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useGlobal } from "../GlobalContext";
 import { RendererProps } from "./types";
 import { update } from "./utils";
@@ -8,11 +9,15 @@ export default function StringDetail<iDetails extends object>({
   formName,
 }: RendererProps<iDetails>) {
   const { updateFiles } = useGlobal();
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const name = detailsType.name as string;
+  useEffect(() => {
+    inputRef.current!.value = selecteds[0].details[name] || "";
+  }, [selecteds]);
   return (
     <input
+      ref={inputRef}
       className={`${name}-input string-input`}
-      defaultValue={selecteds[0].details[name] || ""}
       placeholder={name}
       onKeyUp={(e) => {
         if (e.key === "Enter") {
