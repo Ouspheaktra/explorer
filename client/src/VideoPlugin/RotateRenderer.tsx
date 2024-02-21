@@ -1,22 +1,18 @@
 import { RendererProps } from "../Details/types";
 import { useGlobal } from "../GlobalContext";
 
-const _90 = 1,
-  _270 = 2;
-
-// rotate anti-clockwise
-const rotateCommand = (transpose: number) =>
-  `ffmpeg -i "{input}" -vf "transpose=${transpose}" -c:a copy "{output}"`;
+const rotateCommand = (degree: number) =>
+  `ffmpeg -display_rotation ${degree} -i "{input}" -codec copy "{output}"`;
 
 export default function RotateRenderer({ selecteds }: RendererProps<any>) {
   const { commandFiles } = useGlobal();
   return (
     <div>
-      <button onClick={() => commandFiles(selecteds, rotateCommand(_90))}>
-        90
+      <button onClick={() => commandFiles(selecteds, rotateCommand(-90))}>
+        -90
       </button>
-      <button onClick={() => commandFiles(selecteds, rotateCommand(_270))}>
-        270
+      <button onClick={() => commandFiles(selecteds, rotateCommand(90))}>
+        90
       </button>
     </div>
   );

@@ -156,11 +156,11 @@ app.post("/api/command", (req, res) => {
   ])
     command = replaceAll(command, `{${placeholder}}`, value);
   //
-  console.log("Start Command:\n\t", originalCommand, "\n\t", outputName);
+  console.log("Start Command:\n\t", outputName, "\n\t", originalCommand);
   exec(command, function (err) {
     if (err) console.error(err);
     else {
-      console.log("Command succeeded:\n\t", originalCommand, "\n\t", outputName);
+      console.log("Command succeeded:\n\t", outputName, "\n\t", originalCommand);
       // remove thumbnails
       removeThumbnails(file);
       // move file back
