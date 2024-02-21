@@ -45,15 +45,20 @@ function FileFullMode({ file }: { file: iFile }) {
           img.src = thumbnailUrl(file, thumbnailId.current);
         }, 1000) as unknown as number;
       }}
-      onMouseLeave={() => clearInterval(intervalRef.current)}
+      onMouseLeave={(e) => {
+        clearInterval(intervalRef.current);
+        const img = e.currentTarget.firstElementChild! as HTMLImageElement;
+        if (img.tagName !== "IMG" && img.complete) return;
+        thumbnailId.current = 0;
+        img.src = thumbnailUrl(file, thumbnailId.current);
+      }}
     >
       {toLoad && (
         <img
           src={thumbnailUrl(file, thumbnailId.current)}
           onLoad={(e) => {
-            const {naturalWidth, naturalHeight} = e.currentTarget;
-            if (naturalWidth < naturalHeight)
-              setIsLandscape(false);
+            const { naturalWidth, naturalHeight } = e.currentTarget;
+            if (naturalWidth < naturalHeight) setIsLandscape(false);
           }}
           onError={async (e) => {
             if (errorNumberRef.current++ > 0) return;
@@ -90,17 +95,19 @@ function FileFullMode({ file }: { file: iFile }) {
           }}
         />
       )}
-      <span>{file.fullname} {convertFileSize(file.stat.size)}</span>
+      <span>
+        {file.fullname} {convertFileSize(file.stat.size)}
+      </span>
     </div>
   );
 }
 
 function convertFileSize(bytes: number) {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
   const decimals = 2;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const size = parseFloat((bytes / Math.pow(k, i)).toFixed(decimals));
