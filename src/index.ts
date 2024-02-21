@@ -3,6 +3,7 @@ import p from "path";
 import fs from "fs";
 import { execSync, exec } from "child_process";
 import bodyParser from "body-parser";
+import jobs from "./jobs";
 import {
   iFile,
   getFileDetail,
@@ -156,18 +157,28 @@ app.post("/api/command", (req, res) => {
   ])
     command = replaceAll(command, `{${placeholder}}`, value);
   //
-  console.log("Start Command:\n\t", outputName, "\n\t", originalCommand);
-  exec(command, function (err) {
-    if (err) console.error(err);
-    else {
-      console.log("Command succeeded:\n\t", outputName, "\n\t", originalCommand);
-      // remove thumbnails
-      removeThumbnails(file);
-      // move file back
-      fs.renameSync(explorerDir + outputName, dir + "/" + outputName);
-      // remove input file
-      fs.rmSync(explorerDir + inputName);
-    }
+  jobs.add((next) => {
+    console.log("Start Command on file", outputName);
+    exec(command, function (err) {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(
+          "Command succeeded:\n  ",
+          outputName,
+          "\n  ",
+          originalCommand
+        );
+        // remove thumbnails
+        removeThumbnails(file);
+        // move file back
+        fs.renameSync(explorerDir + outputName, dir + "/" + outputName);
+        // remove input file
+        fs.rmSync(explorerDir + inputName);
+      }
+      //
+      next();
+    });
   });
   //
   res.sendStatus(200);
