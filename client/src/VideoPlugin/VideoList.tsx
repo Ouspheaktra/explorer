@@ -55,13 +55,13 @@ export default function VideoList() {
             toFormName: true,
           },
           {
+            name: "tags",
+            Renderer: StringArrayRenderer,
+          },
+          {
             name: "title",
             Renderer: StringRenderer,
             toFormName: true,
-          },
-          {
-            name: "tags",
-            Renderer: StringArrayRenderer,
           },
           {
             name: "rotate" as any,

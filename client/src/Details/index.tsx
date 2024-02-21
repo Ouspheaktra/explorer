@@ -1,5 +1,6 @@
 import { DetailsProps } from "./types";
 import "./style.scss";
+import { Fragment } from "react";
 
 export default function Details<iDetails extends object>({
   detailsTypes,
@@ -10,11 +11,15 @@ export default function Details<iDetails extends object>({
       {detailsTypes.map((detailsType) => {
         const { name, Renderer } = detailsType;
         return (
-          <Renderer
+          <Fragment
             key={name as string}
-            {...rendererProps}
-            detailsType={detailsType}
-          />
+          >
+            <span>{name as string}</span>
+            <Renderer
+              {...rendererProps}
+              detailsType={detailsType}
+            />
+          </Fragment>
         );
       })}
     </div>
