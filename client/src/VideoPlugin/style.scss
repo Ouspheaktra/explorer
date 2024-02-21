@@ -132,12 +132,6 @@ body.fullscreen .vp-control {
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      > li {
-        // order: 1;
-        &:has(> .video-thumbnail.portrait) {
-          // order: 2;
-        }
-      }
     }
   }
 }
@@ -167,7 +161,9 @@ body.fullscreen .vp-control {
     position: absolute;
     bottom: 0;
     left: 0;
+    width: 100%;
     background: black;
     display: none;
+    white-space: normal;
   }
 }
