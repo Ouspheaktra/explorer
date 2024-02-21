@@ -90,9 +90,6 @@ export default function List<iDetailsType extends object>({
               <button
                 className="list-fuller"
                 onClick={() => {
-                  document.getElementById("viewer")!.style.display = fullMode
-                    ? ""
-                    : "none";
                   if (fullMode) setFile(selecteds[0]);
                   setSelecteds(fullMode ? null : [file]);
                   scrollFileIntoView(file._id);
