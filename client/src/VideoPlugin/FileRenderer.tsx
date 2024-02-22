@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FileComponentProps } from "../List/types";
 import { iFile } from "../types";
-import { fileUrl, thumbnailUrl } from "../utils";
+import { fileUrl, rotateImage, thumbnailUrl } from "../utils";
 import { postThumbnails } from "../utils/api";
 
 export default function FileRender({ fullMode, file }: FileComponentProps) {
@@ -82,9 +82,14 @@ function FileFullMode({ file }: { file: iFile }) {
               for (let i = 1; i <= numThumbnails; i++)
                 await new Promise<void>((resolve) => {
                   video.currentTime = ((i * interval) / 100) * video.duration;
-                  video.onseeked = function () {
+                  video.onseeked = async function () {
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    datas.push(canvas.toDataURL("image/jpeg"));
+                    const image = canvas.toDataURL("image/jpeg");
+                    datas.push(
+                      file.details.rotate
+                        ? await rotateImage(image, file.details.rotate)
+                        : image
+                    );
                     resolve();
                   };
                 });

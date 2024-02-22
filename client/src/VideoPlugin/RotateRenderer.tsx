@@ -1,19 +1,18 @@
 import { RendererProps } from "../Details/types";
 import { useGlobal } from "../GlobalContext";
 
-const rotateCommand = (degree: number) =>
-  `ffmpeg -display_rotation ${degree} -i "{input}" -codec copy "{output}"`;
-
 export default function RotateRenderer({ selecteds }: RendererProps<any>) {
-  const { commandFiles } = useGlobal();
+  const { commandFiles, updateFiles } = useGlobal();
+  const rotate = (degree: number) => async () => {
+    await updateFiles(
+      selecteds.map((file) => [file, { ...file.details, rotate: degree }, null])
+    );
+    await commandFiles(selecteds, 'cp "{input}" "{output}"');
+  };
   return (
     <div>
-      <button onClick={() => commandFiles(selecteds, rotateCommand(-90))}>
-        -90
-      </button>
-      <button onClick={() => commandFiles(selecteds, rotateCommand(90))}>
-        90
-      </button>
+      <button onClick={rotate(90)}>90</button>
+      <button onClick={rotate(270)}>-90</button>
     </div>
   );
 }

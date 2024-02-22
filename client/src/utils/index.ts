@@ -89,3 +89,37 @@ export const thumbnailUrl = ({ dir, fullname }: iFile, id: number) =>
       id.toString().padStart(2, "0") +
       ".jpg",
   }).toString()}`;
+
+export function rotateImage(dataURL: string, degree: number) {
+  return new Promise<string>((resolve, reject) => {
+    var img = new Image();
+    img.onload = function () {
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d")!;
+
+      // Set the canvas dimensions based on the rotated image
+      if (degree % 180 === 90) {
+        canvas.width = img.height;
+        canvas.height = img.width;
+      } else {
+        canvas.width = img.width;
+        canvas.height = img.height;
+      }
+
+      // Rotate the image
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate((degree * Math.PI) / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+      // Get the data URL of the rotated image
+      var rotatedDataURL = canvas.toDataURL("image/jpeg");
+
+      // Resolve the promise with the rotated data URL
+      resolve(rotatedDataURL);
+    };
+    img.onerror = function () {
+      reject(new Error("Failed to load image"));
+    };
+    img.src = dataURL; // Set the source of the image to the original data URL
+  });
+}
