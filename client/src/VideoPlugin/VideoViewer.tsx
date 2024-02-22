@@ -6,7 +6,7 @@ import "./style.scss";
 
 export default function VideoViewer() {
   const {
-    file: { path, _id },
+    file: { path, _id, details },
     next,
   } = useGlobal();
   const panzoomHandle = useRef<PanZoom>();
@@ -43,6 +43,7 @@ export default function VideoViewer() {
     // because translate property works very well on video
     panzoom.on("transform", (e: PanZoom) => {
       const { x, y } = e.getTransform();
+      video.style.transformOrigin = "";
       video.style.transform = "";
       video.style.translate = x + "px " + y + "px";
     });
@@ -60,6 +61,13 @@ export default function VideoViewer() {
         ref={videoRef}
         src={src}
         autoPlay
+        style={
+          details.rotate
+            ? {
+                rotate: details.rotate + "deg",
+              }
+            : undefined
+        }
         onWheel={({ deltaY }) => {
           const video = videoRef.current!;
           // scale
@@ -118,9 +126,7 @@ export default function VideoViewer() {
             : null
         }
       />
-      <div className="vp-play">
-        ▶️
-      </div>
+      <div className="vp-play">▶️</div>
       <form
         className="vp-color"
         onInput={({ currentTarget: form }) => {
@@ -205,7 +211,10 @@ export default function VideoViewer() {
         </div>
         <div className="vp-buttons-container">
           <div className="vp-buttons-side-container">
-            <button onClick={() => toggleVideoPlayState()} className="vp-play-btn"></button>
+            <button
+              onClick={() => toggleVideoPlayState()}
+              className="vp-play-btn"
+            ></button>
             <span ref={currentTimeRef} className="vp-time"></span>
           </div>
           <div className="vp-buttons-side-container">
