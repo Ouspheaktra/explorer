@@ -1,6 +1,6 @@
 import { RendererProps } from "../Details/types";
 import { iFile } from "../types";
-import { fileUrl, rotateImage } from "../utils";
+import { fileUrl } from "../utils";
 import { postThumbnails } from "../utils/api";
 
 export default function ReThumbnail({ selecteds }: RendererProps<any>) {
@@ -52,11 +52,7 @@ export function createThumbnail(
           video.onseeked = async function () {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const image = canvas.toDataURL("image/jpeg");
-            imgs.push(
-              file.details.rotate
-                ? await rotateImage(image, file.details.rotate)
-                : image
-            );
+            imgs.push(image);
             resolve();
           };
         });

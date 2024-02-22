@@ -8,7 +8,7 @@ export default function Thumbnail({
   file,
   maxThumbnails,
   createThumbnail,
-  className
+  className,
 }: {
   file: iFile;
   maxThumbnails: number;
@@ -39,7 +39,11 @@ export default function Thumbnail({
   }, []);
   return (
     <div
-      className={"thumbnail" + (isLandscape ? "" : " portrait") + (className ? " " + className : "")}
+      className={
+        "thumbnail" +
+        (isLandscape ? "" : " portrait") +
+        (className ? " " + className : "")
+      }
       ref={elRef}
       onMouseEnter={
         maxThumbnails === 1
@@ -69,11 +73,26 @@ export default function Thumbnail({
     >
       {toLoad && (
         <img
+          style={
+            file.details.rotate
+              ? { rotate: file.details.rotate + "deg", overflow: "visible" }
+              : {}
+          }
           data-file-id={file._id}
           src={thumbnailUrl(file, thumbnailId.current)}
           onLoad={(e) => {
             const { naturalWidth, naturalHeight } = e.currentTarget;
-            if (naturalWidth < naturalHeight) setIsLandscape(false);
+            const rotate = file.details.rotate as number;
+            if (rotate) {
+              // landscape to portrait, vice versa
+              if (Math.abs(rotate) % 180 === 90) {
+                // landscape to portrait
+                if (naturalWidth > naturalHeight) setIsLandscape(false);
+                // portrait to landscape, do nothing
+                // because by default it is landscape
+              }
+              //
+            } else if (naturalWidth < naturalHeight) setIsLandscape(false);
           }}
           onError={async (e) => {
             if (isErrorRef.current) return;
