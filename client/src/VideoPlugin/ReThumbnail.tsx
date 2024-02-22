@@ -16,6 +16,7 @@ export default function ReThumbnail({ selecteds }: RendererProps<any>) {
       await postThumbnails(file, imgs);
       //
       imgTags.forEach((img, id) => (img.src = imgTagsSrc[id] + "&"));
+      console.log("rethumbnail done", file.name);
     }
   };
   return (
