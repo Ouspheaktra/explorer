@@ -77,9 +77,10 @@ export default function Thumbnail({
           onError={async (e) => {
             if (isErrorRef.current) return;
             isErrorRef.current = true;
+            const imgTag = e.currentTarget;
             const imgs = await createThumbnail();
             await postThumbnails(file, imgs);
-            e.currentTarget.src = thumbnailUrl(file, 0);
+            imgTag.src = thumbnailUrl(file, 0);
             isErrorRef.current = false;
           }}
         />
