@@ -32,5 +32,5 @@ export default function EditedsRenderer<iDetails extends object>({
       </button>
     );
   }
-  return null;
+  return <div></div>;
 }
