@@ -69,6 +69,7 @@ export default function Thumbnail({
     >
       {toLoad && (
         <img
+          data-file-id={file._id}
           src={thumbnailUrl(file, thumbnailId.current)}
           onLoad={(e) => {
             const { naturalWidth, naturalHeight } = e.currentTarget;

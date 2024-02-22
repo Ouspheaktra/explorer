@@ -1,25 +1,27 @@
 import { RendererProps } from "../Details/types";
-import { useGlobal } from "../GlobalContext";
 import { iFile } from "../types";
 import { fileUrl, rotateImage } from "../utils";
+import { postThumbnails } from "../utils/api";
 
 export default function ReThumbnail({ selecteds }: RendererProps<any>) {
-  const { commandFiles } = useGlobal();
+  const recreate = async (interval: number) => {
+    for (let file of selecteds) {
+      const imgTags = Array.from(
+        document.querySelectorAll(`img[data-file-id="${file._id}"]`)
+      ) as HTMLImageElement[];
+      const imgTagsSrc = imgTags.map((img) => img.src);
+      imgTags.forEach((img) => (img.src = ""));
+      //
+      const imgs = await createThumbnail(file, interval, 10);
+      await postThumbnails(file, imgs);
+      //
+      imgTags.forEach((img, id) => (img.src = imgTagsSrc[id] + "&"));
+    }
+  };
   return (
     <div>
-      <button
-        onClick={() => commandFiles(selecteds, 'cp "{input}" "{output}"')}
-      >
-        Re-Thumbnail
-      </button>
-      <button
-        onClick={async () => {
-          commandFiles(selecteds, 'cp "{input}" "{output}"');
-          for (let file of selecteds) await createThumbnail(file, 8, 10);
-        }}
-      >
-        Re-Thumbnail every 8%
-      </button>
+      <button onClick={() => recreate(9)}>Re-Thumbnail</button>
+      <button onClick={async () => recreate(8)}>Re-Thumbnail every 8%</button>
     </div>
   );
 }
