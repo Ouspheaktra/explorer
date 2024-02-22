@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, HTMLProps } from "react";
 import { thumbnailUrl } from "../../utils";
 import { iFile } from "../../types";
 import { postThumbnails } from "../../utils/api";
@@ -8,11 +8,12 @@ export default function Thumbnail({
   file,
   maxThumbnails,
   createThumbnail,
+  className
 }: {
   file: iFile;
   maxThumbnails: number;
   createThumbnail: () => Promise<string[]>;
-}) {
+} & HTMLProps<HTMLDivElement>) {
   const [toLoad, setToLoad] = useState(false);
   const [isLandscape, setIsLandscape] = useState(true);
   const elRef = useRef<HTMLDivElement | null>(null);
@@ -38,7 +39,7 @@ export default function Thumbnail({
   }, []);
   return (
     <div
-      className={"thumbnail" + (isLandscape ? "" : " portrait")}
+      className={"thumbnail" + (isLandscape ? "" : " portrait") + (className ? " " + className : "")}
       ref={elRef}
       onMouseEnter={
         maxThumbnails === 1

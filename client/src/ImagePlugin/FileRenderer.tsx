@@ -1,54 +1,16 @@
-import { useEffect, useRef, useState } from "react";
 import { FileComponentProps } from "../List/types";
-import { iFile } from "../types";
-import { iImageDetails } from "./types";
-import { fileUrl, thumbnailUrl } from "../utils";
-import { postThumbnails } from "../utils/api";
+import { fileUrl } from "../utils";
+import Thumbnail from "../componenets/Thumbnail";
 
 export default function FileRender({ fullMode, file }: FileComponentProps) {
-  if (fullMode) return <FileFullMode file={file} />;
-  else return file.fullname;
-}
-
-function FileFullMode({ file }: { file: iFile<iImageDetails> }) {
-  const { fullname, details } = file;
-  const [toLoad, setToLoad] = useState(false);
-  const [isLandscape, setIsLandscape] = useState(true);
-  const elRef = useRef<HTMLDivElement | null>(null);
-  const errorNumberRef = useRef(0);
-  useEffect(() => {
-    const scroll = () => {
-      const elY = elRef.current!.offsetTop;
-      if (
-        window.scrollY - 50 < elY &&
-        elY < window.scrollY + window.innerHeight
-      ) {
-        setToLoad(true);
-        window.removeEventListener("scroll", scroll);
-      }
-    };
-    window.addEventListener("scroll", scroll);
-    scroll();
-    return () => {
-      window.removeEventListener("scroll", scroll);
-    };
-  }, []);
-  return (
-    <div
-      className={"image-thumbnail" + (details.editeds?.length ? " edited" : "") + (isLandscape ? "" : " portrait")}
-      ref={elRef}
-    >
-      {toLoad && (
-        <img
-          src={thumbnailUrl(file, 0)}
-          onLoad={(e) => {
-            const {naturalWidth, naturalHeight} = e.currentTarget;
-            if (naturalWidth < naturalHeight)
-              setIsLandscape(false);
-          }}
-          onError={(e) => {
-            if (errorNumberRef.current++ > 0) return;
-            const mainImg = e.currentTarget;
+  if (fullMode)
+    return (
+      <Thumbnail
+        className={file.details.editeds?.length ? "edited" : ""}
+        file={file}
+        maxThumbnails={1}
+        createThumbnail={() =>
+          new Promise((resolve) => {
             const img = new Image();
             img.src = fileUrl(file.path);
             img.onload = function () {
@@ -73,14 +35,11 @@ function FileFullMode({ file }: { file: iFile<iImageDetails> }) {
                 canvas.width,
                 canvas.height
               );
-              postThumbnails(file, [canvas.toDataURL("image/jpeg")]).then(
-                () => (mainImg.src = mainImg.src)
-              );
+              resolve([canvas.toDataURL("image/jpeg")]);
             };
-          }}
-        />
-      )}
-      <span>{fullname}</span>
-    </div>
-  );
+          })
+        }
+      />
+    );
+  else return file.fullname;
 }
