@@ -8,7 +8,7 @@ export default function FileRender({ fullMode, file }: FileComponentProps) {
       <Thumbnail
         file={file}
         maxThumbnails={10}
-        createThumbnail={() => createThumbnail(file, 9.5, 10)}
+        createThumbnail={() => createThumbnail(file, 5, 10)}
       />
     );
   else return file.fullname;

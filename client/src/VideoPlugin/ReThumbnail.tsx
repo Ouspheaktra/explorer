@@ -4,7 +4,7 @@ import { fileUrl } from "../utils";
 import { postThumbnails } from "../utils/api";
 
 export default function ReThumbnail({ selecteds }: RendererProps<any>) {
-  const recreate = async (interval: number) => {
+  const recreate = async (startPerc: number) => {
     for (let file of selecteds) {
       const imgTags = Array.from(
         document.querySelectorAll(`img[data-file-id="${file._id}"]`)
@@ -12,27 +12,29 @@ export default function ReThumbnail({ selecteds }: RendererProps<any>) {
       const imgTagsSrc = imgTags.map((img) => img.src);
       imgTags.forEach((img) => (img.src = ""));
       //
-      const imgs = await createThumbnail(file, interval, 10);
+      const imgs = await createThumbnail(file, startPerc, 10);
       await postThumbnails(file, imgs);
       //
-      imgTags.forEach((img, id) => (img.src = imgTagsSrc[id] + "&"));
-      console.log("rethumbnail done", file.name);
+      imgTags.forEach((img, id) => (img.src = imgTagsSrc[id] + "&" + Date.now()));
+      console.log("rethumbnail at " + startPerc +"% done", file.name);
     }
   };
   return (
     <div>
-      <button onClick={() => recreate(9)}>Re-Thumbnail</button>
-      <button onClick={async () => recreate(8)}>Re-Thumbnail every 8%</button>
+      <button onClick={() => recreate(5)}>Re</button>
+      <button onClick={async () => recreate(10)}>Re at 10%</button>
+      <button onClick={async () => recreate(15)}>Re at 15%</button>
     </div>
   );
 }
 
 export function createThumbnail(
   file: iFile,
-  interval: number,
+  startPercentage: number,
   numThumbnails: number = 10
 ) {
   return new Promise<string[]>((resolve) => {
+    const intervalPerc = (100 - startPercentage) / numThumbnails;
     const video = document.createElement("video");
     video.src = fileUrl(file.path);
     video.ondurationchange = async () => {
@@ -47,9 +49,9 @@ export function createThumbnail(
         canvas.height = (200 / videoWidth) * videoHeight;
       }
       const imgs: string[] = [];
-      for (let i = 1; i <= numThumbnails; i++)
+      for (let i = 0; i < numThumbnails; i++)
         await new Promise<void>((resolve) => {
-          video.currentTime = ((i * interval) / 100) * video.duration;
+          video.currentTime = (startPercentage + i*intervalPerc)/100 * video.duration;
           video.onseeked = async function () {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const image = canvas.toDataURL("image/jpeg");
