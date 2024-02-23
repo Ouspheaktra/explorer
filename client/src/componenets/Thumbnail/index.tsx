@@ -73,26 +73,11 @@ export default function Thumbnail({
     >
       {toLoad && (
         <img
-          style={
-            file.details.rotate
-              ? { rotate: file.details.rotate + "deg", overflow: "visible" }
-              : {}
-          }
           data-file-id={file._id}
           src={thumbnailUrl(file, thumbnailId.current)}
           onLoad={(e) => {
             const { naturalWidth, naturalHeight } = e.currentTarget;
-            const rotate = file.details.rotate as number;
-            if (rotate) {
-              // landscape to portrait, vice versa
-              if (Math.abs(rotate) % 180 === 90) {
-                // landscape to portrait
-                if (naturalWidth > naturalHeight) setIsLandscape(false);
-                // portrait to landscape, do nothing
-                // because by default it is landscape
-              }
-              //
-            } else if (naturalWidth < naturalHeight) setIsLandscape(false);
+            if (naturalWidth < naturalHeight) setIsLandscape(false);
           }}
           onError={async (e) => {
             if (isErrorRef.current) return;

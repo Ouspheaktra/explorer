@@ -61,13 +61,6 @@ export default function VideoViewer() {
         ref={videoRef}
         src={src}
         autoPlay
-        style={
-          details.rotate
-            ? {
-                rotate: details.rotate + "deg",
-              }
-            : undefined
-        }
         onWheel={({ deltaY }) => {
           const video = videoRef.current!;
           // scale
