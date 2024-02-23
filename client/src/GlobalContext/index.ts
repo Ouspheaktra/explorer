@@ -8,7 +8,7 @@ export type UpdateFiles = (
   postFiles: Parameters<typeof postFile>[]
 ) => Promise<iFile[]>;
 export type DeleteFiles = (files: iFile[]) => Promise<any>;
-export type CommandFiles = (files: iFile[], command: string) => Promise<any>;
+export type CommandFiles = (files: iFile[], command: string, newExt?: string) => Promise<any>;
 export type Next = (plus: number) => void;
 export type SetNext = (next: Next) => void;
 

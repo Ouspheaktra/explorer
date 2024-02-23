@@ -47,7 +47,7 @@ export const postThumbnails = (
     }),
   });
 
-export const postCommand = (file: iFile, command: string) =>
+export const postCommand = (file: iFile, command: string, newExt?: string) =>
   fetch("/api/command", {
     method: "POST",
     headers: {
@@ -56,5 +56,6 @@ export const postCommand = (file: iFile, command: string) =>
     body: JSON.stringify({
       file,
       command,
+      newExt,
     }),
   });

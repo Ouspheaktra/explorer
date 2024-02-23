@@ -99,8 +99,8 @@ function App() {
                 viewerMode,
               })
           ),
-        commandFiles: (files, command) =>
-          promisesAllOneByOne(files.map((file) => postCommand(file, command))).then(
+        commandFiles: (files, command, newExt) =>
+          promisesAllOneByOne(files.map((file) => postCommand(file, command, newExt))).then(
             () =>
               setState({
                 file,

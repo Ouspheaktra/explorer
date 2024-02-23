@@ -14,6 +14,7 @@ import {
   dataURLtoFile,
   removeThumbnails,
   replaceAll,
+  findAvailableName,
 } from "./utils";
 
 const app = express();
@@ -142,39 +143,45 @@ app.post("/api/command", (req, res) => {
   const { file, command: originalCommand } = req.body as {
     file: iFile;
     command: string;
+    newExt?: string;
   };
   const { dir, name, ext } = file;
+  const newExt: string = req.body.newExt || ext;
   // copy file into .explorer
   const explorerDir = dir + "/.explorer/",
-    outputName = name + ext,
-    inputName = name + "_temp" + ext;
-  fs.renameSync(dir + "/" + outputName, explorerDir + inputName);
+    fullname = name + ext,
+    tempFullname = name + "_temp" + ext,
+    outFullname = name + newExt;
+  fs.renameSync(dir + "/" + fullname, explorerDir + tempFullname);
   // prepare command
   let command = originalCommand;
   for (let [placeholder, value] of [
-    ["input", explorerDir + inputName],
-    ["output", explorerDir + outputName],
+    ["input", explorerDir + tempFullname],
+    ["output", explorerDir + outFullname],
   ])
     command = replaceAll(command, `{${placeholder}}`, value);
   //
   jobs.add((next) => {
-    console.log("Command on file", outputName);
+    console.log("Command on file", fullname);
     exec(command, function (err) {
       if (err) {
         console.error(err);
       } else {
-        console.log(
-          "Command finished:\n  ",
-          outputName,
-          "\n  ",
-          originalCommand
-        );
+        console.log("Command finished:\n ", fullname, "\n ", originalCommand);
         // remove thumbnails
         removeThumbnails(file);
+        // remove temp file
+        fs.rmSync(explorerDir + tempFullname);
+        // edit details
+        const newName = findAvailableName(dir, name, newExt),
+          newFullname = newName + newExt,
+          data = readFilesData(dir),
+          oldDetails = data[fullname];
+        delete data[fullname]; // delete old details
+        if (oldDetails) data[newFullname] = oldDetails;
+        writeFilesData(dir, data);
         // move file back
-        fs.renameSync(explorerDir + outputName, dir + "/" + outputName);
-        // remove input file
-        fs.rmSync(explorerDir + inputName);
+        fs.renameSync(explorerDir + outFullname, dir + "/" + newFullname);
       }
       //
       next();

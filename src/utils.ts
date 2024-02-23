@@ -117,3 +117,11 @@ export const replaceAll = (string: string, find: string, replace: string) =>
 function escapeRegExp(string: string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 }
+
+export const findAvailableName = (dir: string, name: string, ext: string) => {
+  let nameWithSuffix = name,
+    suffix = 1;
+  while (fs.existsSync(dir + "/" + nameWithSuffix + ext))
+    nameWithSuffix = name + " - " + ++suffix;
+  return nameWithSuffix;
+};
