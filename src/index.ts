@@ -72,11 +72,8 @@ app.post("/api/file", (req, res) => {
   // rename
   if (newName) {
     // keep rename newName if exist
-    let newPath = "";
-    let suffix = 1;
-    while (fs.existsSync((newPath = dir + "/" + (newFullname = newName + ext))))
-      newName = originalNewName + " - " + ++suffix;
-    fs.renameSync(dir + "/" + oldFullname, newPath);
+    newName = findAvailableName(dir, newName, ext);
+    fs.renameSync(dir + "/" + oldFullname, dir + "/" + newName + ext);
     // rename thumbnail
     const thumbnailDir = dir + "/.explorer/thumbnails/";
     fs.readdirSync(thumbnailDir).forEach(
