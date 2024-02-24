@@ -121,7 +121,7 @@ function App() {
       }}
     >
       <div id="viewer">
-        {plugin && <plugin.Viewer />}
+        {file && plugin && <plugin.Viewer />}
         {file && <PrevNext />}
       </div>
       {viewer && plugin ? (

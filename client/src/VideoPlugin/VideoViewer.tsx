@@ -9,7 +9,6 @@ export default function VideoViewer() {
     file,
     next,
   } = useGlobal();
-  if (!file) return null;
   const { path, _id } = file;
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
