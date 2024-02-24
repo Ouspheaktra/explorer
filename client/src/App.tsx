@@ -130,11 +130,17 @@ function App() {
         />
       ) : (
         <Explorer
-          topButtons={plugins.map((p) => (
-            <button key={p.type} onClick={() => setViewer(p.type)}>
-              {p.type}
-            </button>
-          ))}
+          topButtons={
+            file ? (
+              <button onClick={() => setViewer(file.type)}>{file.type}</button>
+            ) : (
+              plugins.map((p) => (
+                <button key={p.type} onClick={() => setViewer(p.type)}>
+                  {p.type}
+                </button>
+              ))
+            )
+          }
         />
       )}
     </GlobalContext.Provider>
