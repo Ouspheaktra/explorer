@@ -10,6 +10,7 @@ export default function ImageViewer() {
     updateFiles,
     deleteFiles,
   } = useGlobal();
+  if (!file) return null;
   const { _id, path, dir, details } = file;
   const [editedId, setEditedId] = useState(0);
   const [orientation, setOrientation] = useState<"portrait" | "landscape">(

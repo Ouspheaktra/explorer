@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 export type FileType = "image" | "video" | "unknown" | "dir";
 
@@ -35,11 +35,11 @@ export interface iData {
 export type AppState = {
   dir: iDir | null;
   file: iFile | null;
-  viewerMode: boolean;
-}
+  viewer: string;
+};
 
 export interface Plugin {
   type: string;
   Viewer: FC;
-  List: FC;
+  List: FC<{ closeButton: ReactNode }>;
 }

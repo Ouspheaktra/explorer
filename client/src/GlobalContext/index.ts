@@ -13,8 +13,6 @@ export type Next = (plus: number) => void;
 export type SetNext = (next: Next) => void;
 
 export type iGlobalContext = iData & {
-  viewerMode: boolean;
-  setViewerMode: (viewerMode: boolean) => void;
   setDir: SetDir;
   setFile: SetFile;
   updateFiles: UpdateFiles;

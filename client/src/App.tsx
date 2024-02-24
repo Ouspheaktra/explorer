@@ -13,8 +13,8 @@ import { deleteFile, getDir, postCommand, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
 import PrevNext from "./PrevNext";
-import "./App.scss";
 import { scrollFileIntoView } from "./List/utils";
+import "./App.scss";
 
 const plugins = [ImagePlugin, VideoPlugin];
 
@@ -22,9 +22,9 @@ function App() {
   const [state, setState] = useState<AppState>({
     dir: null,
     file: null,
-    viewerMode: false,
+    viewer: "",
   });
-  const { dir, file, viewerMode } = state;
+  const { dir, file, viewer } = state;
   const nextRef = useRef<Next>(() => {});
   const setDir: SetDir = (dir, pushIntoHistory = true) =>
       getDir(dir).then((data) => {
@@ -37,12 +37,16 @@ function App() {
           prepareFile(f);
         });
         //
-        setState({ file: null, dir: data, viewerMode });
+        setState({ file: null, dir: data, viewer });
         return data;
       }),
     setFile: SetFile = (newFile) => {
       pushHistory({ ...state, file: newFile });
-      setState({ viewerMode, dir, file: newFile });
+      setState({ viewer, dir, file: newFile });
+    },
+    setViewer = (viewer: string) => {
+      pushHistory({ ...state, viewer }, false);
+      setState({ file, dir, viewer });
     };
   // query data
   useEffect(() => {
@@ -52,9 +56,9 @@ function App() {
       const filename = search.get("file")!;
       if (filename) {
         const file = dir.files.find((f) => f.fullname === filename);
-        const viewerMode = search.get("viewerMode") === "true";
+        const viewer = search.get("viewer") || "";
         if (file) {
-          setState({ file, dir, viewerMode });
+          setState({ file, dir, viewer });
           scrollFileIntoView(file._id);
           setTitle({ ...state, dir, file });
         }
@@ -64,7 +68,8 @@ function App() {
   //
   if (!dir) return "Loading...";
   const plugin =
-    file && file.type && plugins.find((plugin) => plugin.type === file.type);
+    plugins.find((p) => p.type === viewer || (file && p.type === file.type)) ||
+    false;
   return (
     <GlobalContext.Provider
       value={{
@@ -82,40 +87,35 @@ function App() {
                 files[id] = prepareFile(newFile);
               }
               pushHistory({ ...state, dir: newDir, file: newFiles[0] }, false);
-              setState({ file: newFiles[0], dir: newDir, viewerMode });
+              setState({ file: newFiles[0], dir: newDir, viewer });
               // scrollFileIntoView(newFiles[0]._id);
               return newFiles;
             }
           ),
         deleteFiles: (files) =>
-          promisesAllOneByOne(files.map((file) => deleteFile(file))).then(
-            () =>
-              setState({
-                file,
-                dir: {
-                  ...dir,
-                  files: dir.files.filter((f) => !files.includes(f)),
-                },
-                viewerMode,
-              })
+          promisesAllOneByOne(files.map((file) => deleteFile(file))).then(() =>
+            setState({
+              file,
+              dir: {
+                ...dir,
+                files: dir.files.filter((f) => !files.includes(f)),
+              },
+              viewer,
+            })
           ),
         commandFiles: (files, command, newExt) =>
-          promisesAllOneByOne(files.map((file) => postCommand(file, command, newExt))).then(
-            () =>
-              setState({
-                file,
-                dir: {
-                  ...dir,
-                  files: dir.files.filter((f) => !files.includes(f)),
-                },
-                viewerMode,
-              })
+          promisesAllOneByOne(
+            files.map((file) => postCommand(file, command, newExt))
+          ).then(() =>
+            setState({
+              file,
+              dir: {
+                ...dir,
+                files: dir.files.filter((f) => !files.includes(f)),
+              },
+              viewer,
+            })
           ),
-        viewerMode,
-        setViewerMode: (viewerMode) => {
-          pushHistory({ ...state, viewerMode }, false);
-          setState({ file, dir, viewerMode });
-        },
         next: (plus) => nextRef.current(plus),
         setNext: (next) => (nextRef.current = next),
       }}
@@ -124,7 +124,19 @@ function App() {
         {plugin && <plugin.Viewer />}
         {file && <PrevNext />}
       </div>
-      {viewerMode && plugin ? <plugin.List /> : <Explorer />}
+      {viewer && plugin ? (
+        <plugin.List
+          closeButton={<button onClick={() => setViewer("")}>close</button>}
+        />
+      ) : (
+        <Explorer
+          topButtons={plugins.map((p) => (
+            <button key={p.type} onClick={() => setViewer(p.type)}>
+              {p.type}
+            </button>
+          ))}
+        />
+      )}
     </GlobalContext.Provider>
   );
 }

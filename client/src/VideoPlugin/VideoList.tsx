@@ -6,12 +6,12 @@ import List from "../List";
 import { createSort } from "../List/utils";
 import FileRender from "./FileRenderer";
 import { iVideoDetails } from "./types";
-import { iFile } from "../types";
+import { Plugin, iFile } from "../types";
 import RotateRenderer from "./RotateRenderer";
 import CropToPortraitRenderer from "./CropToPortrat";
 import ReThumbnail from "./ReThumbnail";
 
-export default function VideoList() {
+const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {
     dir: { files },
   } = useGlobal();
@@ -23,6 +23,7 @@ export default function VideoList() {
       id="video-list"
       filteredFiles={filesStore.current}
       FileComponent={FileRender}
+      topButtons={closeButton}
       sorts={[
         {
           name: "Avatar",
@@ -75,9 +76,11 @@ export default function VideoList() {
           {
             name: "crop to portrait" as any,
             Renderer: CropToPortraitRenderer,
-          }
+          },
         ],
       }}
     />
   );
-}
+};
+
+export default VideoList;

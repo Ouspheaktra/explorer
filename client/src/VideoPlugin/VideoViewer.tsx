@@ -6,9 +6,11 @@ import "./style.scss";
 
 export default function VideoViewer() {
   const {
-    file: { path, _id, details },
+    file,
     next,
   } = useGlobal();
+  if (!file) return null;
+  const { path, _id } = file;
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
   const mainRef = useRef<HTMLDivElement | null>(null);

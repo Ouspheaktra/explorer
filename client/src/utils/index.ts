@@ -68,11 +68,11 @@ export const setTitle = ({ dir, file }: AppState) =>
   (document.title = file ? file.fullname : dir ? dir.dir : "Explorer");
 
 export const pushHistory = (state: AppState, isPush: boolean = true) => {
-  const { dir, file, viewerMode } = state;
+  const { dir, file, viewer } = state;
   const q = objectToQuery({
     dir: dir ? dir.dir : "",
     file: file ? file.fullname : "",
-    viewerMode,
+    viewer,
   });
   if (isPush) history.pushState({}, "", `/?${q}`);
   else history.replaceState({}, "", `/?${q}`);

@@ -6,9 +6,9 @@ import EditedsRenderer from "./EditedsRenderer";
 import { useGlobal } from "../GlobalContext";
 import FileRender from "./FileRenderer";
 import { useRef } from "react";
-import { iFile } from "../types";
+import { Plugin, iFile } from "../types";
 
-export default function ImageList() {
+const ImageList: Plugin["List"] = ({ closeButton }) => {
   const {
     dir: { files },
   } = useGlobal();
@@ -27,6 +27,7 @@ export default function ImageList() {
       id="image-list"
       filteredFiles={filesStore.current}
       FileComponent={FileRender}
+      topButtons={closeButton}
       sorts={[
         {
           name: "Avatar",
@@ -53,4 +54,6 @@ export default function ImageList() {
       }}
     />
   );
-}
+};
+
+export default ImageList;

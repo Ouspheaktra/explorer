@@ -23,7 +23,7 @@ export default function List<iDetailsType extends object>({
   // null means fullMode
   // [] means selected file
   const [selecteds, setSelecteds] = useState<iFile[] | null>(null);
-  const { setDir, file, viewerMode, setViewerMode, setFile, setNext } =
+  const { setDir, file, setFile, setNext } =
     useGlobal();
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
     builtinSorts[0].name,
@@ -82,11 +82,6 @@ export default function List<iDetailsType extends object>({
           <ul>
             <li className="list-top-buttons">
               {topButtons}
-              {file && (
-                <button onClick={() => setViewerMode(!viewerMode)}>
-                  {viewerMode ? "Close" : "Viewer"}
-                </button>
-              )}
               <button
                 className="list-fuller"
                 onClick={() => {
@@ -182,7 +177,7 @@ export default function List<iDetailsType extends object>({
           {bottomButtons}
         </li>
       </ul>
-      {details && (
+      {details && file && (
         <Details<iDetailsType>
           key={file._id}
           detailsTypes={[
