@@ -1,6 +1,6 @@
 import List from "./List";
 import { useGlobal } from "./GlobalContext";
-import { ListProps } from "./List/types";
+import { FileComponentProps, ListProps } from "./List/types";
 
 export default function Explorer({
   topButtons,
@@ -16,6 +16,7 @@ export default function Explorer({
       id="explorer"
       filteredFiles={files}
       topButtons={topButtons}
+      FileComponent={FileComponent}
       listTop={
         <>
           {dir && (
@@ -32,4 +33,8 @@ export default function Explorer({
       }
     />
   );
+}
+
+function FileComponent({ file }: FileComponentProps) {
+  return file.fullname;
 }

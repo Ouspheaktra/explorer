@@ -1,10 +1,10 @@
-import { createSort } from "../List/utils";
 import List from "../List";
+import { createSort } from "../List/utils";
 import { iImageDetails } from "./types";
 import StringArrayRenderer from "../Details/StringArrayRenderer";
 import EditedsRenderer from "./EditedsRenderer";
 import { useGlobal } from "../GlobalContext";
-import FileRender from "./FileRenderer";
+import ImageFileComponent from "./ImageFileComponent";
 import { useRef } from "react";
 import { Plugin, iFile } from "../types";
 
@@ -26,7 +26,7 @@ const ImageList: Plugin["List"] = ({ closeButton }) => {
     <List<iImageDetails>
       id="image-list"
       filteredFiles={filesStore.current}
-      FileComponent={FileRender}
+      FileComponent={ImageFileComponent}
       topButtons={closeButton}
       sorts={[
         {

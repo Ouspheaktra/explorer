@@ -2,7 +2,7 @@ import { FileComponentProps } from "../List/types";
 import { fileUrl } from "../utils";
 import Thumbnail from "../componenets/Thumbnail";
 
-export default function FileRender({ fullMode, file }: FileComponentProps) {
+export default function ImageFileComponent({ fullMode, file }: FileComponentProps) {
   if (fullMode)
     return (
       <Thumbnail

@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { RendererProps } from "../Details/types";
 import { secondsToString as str } from "../utils";
 import { useGlobal } from "../GlobalContext";

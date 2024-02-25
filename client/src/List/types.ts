@@ -22,7 +22,7 @@ export interface ListMethod {
 }
 
 export type ListProps<iDetailsType extends object> = HTMLProps<HTMLUListElement> & {
-  FileComponent?: FC<FileComponentProps>;
+  FileComponent: FC<FileComponentProps>;
   listTop?: ReactNode;
   topButtons?: ReactNode;
   bottomButtons?: ReactNode;

@@ -4,7 +4,7 @@ import StringRenderer from "../Details/StringRenderer";
 import { useGlobal } from "../GlobalContext";
 import List from "../List";
 import { createSort } from "../List/utils";
-import FileRender from "./FileRenderer";
+import VideoFileComponent from "./VideoFileComponent";
 import { iVideoDetails } from "./types";
 import { Plugin, iFile } from "../types";
 import RotateRenderer from "./RotateRenderer";
@@ -23,7 +23,7 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
     <List<iVideoDetails>
       id="video-list"
       filteredFiles={filesStore.current}
-      FileComponent={FileRender}
+      FileComponent={VideoFileComponent}
       topButtons={closeButton}
       sorts={[
         {

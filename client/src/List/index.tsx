@@ -151,11 +151,7 @@ export default function List<iDetailsType extends object>({
                         }
                       }}
                     >
-                      {FileComponent ? (
-                        <FileComponent fullMode={fullMode} file={f} />
-                      ) : (
-                        fullname
-                      )}
+                      <FileComponent fullMode={fullMode} file={f} />
                     </li>
                   );
                 })}
