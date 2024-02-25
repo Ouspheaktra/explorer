@@ -1,10 +1,11 @@
 export interface PanZoomOption {
   zoomSpeed?: number;
+  doZoom?: (e: WheelEvent) => boolean
 }
 
 export default class PanZoom {
   constructor(public el: HTMLElement, public option: PanZoomOption = {}) {
-    const { zoomSpeed = 0.05 } = option;
+    const { zoomSpeed = 0.05, doZoom = () => true } = option;
     let pan = false;
     let mouseX = 0,
       mouseY = 0;
@@ -31,6 +32,7 @@ export default class PanZoom {
     window.addEventListener("mouseup", this.mouseUp);
     // zoom
     this.wheel = (e) => {
+      if (!doZoom(e)) return;
       const isUp = e.deltaY < 0;
       el.style.scale =
         parseFloat(el.style.scale || "1") + (isUp ? zoomSpeed : -zoomSpeed) + "";

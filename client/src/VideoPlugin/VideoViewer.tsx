@@ -25,11 +25,21 @@ export default function VideoViewer() {
   useEffect(() => {
     panzoomHandle.current?.dispose();
     const video = videoRef.current!;
-    panzoomHandle.current = new PanZoom(video);
+    panzoomHandle.current = new PanZoom(video, {
+      doZoom: () => !isRightHold.current,
+    });
   }, [_id]);
   const src = fileUrl(path);
   return (
-    <div className="video-player" ref={mainRef}>
+    <div
+      className="video-player"
+      ref={mainRef}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
+    >
       <video
         id="video"
         ref={videoRef}
@@ -52,11 +62,6 @@ export default function VideoViewer() {
           } else if (e.button === 2) e.preventDefault();
           else if (e.button === 1) next(1);
           isRightHold.current = false;
-        }}
-        onContextMenu={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
         }}
         onPause={() => (mainRef.current!.dataset.isPaused = "paused")}
         onPlay={() => (mainRef.current!.dataset.isPaused = "")}
