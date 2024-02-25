@@ -2,7 +2,7 @@ import { RendererProps } from "../Details/types";
 import { useGlobal } from "../GlobalContext";
 
 const rotate = (degree: number) =>
-  `ffmpeg -display_rotation ${360 - degree} -i "{input}" -c copy "{output}"`;
+  `ffmpeg -display_rotation ${360 - degree} -i {input} -c copy {output}`;
 
 export default function RotateRenderer({ selecteds }: RendererProps<any>) {
   const { commandFiles } = useGlobal();

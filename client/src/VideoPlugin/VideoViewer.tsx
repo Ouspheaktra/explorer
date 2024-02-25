@@ -59,6 +59,7 @@ export default function VideoViewer() {
   return (
     <div className="video-player" ref={mainRef}>
       <video
+        id="video"
         ref={videoRef}
         src={src}
         autoPlay

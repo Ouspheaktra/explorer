@@ -10,6 +10,7 @@ import { Plugin, iFile } from "../types";
 import RotateRenderer from "./RotateRenderer";
 import CropToPortraitRenderer from "./CropToPortrat";
 import ReThumbnail from "./ReThumbnail";
+import TrimRenderer from "./TrimRenderer";
 
 const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {
@@ -77,6 +78,10 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
             name: "crop to portrait" as any,
             Renderer: CropToPortraitRenderer,
           },
+          {
+            name: "trim" as any,
+            Renderer: TrimRenderer,
+          }
         ],
       }}
     />

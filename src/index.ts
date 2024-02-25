@@ -147,16 +147,18 @@ app.post("/api/command", (req, res) => {
   // copy file into .explorer
   const explorerDir = dir + "/.explorer/",
     fullname = name + ext,
-    tempFullname = name + "_temp" + ext,
-    outFullname = name + newExt;
+    tempFullname = name + "_temp" + ext;
   fs.renameSync(dir + "/" + fullname, explorerDir + tempFullname);
   // prepare command
   let command = originalCommand;
-  for (let [placeholder, value] of [
-    ["input", explorerDir + tempFullname],
-    ["output", explorerDir + outFullname],
-  ])
-    command = replaceAll(command, `{${placeholder}}`, value);
+  command = command.replace(/\{input\}/g, `"${explorerDir + tempFullname}"`);
+  command = command.replace(/\{output\}/g, `"${explorerDir + name + newExt}"`);
+  let outputCount = 1;
+  command = command.replace(
+    /\{output#\}/g,
+    () => `"${explorerDir + name + " #" + outputCount++ + newExt}"`
+  );
+
   //
   jobs.add((next) => {
     console.log("Command on file", fullname);
@@ -169,16 +171,23 @@ app.post("/api/command", (req, res) => {
         removeThumbnails(file);
         // remove temp file
         fs.rmSync(explorerDir + tempFullname);
-        // edit details
-        const newName = findAvailableName(dir, name, newExt),
-          newFullname = newName + newExt,
-          data = readFilesData(dir),
+        // delete old details
+        const data = readFilesData(dir),
           oldDetails = data[fullname];
         delete data[fullname]; // delete old details
-        if (oldDetails) data[newFullname] = oldDetails;
+        // find new files
+        let regex = new RegExp(`^${name}(?:\\s#\\d)?${newExt}$`);
+        const newFullnames = fs
+          .readdirSync(explorerDir)
+          .filter((file) => regex.test(file));
+        for (let newFullname of newFullnames) {
+          console.log("new file", newFullname);
+          // add details
+          if (oldDetails) data[newFullname] = oldDetails;
+          // move file back
+          fs.renameSync(explorerDir + newFullname, dir + "/" + newFullname);
+        }
         writeFilesData(dir, data);
-        // move file back
-        fs.renameSync(explorerDir + outFullname, dir + "/" + newFullname);
       }
       //
       next();

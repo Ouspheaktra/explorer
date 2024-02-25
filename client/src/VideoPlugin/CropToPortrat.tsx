@@ -1,7 +1,7 @@
 import { RendererProps } from "../Details/types";
 import { useGlobal } from "../GlobalContext";
 
-const command = 'ffmpeg -i "{input}" -vf "crop=ih*9/16:ih" "{output}"';
+const command = 'ffmpeg -i {input} -vf "crop=ih*9/16:ih" {output}';
 
 export default function CropToPortraitRenderer({
   selecteds,
