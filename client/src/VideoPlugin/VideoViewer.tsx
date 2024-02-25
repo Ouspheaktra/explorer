@@ -27,22 +27,7 @@ export default function VideoViewer() {
   useEffect(() => {
     panzoomHandle.current?.dispose();
     const video = videoRef.current!;
-    panzoomHandle.current = new PanZoom(video, {
-      // disable zoom
-      zoomSpeed: 0,
-    });
-    // video.onmouseup has toggle video play state
-    // which if pan, we don't want to toggle play state
-    // so we store play state on panstart and use it on panend
-    let isVideoPaused = false;
-    const mouseUp = () => (isVideoPaused = video.paused),
-      mouseDown = () => toggleVideoPlayState(!isVideoPaused);
-    // video.addEventListener("mousedown", mouseUp);
-    // window.addEventListener("mouseup", mouseDown);
-    return () => {
-      video.removeEventListener("mousedown", mouseUp);
-      window.removeEventListener("mouseup", mouseDown);
-    };
+    panzoomHandle.current = new PanZoom(video);
   }, [_id]);
   const src = fileUrl(path);
   return (
@@ -53,15 +38,8 @@ export default function VideoViewer() {
         src={src}
         autoPlay
         onWheel={({ deltaY }) => {
-          const video = videoRef.current!;
-          // scale
           if (isRightHold.current)
-            video.style.scale = (
-              parseFloat(video.style.scale || "1") +
-              (deltaY < 0 ? zoomSpeed : -zoomSpeed)
-            ).toString();
-          // skip
-          else video.currentTime += deltaY < 0 ? 5 : -5;
+            videoRef.current!.currentTime += deltaY < 0 ? 5 : -5;
         }}
         onDoubleClick={(e) => {
           if (document.fullscreenElement) document.exitFullscreen();
@@ -71,9 +49,8 @@ export default function VideoViewer() {
           if (e.button === 2) isRightHold.current = true;
         }}
         onMouseUp={({ button }) => {
+          if (isRightHold.current && button === 0) toggleVideoPlayState();
           isRightHold.current = false;
-          // if (button === 0) toggleVideoPlayState();
-          // else
           if (button === 1) next(1);
         }}
         onContextMenu={(e) => {
