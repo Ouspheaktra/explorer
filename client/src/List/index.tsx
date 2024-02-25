@@ -4,7 +4,7 @@ import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
 import Details from "../Details";
 import { iFile } from "../types";
-import { toggleValue } from "../utils";
+import { toggleItem } from "../utils";
 import { scrollFileIntoView } from "./utils";
 import TrashButton from "../Details/TrashButton";
 import "./style.scss";
@@ -89,15 +89,17 @@ export default function List<iDetailsType extends object>({
                     // view first selected file
                     if (selecteds.length) setFile(selecteds[0]);
                   }
-                  setSelecteds(fullMode
-                    // list mode
-                    ? null
-                    // full mode
-                    : (file ? [file] : [])
+                  setSelecteds(
+                    fullMode
+                      ? // list mode
+                        null
+                      : // full mode
+                      file
+                      ? [file]
+                      : []
                   );
                   //
-                  if (file)
-                    scrollFileIntoView(file._id);
+                  if (file) scrollFileIntoView(file._id);
                 }}
                 style={{ backgroundColor: "aqua" }}
               >
@@ -139,7 +141,7 @@ export default function List<iDetailsType extends object>({
                         if (type === "unknown") return;
                         if (fullMode) {
                           if (e.ctrlKey)
-                            setSelecteds(toggleValue([...selecteds!], f));
+                            setSelecteds(toggleItem([...selecteds!], f));
                           else setSelecteds([f]);
                         } else if (!isCurrent) {
                           // is file, change file

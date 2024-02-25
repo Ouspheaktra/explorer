@@ -9,7 +9,7 @@ export const shuffleArray = (array: any[]) => {
   return array;
 };
 
-export const toggleValue = (array: any[], value: any) => {
+export const toggleItem = (array: any[], value: any) => {
   const index = array.indexOf(value);
   if (index !== -1) array.splice(index, 1);
   else array.push(value);
