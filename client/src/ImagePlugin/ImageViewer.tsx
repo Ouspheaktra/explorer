@@ -1,7 +1,7 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import panzoom, { PanZoom } from "panzoom";
 import { useGlobal } from "../GlobalContext";
 import { fileUrl } from "../utils";
+import PanZoom from "../utils/panzoom";
 
 export default function ImageViewer() {
   const {
@@ -20,9 +20,7 @@ export default function ImageViewer() {
   const panzoomHandle = useRef<PanZoom>();
   useEffect(() => {
     if (panzoomHandle.current) panzoomHandle.current.dispose();
-    panzoomHandle.current = panzoom(wrapperRef.current!, {
-      smoothScroll: false,
-    });
+    panzoomHandle.current = new PanZoom(wrapperRef.current!);
     const { naturalWidth, naturalHeight } = imageRef.current!;
     setOrientation(naturalWidth > naturalHeight ? "landscape" : "portrait");
     setEditedId(0);

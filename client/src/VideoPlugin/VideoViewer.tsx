@@ -1,14 +1,13 @@
 import { useEffect, useRef } from "react";
-import panZoom, { PanZoom } from "panzoom";
+import PanZoom from "../utils/panzoom";
 import { fileUrl, secondsToString } from "../utils";
 import { useGlobal } from "../GlobalContext";
 import "./style.scss";
 
+const zoomSpeed = 0.03;
+
 export default function VideoViewer() {
-  const {
-    file,
-    next,
-  } = useGlobal();
+  const { file, next } = useGlobal();
   const { path, _id } = file;
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
@@ -28,32 +27,22 @@ export default function VideoViewer() {
   useEffect(() => {
     panzoomHandle.current?.dispose();
     const video = videoRef.current!;
-    panzoomHandle.current = panZoom(video, {
-      smoothScroll: false,
+    panzoomHandle.current = new PanZoom(video, {
       // disable zoom
       zoomSpeed: 0,
-      zoomDoubleClickSpeed: 1,
-      // double click to fullscreen
-      onDoubleClick: () => {
-        if (document.fullscreenElement) document.exitFullscreen();
-        else video.closest(".video-player")!.requestFullscreen();
-      },
-    });
-    const panzoom = panzoomHandle.current;
-    // use translate property instead of transform property
-    // because translate property works very well on video
-    panzoom.on("transform", (e: PanZoom) => {
-      const { x, y } = e.getTransform();
-      video.style.transformOrigin = "";
-      video.style.transform = "";
-      video.style.translate = x + "px " + y + "px";
     });
     // video.onmouseup has toggle video play state
     // which if pan, we don't want to toggle play state
     // so we store play state on panstart and use it on panend
     let isVideoPaused = false;
-    panzoom.on("panstart", () => (isVideoPaused = video.paused));
-    panzoom.on("panend", () => toggleVideoPlayState(!isVideoPaused));
+    const mouseUp = () => (isVideoPaused = video.paused),
+      mouseDown = () => toggleVideoPlayState(!isVideoPaused);
+    // video.addEventListener("mousedown", mouseUp);
+    // window.addEventListener("mouseup", mouseDown);
+    return () => {
+      video.removeEventListener("mousedown", mouseUp);
+      window.removeEventListener("mouseup", mouseDown);
+    };
   }, [_id]);
   const src = fileUrl(path);
   return (
@@ -68,24 +57,24 @@ export default function VideoViewer() {
           // scale
           if (isRightHold.current)
             video.style.scale = (
-              parseFloat(video.style.scale || "1") + (deltaY < 0 ? 0.02 : -0.02)
+              parseFloat(video.style.scale || "1") +
+              (deltaY < 0 ? zoomSpeed : -zoomSpeed)
             ).toString();
           // skip
           else video.currentTime += deltaY < 0 ? 5 : -5;
         }}
-        onClick={(e) => {
-          e.preventDefault();
-          return false;
+        onDoubleClick={(e) => {
+          if (document.fullscreenElement) document.exitFullscreen();
+          else e.currentTarget.parentElement!.requestFullscreen();
         }}
         onMouseDown={(e) => {
-          e.preventDefault();
           if (e.button === 2) isRightHold.current = true;
-          return false;
         }}
         onMouseUp={({ button }) => {
           isRightHold.current = false;
-          if (button === 0) toggleVideoPlayState();
-          else if (button === 1) next(1);
+          // if (button === 0) toggleVideoPlayState();
+          // else
+          if (button === 1) next(1);
         }}
         onContextMenu={(e) => {
           e.preventDefault();
@@ -121,7 +110,9 @@ export default function VideoViewer() {
             : null
         }
       />
-      <div className="vp-play">▶️</div>
+      <button className="vp-play" onClick={() => toggleVideoPlayState()}>
+        ▶️
+      </button>
       <form
         className="vp-color"
         onInput={({ currentTarget: form }) => {

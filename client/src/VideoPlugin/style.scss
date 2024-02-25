@@ -4,7 +4,7 @@ body.fullscreen .vp-control {
 
 .video-player[data-is-paused="paused"] {
   > .vp-play {
-    display: flex;
+    display: block;
   }
   .vp-play-btn::before {
     content: "▶️" !important;
@@ -24,17 +24,15 @@ body.fullscreen .vp-control {
   }
   > .vp-play {
     position: absolute;
-    top: 30%;
-    left: 20px;
-    transform: translateY(-50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 50%;
     display: none;
-    justify-content: center;
-    align-items: center;
     background: dimgray;
-    font-size: 20px;
-    width: 50px;
-    height: 50px;
+    font-size: 30px;
+    padding: 20px;
+    border: none;
   }
   > .vp-color {
     top: 5px;
