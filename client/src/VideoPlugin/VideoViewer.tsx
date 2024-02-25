@@ -46,7 +46,7 @@ export default function VideoViewer() {
           if (!isRightHold.current)
             videoRef.current!.currentTime += deltaY < 0 ? 5 : -5;
         }}
-        onDoubleClick={(e) => {
+        onDoubleClick={() => {
           if (document.fullscreenElement) document.exitFullscreen();
           else mainRef.current!.requestFullscreen();
         }}

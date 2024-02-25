@@ -192,8 +192,8 @@ app.post("/api/command", (req, res) => {
           fs.renameSync(explorerDir + newFullname, dir + "/" + newFullname);
         }
         writeFilesData(dir, data);
-        // remove temp file
-        fs.rmSync(explorerDir + tempFullname);
+        // TODO move to trash
+        fs.renameSync(explorerDir + tempFullname, explorerDir + fullname);
       }
       //
       next();
