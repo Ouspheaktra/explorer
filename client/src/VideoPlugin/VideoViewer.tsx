@@ -34,11 +34,7 @@ export default function VideoViewer() {
     <div
       className="video-player"
       ref={mainRef}
-      onContextMenu={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <video
         id="video"
@@ -140,7 +136,7 @@ export default function VideoViewer() {
       {/* CONTROL */}
       <div className="vp-control">
         <div className="vp-timebar-container">
-        <div className="vp-more"></div>
+          <div className="vp-more"></div>
           <input
             ref={timeBarRef}
             className="vp-timebar"

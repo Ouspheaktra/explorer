@@ -173,7 +173,7 @@ app.post("/api/command", (req, res) => {
         // remove thumbnails
         removeThumbnails(file);
         // remove temp file
-        fs.rmSync(explorerDir + tempFullname);
+        //fs.rmSync(explorerDir + tempFullname);
         // delete old details
         const data = readFilesData(dir),
           oldDetails = data[fullname];

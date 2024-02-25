@@ -40,31 +40,41 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
             </button>
           ) : null}
           {parts.map(([start, end], id) => (
-            <div key={id}>
+            <div key={id} onContextMenu={(e) => e.preventDefault()}>
               <button
-                onClick={() =>
-                  video().currentTime >= end
-                    ? alert("start must < end")
-                    : setParts(
+                onMouseUp={(e) => {
+                  const vid = video();
+                  if (e.button === 0) {
+                    vid.currentTime = start;
+                  } else if (e.button === 2) {
+                    if (vid.currentTime >= end) alert("start must < end");
+                    else
+                      setParts(
                         parts.map((p, pid) =>
-                          pid === id ? [video().currentTime, end] : p
+                          pid === id ? [vid.currentTime, end] : p
                         )
-                      )
-                }
+                      );
+                  }
+                }}
               >
                 {str(start)}
               </button>
               -&gt;
               <button
-                onClick={() =>
-                  video().currentTime <= start
-                    ? alert("end must > start")
-                    : setParts(
+                onMouseUp={(e) => {
+                  const vid = video();
+                  if (e.button === 0) {
+                    vid.currentTime = end;
+                  } else if (e.button === 2) {
+                    if (vid.currentTime <= start) alert("end must > start");
+                    else
+                      setParts(
                         parts.map((p, pid) =>
                           pid === id ? [start, video().currentTime] : p
                         )
-                      )
-                }
+                      );
+                  }
+                }}
               >
                 {str(end)}
               </button>
