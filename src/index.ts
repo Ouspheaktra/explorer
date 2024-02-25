@@ -15,6 +15,7 @@ import {
   removeThumbnails,
   replaceAll,
   findAvailableName,
+  escapeRegExp,
 } from "./utils";
 
 const app = express();
@@ -172,14 +173,14 @@ app.post("/api/command", (req, res) => {
         console.log("Command finished:\n ", fullname, "\n ", originalCommand);
         // remove thumbnails
         removeThumbnails(file);
-        // remove temp file
-        //fs.rmSync(explorerDir + tempFullname);
         // delete old details
         const data = readFilesData(dir),
           oldDetails = data[fullname];
         delete data[fullname]; // delete old details
         // find new files
-        let regex = new RegExp(`^${name}(?:\\s#\\d)?${newExt}$`);
+        let regex = new RegExp(
+          `^${escapeRegExp(name)}(?:\\s#\\d)?${escapeRegExp(newExt)}$`
+        );
         const newFullnames = fs
           .readdirSync(explorerDir)
           .filter((file) => regex.test(file));
@@ -191,6 +192,8 @@ app.post("/api/command", (req, res) => {
           fs.renameSync(explorerDir + newFullname, dir + "/" + newFullname);
         }
         writeFilesData(dir, data);
+        // remove temp file
+        fs.rmSync(explorerDir + tempFullname);
       }
       //
       next();

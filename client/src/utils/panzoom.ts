@@ -1,17 +1,18 @@
 export interface PanZoomOption {
   zoomSpeed?: number;
-  doZoom?: (e: WheelEvent) => boolean
+  panButton?: number;
+  doZoom?: (e: WheelEvent) => boolean;
 }
 
 export default class PanZoom {
   constructor(public el: HTMLElement, public option: PanZoomOption = {}) {
-    const { zoomSpeed = 0.05, doZoom = () => true } = option;
+    const { zoomSpeed = 0.05, panButton = 0, doZoom = truthy } = option;
     let pan = false;
     let mouseX = 0,
       mouseY = 0;
     // pan
     this.mouseDown = (e) => {
-      if (e.button === 0) {
+      if (e.button === panButton) {
         pan = true;
         const [x, y] = (el.style.translate || "0 0")
           .split(" ")
@@ -35,10 +36,11 @@ export default class PanZoom {
       if (!doZoom(e)) return;
       const isUp = e.deltaY < 0;
       el.style.scale =
-        parseFloat(el.style.scale || "1") + (isUp ? zoomSpeed : -zoomSpeed) + "";
+        parseFloat(el.style.scale || "1") +
+        (isUp ? zoomSpeed : -zoomSpeed) +
+        "";
     };
-    if (zoomSpeed > 0)
-      el.addEventListener("wheel", this.wheel);
+    if (zoomSpeed > 0) el.addEventListener("wheel", this.wheel);
   }
 
   private mouseDown: (e: MouseEvent) => void;
@@ -52,4 +54,8 @@ export default class PanZoom {
     window.removeEventListener("mouseup", this.mouseUp);
     this.el.removeEventListener("wheel", this.wheel);
   };
+}
+
+function truthy() {
+  return true;
 }

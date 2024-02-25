@@ -114,10 +114,6 @@ export const removeThumbnails = ({ dir, name, ext }: iFile) => {
 export const replaceAll = (string: string, find: string, replace: string) =>
   string.replace(new RegExp(escapeRegExp(find), "g"), replace);
 
-function escapeRegExp(string: string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
-}
-
 export const findAvailableName = (dir: string, name: string, ext: string) => {
   let nameWithSuffix = name,
     suffix = 1;
@@ -125,3 +121,7 @@ export const findAvailableName = (dir: string, name: string, ext: string) => {
     nameWithSuffix = name + " - " + ++suffix;
   return nameWithSuffix;
 };
+
+export function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

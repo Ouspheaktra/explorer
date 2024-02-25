@@ -26,7 +26,8 @@ export default function VideoViewer() {
     panzoomHandle.current?.dispose();
     const video = videoRef.current!;
     panzoomHandle.current = new PanZoom(video, {
-      doZoom: () => !isRightHold.current,
+      panButton: 2,
+      doZoom: () => isRightHold.current,
     });
   }, [_id]);
   const src = fileUrl(path);
@@ -42,20 +43,18 @@ export default function VideoViewer() {
         src={src}
         autoPlay
         onWheel={({ deltaY }) => {
-          if (isRightHold.current)
+          if (!isRightHold.current)
             videoRef.current!.currentTime += deltaY < 0 ? 5 : -5;
         }}
         onDoubleClick={(e) => {
           if (document.fullscreenElement) document.exitFullscreen();
-          else e.currentTarget.parentElement!.requestFullscreen();
+          else mainRef.current!.requestFullscreen();
         }}
         onMouseDown={(e) => {
           if (e.button === 2) isRightHold.current = true;
         }}
         onMouseUp={(e) => {
-          if (e.button === 0) {
-            if (isRightHold.current) toggleVideoPlayState();
-          } else if (e.button === 2) e.preventDefault();
+          if (e.button === 0) toggleVideoPlayState();
           else if (e.button === 1) next(1);
           isRightHold.current = false;
         }}
