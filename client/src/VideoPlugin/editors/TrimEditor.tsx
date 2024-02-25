@@ -96,9 +96,9 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
 }
 
 function reMarker(parts: [number, number][]) {
-  const timebarContainer = document
-      .getElementById("video")!
-      .parentElement!.querySelector(".vp-timebar-container") as HTMLDivElement,
+  const vid = video();
+  if (!vid) return;
+  const timebarContainer = document.querySelector(".vp-timebar-container")!,
     { max } = timebarContainer.querySelector(".vp-timebar") as HTMLInputElement,
     more = timebarContainer.querySelector(".vp-more") as HTMLDivElement;
   more.innerHTML = "";

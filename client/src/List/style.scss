@@ -16,6 +16,9 @@
     left: 100%;
     overflow: visible;
     opacity: 0;
+    > .list-bottom {
+      display: none;
+    }
     &:hover {
       opacity: 1;
     }

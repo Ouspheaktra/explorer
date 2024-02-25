@@ -135,6 +135,7 @@ export default function VideoViewer() {
       {/* CONTROL */}
       <div className="vp-control">
         <div className="vp-timebar-container">
+        <div className="vp-more"></div>
           <input
             ref={timeBarRef}
             className="vp-timebar"
@@ -155,7 +156,6 @@ export default function VideoViewer() {
                 secondsToString(potentialValue);
             }}
           />
-          <div className="vp-more"></div>
           <div className="vp-preview">
             <span className="vp-time"></span>
             <video
