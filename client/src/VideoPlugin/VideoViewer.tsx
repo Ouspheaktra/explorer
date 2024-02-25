@@ -81,11 +81,11 @@ export default function VideoViewer() {
             : null;
           toggleVideoPlayState(isPlayingRef.current);
         }}
-        onLoadedData={({ currentTarget: video }) =>
-          volumeBarRef.current
-            ? (volumeBarRef.current.value = video.volume.toString())
-            : null
-        }
+        onLoadedData={({ currentTarget: video }) => {
+          const volume = localStorage.getItem("volume") || "1";
+          volumeBarRef.current!.value = volume;
+          video.volume = parseFloat(volume);
+        }}
       />
       <button className="vp-play" onClick={() => toggleVideoPlayState()}>
         ▶️
@@ -189,8 +189,10 @@ export default function VideoViewer() {
               max={1}
               step={0.01}
               onInput={(e) => {
-                videoRef.current!.volume = e.currentTarget.valueAsNumber;
-                videoRef.current!.muted = false;
+                const video = videoRef.current!;
+                video.volume = e.currentTarget.valueAsNumber;
+                video.muted = false;
+                localStorage.setItem("volume", e.currentTarget.value);
               }}
             />
             <button
