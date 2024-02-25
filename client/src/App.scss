@@ -62,3 +62,14 @@ body {
 .a {
   cursor: pointer;
 }
+
+.x {
+  font-family: monospace;
+  font-size: large;
+  &[data-sign]::before {
+    content: attr(data-sign);
+  }
+  &::before {
+    content: "x";
+  }
+}

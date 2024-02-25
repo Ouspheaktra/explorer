@@ -11,8 +11,13 @@
   background: #ffffff55;
   color: black;
   opacity: 0;
-  &:hover {
+  &:hover,
+  &.open {
     opacity: 1;
+  }
+  > .x:first-of-type {
+    opacity: 1;
+    font-size: large;
   }
   > span {
     text-align: right;

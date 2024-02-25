@@ -35,9 +35,7 @@ export default function StringArrayRenderer<iDetails extends object>({
                 data.filter((a) => a !== one)
               )
             }
-          >
-            &times;
-          </button>
+          ></button>
           {one}
         </span>
       ))}
