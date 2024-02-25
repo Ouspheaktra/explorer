@@ -46,10 +46,12 @@ export default function VideoViewer() {
         onMouseDown={(e) => {
           if (e.button === 2) isRightHold.current = true;
         }}
-        onMouseUp={({ button }) => {
-          if (isRightHold.current && button === 0) toggleVideoPlayState();
+        onMouseUp={(e) => {
+          if (e.button === 0) {
+            if (isRightHold.current) toggleVideoPlayState();
+          } else if (e.button === 2) e.preventDefault();
+          else if (e.button === 1) next(1);
           isRightHold.current = false;
-          if (button === 1) next(1);
         }}
         onContextMenu={(e) => {
           e.preventDefault();
@@ -153,6 +155,7 @@ export default function VideoViewer() {
                 secondsToString(potentialValue);
             }}
           />
+          <div className="vp-more"></div>
           <div className="vp-preview">
             <span className="vp-time"></span>
             <video

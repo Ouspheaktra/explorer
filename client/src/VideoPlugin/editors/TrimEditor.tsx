@@ -6,7 +6,7 @@ import { useGlobal } from "../../GlobalContext";
 export default function TrimEditor({ selecteds }: EditorComponentProps) {
   const { commandFiles } = useGlobal();
   const [parts, setParts] = useState<[number, number][]>([]);
-  const video = document.getElementById("video")! as HTMLVideoElement;
+  reMarker(parts);
   if (selecteds.length <= 1)
     return (
       <div
@@ -43,11 +43,11 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
             <div key={id}>
               <button
                 onClick={() =>
-                  video.currentTime >= end
+                  video().currentTime >= end
                     ? alert("start must < end")
                     : setParts(
                         parts.map((p, pid) =>
-                          pid === id ? [video.currentTime, end] : p
+                          pid === id ? [video().currentTime, end] : p
                         )
                       )
                 }
@@ -57,11 +57,11 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
               -&gt;
               <button
                 onClick={() =>
-                  video.currentTime <= start
+                  video().currentTime <= start
                     ? alert("end must > start")
                     : setParts(
                         parts.map((p, pid) =>
-                          pid === id ? [start, video.currentTime] : p
+                          pid === id ? [start, video().currentTime] : p
                         )
                       )
                 }
@@ -81,8 +81,8 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
               setParts([
                 ...parts,
                 [
-                  video.currentTime,
-                  Math.min(video.currentTime + 60 * 5, video.duration),
+                  video().currentTime,
+                  Math.min(video().currentTime + 60 * 5, video().duration),
                 ],
               ])
             }
@@ -93,4 +93,27 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
       </div>
     );
   return <div></div>;
+}
+
+function reMarker(parts: [number, number][]) {
+  const timebarContainer = document
+      .getElementById("video")!
+      .parentElement!.querySelector(".vp-timebar-container") as HTMLDivElement,
+    { max } = timebarContainer.querySelector(".vp-timebar") as HTMLInputElement,
+    more = timebarContainer.querySelector(".vp-more") as HTMLDivElement;
+  more.innerHTML = "";
+  let id = 0;
+  for (let [start, end] of parts) {
+    const marker = document.createElement("div");
+    marker.className = "vp-marker";
+    marker.style.backgroundColor = `hsl(${36 * id++}, 100%, 50%)`;
+    const one = timebarContainer.clientWidth / +max;
+    marker.style.left = one * start + "px";
+    marker.style.width = one * end - one * start + "px";
+    more.append(marker);
+  }
+}
+
+function video() {
+  return document.getElementById("video")! as HTMLVideoElement;
 }

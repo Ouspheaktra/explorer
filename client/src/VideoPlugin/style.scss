@@ -74,6 +74,9 @@ body.fullscreen .vp-control {
           display: block;
         }
       }
+      > .vp-more {
+        overflow: visible;
+      }
       > .vp-preview {
         position: absolute;
         bottom: 100%;
@@ -132,4 +135,10 @@ body.fullscreen .vp-control {
       gap: 10px;
     }
   }
+}
+
+.vp-marker {
+  position: absolute;
+  top: -5px;
+  height: 5px;
 }
