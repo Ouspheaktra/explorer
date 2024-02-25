@@ -1,13 +1,14 @@
 #editor {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   font-size: 15px;
   position: fixed;
   width: 400px;
   left: 0;
   top: 0;
   background: #ffffff55;
-  color: black;
+  color: white;
   opacity: 0;
   &:hover,
   &.open {
@@ -24,6 +25,15 @@
   input {
     font-size: inherit;
     width: 100px;
+  }
+  .label {
+    text-align: right;
+    padding-right: 10px;
+    width: 80px;
+    margin-right: 10px;
+    display: inline-block;
+    background: #ffffff99;
+    color: black;
   }
   button:not(.x),
   input,

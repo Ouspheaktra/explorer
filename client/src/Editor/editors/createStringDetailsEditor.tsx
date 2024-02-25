@@ -12,22 +12,25 @@ const createStringDetailsEditor: createDetailsEditor = (_name, formName) => {
       inputRef.current!.value = selecteds[0].details[name] || "";
     }, [selecteds]);
     return (
-      <input
-        ref={inputRef}
-        className={`${name}-input string-input`}
-        placeholder={name}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            updateDetails(
-              selecteds,
-              updateFiles,
-              { [name]: e.currentTarget.value.trim() },
-              formName
-            );
-            e.currentTarget.value = "";
-          }
-        }}
-      />
+      <div>
+        <label className="label">{name}</label>
+        <input
+          ref={inputRef}
+          className={`${name}-input string-input`}
+          placeholder={name}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              updateDetails(
+                selecteds,
+                updateFiles,
+                { [name]: e.currentTarget.value.trim() },
+                formName
+              );
+              e.currentTarget.value = "";
+            }
+          }}
+        />
+      </div>
     );
   }
   StringDetailsEditor.displayName = `${_name as string}DetailsEditor`;

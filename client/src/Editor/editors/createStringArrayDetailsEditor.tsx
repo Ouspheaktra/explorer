@@ -19,6 +19,7 @@ const createStringArrayDetailsEditor: createDetailsEditor = (
       updateDetails(selecteds, updateFiles, { [name]: value }, formName);
     return (
       <div className={`${pluralName}-wrapper string-array-wrapper`}>
+        <label className="label">{pluralName}</label>
         {/* LIST */}
         {data.map((one) => (
           <span key={one} className={`${name} string-array`}>

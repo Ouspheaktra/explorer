@@ -7,6 +7,7 @@ export default function CropRenderer({
   const { commandFiles } = useGlobal();
   return (
     <div>
+      <label className="label">crop</label>
       <button
         onClick={() =>
           commandFiles(

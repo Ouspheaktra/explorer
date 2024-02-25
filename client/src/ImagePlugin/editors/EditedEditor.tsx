@@ -9,7 +9,7 @@ export default function EditedEditor({
     const [file, ...editeds] = selecteds;
     return (
       <button
-        style={{ float: "right" }}
+        style={{ width: 200 }}
         onClick={() => {
           updateFiles([
             [

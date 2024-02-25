@@ -8,6 +8,7 @@ export default function RotateRenderer({ selecteds }: EditorComponentProps) {
   const { commandFiles } = useGlobal();
   return (
     <div>
+      <label className="label">rotate</label>
       <button onClick={() => commandFiles(selecteds, rotate(90), ".mp4")}>90</button>
       <button onClick={() => commandFiles(selecteds, rotate(270), ".mp4")}>-90</button>
     </div>
