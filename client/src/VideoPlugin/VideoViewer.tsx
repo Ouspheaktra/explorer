@@ -4,8 +4,6 @@ import { fileUrl, secondsToString } from "../utils";
 import { useGlobal } from "../GlobalContext";
 import "./style.scss";
 
-const zoomSpeed = 0.03;
-
 export default function VideoViewer() {
   const { file, next } = useGlobal();
   const { path, _id } = file;
@@ -58,27 +56,18 @@ export default function VideoViewer() {
           e.stopPropagation();
           return false;
         }}
-        onPause={() => {
-          mainRef.current!.dataset.isPaused = "paused";
-        }}
-        onPlay={() => {
-          mainRef.current!.dataset.isPaused = "";
-        }}
-        onEnded={() => {
-          next(1);
-        }}
+        onPause={() => (mainRef.current!.dataset.isPaused = "paused")}
+        onPlay={() => (mainRef.current!.dataset.isPaused = "")}
+        onEnded={() => next(1)}
         onTimeUpdate={({ currentTarget: video }) => {
-          if (timeBarRef.current)
-            timeBarRef.current.value = video.currentTime.toString();
-          if (currentTimeRef.current)
-            currentTimeRef.current.textContent = `${secondsToString(
-              video.currentTime
-            )} / ${secondsToString(video.duration)}`;
+          timeBarRef.current!.value = video.currentTime.toString();
+          currentTimeRef.current!.textContent = [
+            secondsToString(video.currentTime),
+            secondsToString(video.duration),
+          ].join("/");
         }}
         onDurationChange={({ currentTarget: video }) => {
-          timeBarRef.current
-            ? (timeBarRef.current.max = video.duration.toString())
-            : null;
+          timeBarRef.current!.max = video.duration.toString();
           toggleVideoPlayState(isPlayingRef.current);
         }}
         onLoadedData={({ currentTarget: video }) => {
@@ -87,9 +76,11 @@ export default function VideoViewer() {
           video.volume = parseFloat(volume);
         }}
       />
+      {/* PLAY */}
       <button className="vp-play" onClick={() => toggleVideoPlayState()}>
         ▶️
       </button>
+      {/* COLOR */}
       <form
         className="vp-color"
         onInput={({ currentTarget: form }) => {
@@ -139,6 +130,7 @@ export default function VideoViewer() {
         <br />
         <input type="reset" />
       </form>
+      {/* CONTROL */}
       <div className="vp-control">
         <div className="vp-timebar-container">
           <input
