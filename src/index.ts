@@ -75,13 +75,14 @@ app.post("/api/file", (req, res) => {
     newName = findAvailableName(dir, newName, ext);
     fs.renameSync(dir + "/" + oldFullname, dir + "/" + newName + ext);
     // rename thumbnail
-    const thumbnailDir = dir + "/.explorer/thumbnails/";
-    fs.readdirSync(thumbnailDir).forEach(
+    const thumbnailsDir = dir + "/.explorer/thumbnails/";
+    fs.mkdirSync(thumbnailsDir, { recursive: true });
+    fs.readdirSync(thumbnailsDir).forEach(
       (filename) =>
         filename.startsWith(oldFullname) &&
         fs.renameSync(
-          thumbnailDir + filename,
-          thumbnailDir + newFullname + filename.slice(oldFullname.length)
+          thumbnailsDir + filename,
+          thumbnailsDir + newFullname + filename.slice(oldFullname.length)
         )
     );
   }
@@ -146,8 +147,10 @@ app.post("/api/command", (req, res) => {
   const newExt: string = req.body.newExt || ext;
   // copy file into .explorer
   const explorerDir = dir + "/.explorer/",
+    thumbnailsDir = explorerDir + "thumbnails",
     fullname = name + ext,
     tempFullname = name + "_temp" + ext;
+  fs.mkdirSync(thumbnailsDir, { recursive: true });
   fs.renameSync(dir + "/" + fullname, explorerDir + tempFullname);
   // prepare command
   let command = originalCommand;
@@ -218,20 +221,18 @@ app.get("/file", (req, res) => {
       const end = parts[1] ? parseInt(parts[1], 10) : size - 1;
       const chunksize = end - start + 1;
       fileStream = fs.createReadStream(path, { start, end });
-      const head = {
+      res.writeHead(206, {
         "Content-Range": `bytes ${start}-${end}/${size}`,
         "Accept-Ranges": "bytes",
         "Content-Length": chunksize,
         "Content-Type": mimeTypes.video[ext],
-      };
-      res.writeHead(206, head);
+      });
     } else {
       fileStream = fs.createReadStream(path);
-      const head = {
+      res.writeHead(200, {
         "Content-Length": size,
         "Content-Type": mimeTypes.video[ext],
-      };
-      res.writeHead(200, head);
+      });
     }
     fileStream.on("error", (err) => {
       console.log("ERROR FILE", path);
