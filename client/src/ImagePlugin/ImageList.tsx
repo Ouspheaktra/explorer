@@ -5,6 +5,8 @@ import { useGlobal } from "../GlobalContext";
 import ImageFileComponent from "./ImageFileComponent";
 import { useRef } from "react";
 import { Plugin, iFile } from "../types";
+import createStringArrayDetailsEditor from "../Editor/editors/createStringArrayDetailsEditor";
+import { iImageDetails } from "./types";
 
 const ImageList: Plugin["List"] = ({ closeButton }) => {
   const {
@@ -36,23 +38,13 @@ const ImageList: Plugin["List"] = ({ closeButton }) => {
         },
       ]}
       EditorComponents={[
-        EditedEditor
+        createStringArrayDetailsEditor<iImageDetails>(
+          "avatars",
+          ({ avatars }) =>
+            avatars && avatars.length ? avatars.join(" - ") : ""
+        ),
+        EditedEditor,
       ]}
-      // details={{
-      //   formName: ({ avatars }) =>
-      //     avatars && avatars.length ? avatars.join(" - ") : "",
-      //   detailsTypes: [
-      //     {
-      //       name: "avatars",
-      //       Renderer: StringArrayRenderer,
-      //       toFormName: true,
-      //     },
-      //     {
-      //       name: "editeds",
-      //       Renderer: EditedsRenderer,
-      //     },
-      //   ],
-      // }}
     />
   );
 };

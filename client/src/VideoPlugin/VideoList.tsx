@@ -8,6 +8,9 @@ import RotateRenderer from "./editors/RotateEditor";
 import CropRenderer from "./editors/CropEditor";
 import ReThumbnailEditor from "./editors/ReThumbnailEditor";
 import TrimEditor from "./editors/TrimEditor";
+import { iVideoDetails } from "./types";
+import createStringArrayDetailsEditor from "../Editor/editors/createStringArrayDetailsEditor";
+import createStringDetailsEditor from "../Editor/editors/createStringDetailsEditor";
 
 const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {
@@ -46,33 +49,20 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
         },
       ]}
       EditorComponents={[
+        createStringArrayDetailsEditor("avatars", formName),
+        createStringArrayDetailsEditor("tags"),
+        createStringDetailsEditor("title", formName),
         RotateRenderer,
         ReThumbnailEditor,
         CropRenderer,
         TrimEditor,
       ]}
-      // details={{
-      // formName: ({ avatars, title }) =>
-      //   [...(avatars || []), title].filter(Boolean).join(" - "),
-      //   detailsTypes: [
-      //     {
-      //       name: "avatars",
-      //       Renderer: StringArrayRenderer,
-      //       toFormName: true,
-      //     },
-      //     {
-      //       name: "tags",
-      //       Renderer: StringArrayRenderer,
-      //     },
-      //     {
-      //       name: "title",
-      //       Renderer: StringRenderer,
-      //       toFormName: true,
-      //     },
-      //   ],
-      // }}
     />
   );
 };
+
+function formName({ avatars, title }: iVideoDetails) {
+  return [...(avatars || []), title].filter(Boolean).join(" - ");
+}
 
 export default VideoList;

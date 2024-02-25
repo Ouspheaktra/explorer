@@ -6,4 +6,11 @@ export interface EditorProps {
   Components: FC<EditorComponentProps>[];
 }
 
-export type EditorComponentProps =  Pick<EditorProps, "selecteds">;
+export type EditorComponentProps = Pick<EditorProps, "selecteds">;
+
+export type formName<iDetailsType extends object> = (details: iDetailsType) => string;
+
+export type createDetailsEditor = <iDetailsType extends object>(
+  name: keyof iDetailsType,
+  formName?: formName<iDetailsType>
+) => FC<EditorComponentProps>;

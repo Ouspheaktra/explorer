@@ -17,7 +17,10 @@ export default function Editor({ Components, ...rendererProps }: EditorProps) {
         }}
       ></button>
       {Components.map((Component) => (
-        <Component key={Component.name} {...rendererProps} />
+        <Component
+          key={Component.displayName || Component.name}
+          {...rendererProps}
+        />
       ))}
     </div>
   );

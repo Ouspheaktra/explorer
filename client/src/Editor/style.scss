@@ -1,8 +1,4 @@
 #editor {
-  // display: grid;
-  // grid-template-columns: min-content 1fr;
-  // grid-gap: 5px 10px;
-  // align-items: center;
   display: flex;
   flex-direction: column;
   font-size: 15px;
@@ -50,7 +46,7 @@
   > .string-array-wrapper {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
     > .string-array {
       position: relative;
       background: blue;
