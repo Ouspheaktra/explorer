@@ -23,8 +23,7 @@ export default function List<iDetailsType extends object>({
   // null means fullMode
   // [] means selected file
   const [selecteds, setSelecteds] = useState<iFile[] | null>(null);
-  const { setDir, file, setFile, setNext } =
-    useGlobal();
+  const { setDir, file, setFile, setNext } = useGlobal();
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
     builtinSorts[0].name,
     "asc",
@@ -85,9 +84,20 @@ export default function List<iDetailsType extends object>({
               <button
                 className="list-fuller"
                 onClick={() => {
-                  if (fullMode) setFile(selecteds[0]);
-                  setSelecteds(fullMode ? null : [file]);
-                  scrollFileIntoView(file._id);
+                  // if back to list mode
+                  if (fullMode) {
+                    // view first selected file
+                    if (selecteds.length) setFile(selecteds[0]);
+                  }
+                  setSelecteds(fullMode
+                    // list mode
+                    ? null
+                    // full mode
+                    : (file ? [file] : [])
+                  );
+                  //
+                  if (file)
+                    scrollFileIntoView(file._id);
                 }}
                 style={{ backgroundColor: "aqua" }}
               >
