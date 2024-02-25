@@ -1,8 +1,10 @@
-#details {
-  display: grid;
-  grid-template-columns: min-content 1fr;
-  grid-gap: 5px 10px;
-  align-items: center;
+#editor {
+  // display: grid;
+  // grid-template-columns: min-content 1fr;
+  // grid-gap: 5px 10px;
+  // align-items: center;
+  display: flex;
+  flex-direction: column;
   font-size: 15px;
   position: fixed;
   width: 400px;

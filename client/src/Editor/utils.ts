@@ -1,12 +1,12 @@
 import { UpdateFiles } from "../GlobalContext";
-import { DetailsProps } from "./types";
+import { EditorProps } from "./types";
 import { iFile } from "../types";
 
 export const update = (
   seleteds: iFile[],
   updateFiles: UpdateFiles,
   newMoreDetails: object,
-  formName?: DetailsProps<any>["formName"] | false
+  formName?: EditorProps<any>["formName"] | false
 ) =>
   updateFiles(
     seleteds.map((file) => {

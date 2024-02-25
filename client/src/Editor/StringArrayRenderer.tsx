@@ -1,12 +1,12 @@
 import { useGlobal } from "../GlobalContext";
-import { RendererProps } from "./types";
+import { EditorComponentProps } from "./types";
 import { update } from "./utils";
 
 export default function StringArrayRenderer<iDetails extends object>({
   selecteds,
   detailsType,
   formName,
-}: RendererProps<iDetails>) {
+}: EditorComponentProps<iDetails>) {
   const {
     dir: { files: allFiles },
     updateFiles,

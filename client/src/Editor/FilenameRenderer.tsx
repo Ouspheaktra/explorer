@@ -1,10 +1,10 @@
 import { useGlobal } from "../GlobalContext";
-import { RendererProps } from "./types";
+import { EditorComponentProps } from "./types";
 import { updateFileName } from "./utils";
 
 export function FilenameDetails<iDetails extends object>({
   selecteds,
-}: RendererProps<iDetails>) {
+}: EditorComponentProps<iDetails>) {
   const { updateFiles } = useGlobal();
   return (
     <input

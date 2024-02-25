@@ -1,9 +1,9 @@
-import { RendererProps } from "../Details/types";
-import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "../../Editor/types";
+import { useGlobal } from "../../GlobalContext";
 
 export default function CropRenderer({
   selecteds,
-}: RendererProps<any>) {
+}: EditorComponentProps) {
   const { commandFiles } = useGlobal();
   return (
     <div>

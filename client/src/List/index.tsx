@@ -2,23 +2,23 @@ import { useRef, useState } from "react";
 import { ListProps, Order, SortedGroup } from "./types";
 import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
-import Details from "../Details";
+import Editor from "../Editor";
 import { iFile } from "../types";
 import { toggleItem } from "../utils";
 import { scrollFileIntoView } from "./utils";
-import TrashButton from "../Details/TrashButton";
+import TrashButton from "../Editor/TrashButton";
 import "./style.scss";
 
-export default function List<iDetailsType extends object>({
+export default function List({
   listTop,
   topButtons,
   bottomButtons,
   sorts = [],
   FileComponent,
   filteredFiles,
-  details,
+  EditorComponents,
   ...ulProps
-}: ListProps<iDetailsType>) {
+}: ListProps) {
   const [open, setOpen] = useState(true);
   // null means fullMode
   // [] means selected file
@@ -185,17 +185,11 @@ export default function List<iDetailsType extends object>({
           {bottomButtons}
         </li>
       </ul>
-      {details && file && (
-        <Details<iDetailsType>
+      {/* FIXME don't deal with file and selecteds, deal with one only */}
+      {file && (
+        <Editor
           key={file._id}
-          detailsTypes={[
-            ...details.detailsTypes,
-            {
-              name: "trash" as keyof iDetailsType,
-              Renderer: TrashButton,
-            },
-          ]}
-          formName={details.formName}
+          Components={[...EditorComponents, TrashButton]}
           selecteds={selecteds || [file]}
         />
       )}

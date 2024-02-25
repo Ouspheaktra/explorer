@@ -1,16 +1,13 @@
 import { useRef } from "react";
-import StringArrayRenderer from "../Details/StringArrayRenderer";
-import StringRenderer from "../Details/StringRenderer";
 import { useGlobal } from "../GlobalContext";
 import List from "../List";
 import { createSort } from "../List/utils";
 import VideoFileComponent from "./VideoFileComponent";
-import { iVideoDetails } from "./types";
 import { Plugin, iFile } from "../types";
-import RotateRenderer from "./RotateRenderer";
-import CropRenderer from "./CropRenderer";
-import ReThumbnail from "./ReThumbnail";
-import TrimRenderer from "./TrimRenderer";
+import RotateRenderer from "./editors/RotateEditor";
+import CropRenderer from "./editors/CropEditor";
+import ReThumbnailEditor from "./editors/ReThumbnailEditor";
+import TrimEditor from "./editors/TrimEditor";
 
 const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {
@@ -20,7 +17,7 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
   if (files !== filesStore.current)
     filesStore.current = files.filter((file) => file.type === "video");
   return (
-    <List<iVideoDetails>
+    <List
       id="video-list"
       filteredFiles={filesStore.current}
       FileComponent={VideoFileComponent}
@@ -48,42 +45,32 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
           ),
         },
       ]}
-      details={{
-        formName: ({ avatars, title }) =>
-          [...(avatars || []), title].filter(Boolean).join(" - "),
-        detailsTypes: [
-          {
-            name: "avatars",
-            Renderer: StringArrayRenderer,
-            toFormName: true,
-          },
-          {
-            name: "tags",
-            Renderer: StringArrayRenderer,
-          },
-          {
-            name: "title",
-            Renderer: StringRenderer,
-            toFormName: true,
-          },
-          {
-            name: "rotate" as any,
-            Renderer: RotateRenderer,
-          },
-          {
-            name: "re-thumbnail" as any,
-            Renderer: ReThumbnail,
-          },
-          {
-            name: "crop" as any,
-            Renderer: CropRenderer,
-          },
-          {
-            name: "trim" as any,
-            Renderer: TrimRenderer,
-          }
-        ],
-      }}
+      EditorComponents={[
+        RotateRenderer,
+        ReThumbnailEditor,
+        CropRenderer,
+        TrimEditor,
+      ]}
+      // details={{
+      // formName: ({ avatars, title }) =>
+      //   [...(avatars || []), title].filter(Boolean).join(" - "),
+      //   detailsTypes: [
+      //     {
+      //       name: "avatars",
+      //       Renderer: StringArrayRenderer,
+      //       toFormName: true,
+      //     },
+      //     {
+      //       name: "tags",
+      //       Renderer: StringArrayRenderer,
+      //     },
+      //     {
+      //       name: "title",
+      //       Renderer: StringRenderer,
+      //       toFormName: true,
+      //     },
+      //   ],
+      // }}
     />
   );
 };

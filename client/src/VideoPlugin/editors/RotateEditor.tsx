@@ -1,10 +1,10 @@
-import { RendererProps } from "../Details/types";
-import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "../../Editor/types";
+import { useGlobal } from "../../GlobalContext";
 
 const rotate = (degree: number) =>
   `ffmpeg -display_rotation ${360 - degree} -i {input} -c copy {output}`;
 
-export default function RotateRenderer({ selecteds }: RendererProps<any>) {
+export default function RotateRenderer({ selecteds }: EditorComponentProps) {
   const { commandFiles } = useGlobal();
   return (
     <div>

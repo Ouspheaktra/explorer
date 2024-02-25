@@ -1,9 +1,9 @@
-import { RendererProps } from "../Details/types";
-import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "../../Editor/types";
+import { useGlobal } from "../../GlobalContext";
 
-export default function EditedsRenderer<iDetails extends object>({
+export default function EditedEditor({
   selecteds,
-}: RendererProps<iDetails>) {
+}: EditorComponentProps) {
   const { updateFiles } = useGlobal();
   if (selecteds.length > 1) {
     const [file, ...editeds] = selecteds;

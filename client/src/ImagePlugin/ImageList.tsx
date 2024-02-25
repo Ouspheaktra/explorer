@@ -1,8 +1,6 @@
 import List from "../List";
 import { createSort } from "../List/utils";
-import { iImageDetails } from "./types";
-import StringArrayRenderer from "../Details/StringArrayRenderer";
-import EditedsRenderer from "./EditedsRenderer";
+import EditedEditor from "./editors/EditedEditor";
 import { useGlobal } from "../GlobalContext";
 import ImageFileComponent from "./ImageFileComponent";
 import { useRef } from "react";
@@ -23,7 +21,7 @@ const ImageList: Plugin["List"] = ({ closeButton }) => {
     );
   }
   return (
-    <List<iImageDetails>
+    <List
       id="image-list"
       filteredFiles={filesStore.current}
       FileComponent={ImageFileComponent}
@@ -37,21 +35,24 @@ const ImageList: Plugin["List"] = ({ closeButton }) => {
           ),
         },
       ]}
-      details={{
-        formName: ({ avatars }) =>
-          avatars && avatars.length ? avatars.join(" - ") : "",
-        detailsTypes: [
-          {
-            name: "avatars",
-            Renderer: StringArrayRenderer,
-            toFormName: true,
-          },
-          {
-            name: "editeds",
-            Renderer: EditedsRenderer,
-          },
-        ],
-      }}
+      EditorComponents={[
+        EditedEditor
+      ]}
+      // details={{
+      //   formName: ({ avatars }) =>
+      //     avatars && avatars.length ? avatars.join(" - ") : "",
+      //   detailsTypes: [
+      //     {
+      //       name: "avatars",
+      //       Renderer: StringArrayRenderer,
+      //       toFormName: true,
+      //     },
+      //     {
+      //       name: "editeds",
+      //       Renderer: EditedsRenderer,
+      //     },
+      //   ],
+      // }}
     />
   );
 };

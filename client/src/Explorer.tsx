@@ -4,7 +4,7 @@ import { FileComponentProps, ListProps } from "./List/types";
 
 export default function Explorer({
   topButtons,
-}: Pick<ListProps<any>, "topButtons">) {
+}: Pick<ListProps, "topButtons">) {
   const {
     dir: { dir, prevDir, files },
     setDir,
@@ -17,6 +17,7 @@ export default function Explorer({
       filteredFiles={files}
       topButtons={topButtons}
       FileComponent={FileComponent}
+      EditorComponents={[]}
       listTop={
         <>
           {dir && (

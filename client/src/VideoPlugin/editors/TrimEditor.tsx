@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { RendererProps } from "../Details/types";
-import { secondsToString as str } from "../utils";
-import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "../../Editor/types";
+import { secondsToString as str } from "../../utils";
+import { useGlobal } from "../../GlobalContext";
 
-export default function TrimRenderer({ selecteds }: RendererProps<any>) {
+export default function TrimEditor({ selecteds }: EditorComponentProps) {
   const { commandFiles } = useGlobal();
   const [parts, setParts] = useState<[number, number][]>([]);
   const video = document.getElementById("video")! as HTMLVideoElement;

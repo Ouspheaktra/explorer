@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useGlobal } from "../GlobalContext";
-import { RendererProps } from "./types";
+import { EditorComponentProps } from "./types";
 import { update } from "./utils";
 
 export default function StringDetail<iDetails extends object>({
   selecteds,
   detailsType,
   formName,
-}: RendererProps<iDetails>) {
+}: EditorComponentProps<iDetails>) {
   const { updateFiles } = useGlobal();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const name = detailsType.name as string;

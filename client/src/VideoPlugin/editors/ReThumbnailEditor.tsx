@@ -1,9 +1,9 @@
-import { RendererProps } from "../Details/types";
-import { iFile } from "../types";
-import { fileUrl } from "../utils";
-import { postThumbnails } from "../utils/api";
+import { EditorComponentProps } from "../../Editor/types";
+import { iFile } from "../../types";
+import { fileUrl } from "../../utils";
+import { postThumbnails } from "../../utils/api";
 
-export default function ReThumbnail({ selecteds }: RendererProps<any>) {
+export default function ReThumbnailEditor({ selecteds }: EditorComponentProps) {
   const recreate = async (startPerc: number) => {
     for (let file of selecteds) {
       const imgTags = Array.from(
