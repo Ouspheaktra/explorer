@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import { iData, iDir, iFile } from "../types";
 import type { postFile } from "../utils/api";
+import type { pushHistory } from "../utils";
 
 export type SetFile = (file: iFile | null) => any;
 export type SetDir = (dir: string, pushHistory?: boolean) => Promise<iDir>;
@@ -8,9 +9,17 @@ export type UpdateFiles = (
   postFiles: Parameters<typeof postFile>[]
 ) => Promise<iFile[]>;
 export type DeleteFiles = (files: iFile[]) => Promise<any>;
-export type CommandFiles = (files: iFile[], command: string, newExt?: string) => Promise<any>;
+export type CommandFiles = (
+  files: iFile[],
+  command: string,
+  newExt?: string
+) => Promise<any>;
 export type Next = (plus: number) => void;
 export type SetNext = (next: Next) => void;
+export type PushHistory = (
+  state: Partial<Parameters<typeof pushHistory>[0]>,
+  push?: boolean
+) => void;
 
 export type iGlobalContext = iData & {
   setDir: SetDir;
@@ -20,6 +29,7 @@ export type iGlobalContext = iData & {
   commandFiles: CommandFiles;
   next: Next;
   setNext: SetNext;
+  pushHistory: PushHistory;
 };
 
 // @ts-ignore

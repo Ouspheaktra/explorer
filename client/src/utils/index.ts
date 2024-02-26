@@ -67,12 +67,15 @@ export const sameDate = (date1: Date, date2: Date) =>
 export const setTitle = ({ dir, file }: AppState) =>
   (document.title = file ? file.fullname : dir ? dir.dir : "Explorer");
 
-export const pushHistory = (state: AppState, isPush: boolean = true) => {
-  const { dir, file, viewer } = state;
+export const pushHistory = (
+  state: AppState & ObjectLiteral,
+  isPush: boolean = true
+) => {
+  const { dir, file, ...rest } = state;
   const q = objectToQuery({
     dir: dir ? dir.dir : "",
     file: file ? file.fullname : "",
-    viewer,
+    ...rest,
   });
   if (isPush) history.pushState({}, "", `/?${q}`);
   else history.replaceState({}, "", `/?${q}`);

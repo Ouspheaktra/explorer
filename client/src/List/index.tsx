@@ -20,7 +20,7 @@ export default function List({
   ...ulProps
 }: ListProps) {
   const [open, setOpen] = useState(true);
-  const { setDir, file, setFile, setNext } = useGlobal();
+  const { setDir, file, setFile, setNext, pushHistory } = useGlobal();
   const [selecteds, setSelecteds] = useState<iFile[]>(file ? [file] : []);
   useEffect(
     () =>
@@ -31,7 +31,9 @@ export default function List({
         : undefined,
     [file]
   );
-  const [fullMode, setFullMode] = useState(false);
+  const [fullMode, setFullMode] = useState(
+    new URLSearchParams(location.search.slice(1)).get("fullList") === "1"
+  );
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
     builtinSorts[0].name,
     "asc",
@@ -98,6 +100,7 @@ export default function List({
                   if (fullMode && selecteds.length) setFile(file);
                   //
                   setFullMode(!fullMode);
+                  pushHistory({ fullList: fullMode ? "" : "1" }, false);
                   //
                   if (file) scrollFileIntoView(file._id);
                 }}

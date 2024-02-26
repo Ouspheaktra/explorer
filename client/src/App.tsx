@@ -5,10 +5,16 @@ import {
   dirToPrevDir,
   prepareFile,
   promisesAllOneByOne,
-  pushHistory,
+  pushHistory as _pushHistory,
   setTitle,
 } from "./utils";
-import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
+import {
+  GlobalContext,
+  Next,
+  PushHistory,
+  SetDir,
+  SetFile,
+} from "./GlobalContext";
 import { deleteFile, getDir, postCommand, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
@@ -26,10 +32,12 @@ function App() {
   });
   const { dir, file, viewer } = state;
   const nextRef = useRef<Next>(() => {});
+  const pushHistory: PushHistory = (updateState, pushHistory = true) =>
+    _pushHistory({ ...state, ...updateState }, pushHistory);
   const setDir: SetDir = (dir, pushIntoHistory = true) =>
       getDir(dir).then((data) => {
         // push history
-        if (pushIntoHistory) pushHistory({ ...state, dir: data }, true);
+        if (pushIntoHistory) pushHistory({ dir: data }, true);
         // prepare
         data.prevDir = dirToPrevDir(data.dir);
         data.files.forEach((f, i) => {
@@ -41,11 +49,11 @@ function App() {
         return data;
       }),
     setFile: SetFile = (newFile) => {
-      pushHistory({ ...state, file: newFile });
+      pushHistory({ file: newFile });
       setState({ viewer, dir, file: newFile });
     },
     setViewer = (viewer: string) => {
-      pushHistory({ ...state, viewer }, false);
+      pushHistory({ viewer }, false);
       setState({ file, dir, viewer });
     };
   // query data
@@ -68,7 +76,7 @@ function App() {
   //
   if (!dir) return "Loading...";
   const plugin =
-    plugins.find((p) => p.type === viewer || (file && p.type === file.type)) ||
+    plugins.find((p) => (file ? p.type === file.type : p.type === viewer)) ||
     false;
   return (
     <GlobalContext.Provider
@@ -86,7 +94,7 @@ function App() {
                 const id = files.findIndex((file) => newFile._id === file._id);
                 files[id] = prepareFile(newFile);
               }
-              pushHistory({ ...state, dir: newDir, file: newFiles[0] }, false);
+              pushHistory({ dir: newDir, file: newFiles[0] }, false);
               setState({ file: newFiles[0], dir: newDir, viewer });
               // scrollFileIntoView(newFiles[0]._id);
               return newFiles;
@@ -118,6 +126,7 @@ function App() {
           ),
         next: (plus) => nextRef.current(plus),
         setNext: (next) => (nextRef.current = next),
+        pushHistory,
       }}
     >
       <div id="viewer">
