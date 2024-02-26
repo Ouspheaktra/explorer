@@ -165,7 +165,7 @@ app.post("/api/command", (req, res) => {
 
   //
   jobs.add((next) => {
-    console.log("Command on file", fullname);
+    console.log("Command on file:\n ", fullname);
     exec(command, function (err) {
       if (err) {
         console.error(err);
