@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ListProps, Order, SortedGroup } from "./types";
 import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
@@ -20,10 +20,18 @@ export default function List({
   ...ulProps
 }: ListProps) {
   const [open, setOpen] = useState(true);
-  // null means fullMode
-  // [] means selected file
-  const [selecteds, setSelecteds] = useState<iFile[] | null>(null);
   const { setDir, file, setFile, setNext } = useGlobal();
+  const [selecteds, setSelecteds] = useState<iFile[]>(file ? [file] : []);
+  useEffect(
+    () =>
+      !file
+        ? setSelecteds([])
+        : !selecteds.includes(file)
+        ? setSelecteds([file])
+        : undefined,
+    [file]
+  );
+  const [fullMode, setFullMode] = useState(false);
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
     builtinSorts[0].name,
     "asc",
@@ -65,12 +73,12 @@ export default function List({
   }
   const { sortedGroups } = toSortStore.current;
   setNext((plus) => {
+    const [file] = selecteds;
     if (!file) return;
     const files = sortedGroups.map(({ files }) => files).flat();
-    const currentId = files.findIndex((f) => file._id === f._id);
+    const currentId = files.indexOf(file);
     if (currentId) setFile(files.at((currentId + plus) % files.length)!);
   });
-  const fullMode = selecteds !== null;
   return (
     <>
       <ul
@@ -84,20 +92,12 @@ export default function List({
               <button
                 className="list-fuller"
                 onClick={() => {
+                  const [file] = selecteds;
                   // if back to list mode
-                  if (fullMode) {
-                    // view first selected file
-                    if (selecteds.length) setFile(selecteds[0]);
-                  }
-                  setSelecteds(
-                    fullMode
-                      ? // list mode
-                        null
-                      : // full mode
-                      file
-                      ? [file]
-                      : []
-                  );
+                  // view first selected file
+                  if (fullMode && selecteds.length) setFile(file);
+                  //
+                  setFullMode(!fullMode);
                   //
                   if (file) scrollFileIntoView(file._id);
                 }}
@@ -128,9 +128,7 @@ export default function List({
               <ul className="list-group-files">
                 {files.map((f) => {
                   const { type, ext, fullname, dir, _id } = f;
-                  const isCurrent = fullMode
-                    ? selecteds!.some((file) => file._id === _id)
-                    : file?._id === _id;
+                  const isCurrent = selecteds.includes(f);
                   return (
                     <li
                       key={_id}
@@ -185,12 +183,10 @@ export default function List({
           {bottomButtons}
         </li>
       </ul>
-      {/* FIXME don't deal with file and selecteds, deal with one only */}
-      {file && (
+      {selecteds.length && (
         <Editor
-          key={file._id}
           Components={[...EditorComponents, TrashButton]}
-          selecteds={selecteds || [file]}
+          selecteds={selecteds}
         />
       )}
     </>
