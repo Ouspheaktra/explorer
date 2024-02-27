@@ -80,9 +80,9 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
               </button>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button
+                className="x"
                 onClick={() => setParts(parts.filter((_, i) => i !== id))}
               >
-                x
               </button>
             </div>
           ))}

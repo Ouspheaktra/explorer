@@ -9,7 +9,7 @@ export default function Editor({ Components, ...rendererProps }: EditorProps) {
   return (
     <div id="editor" className={open ? "open" : ""}>
       <button
-        className="x"
+        className="x fly-right"
         data-sign={open ? "x" : "o"}
         onClick={() => {
           setOpen(!open);

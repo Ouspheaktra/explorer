@@ -14,10 +14,6 @@
   &.open {
     opacity: 1;
   }
-  > .x:first-of-type {
-    opacity: 1;
-    font-size: large;
-  }
   > span {
     text-align: right;
     background: white;
@@ -43,17 +39,7 @@
     border-radius: 5px;
     font-size: inherit;
   }
-  .x {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    font-size: small;
-    opacity: 0;
-    &:hover {
-      opacity: 1;
-    }
-  }
-  > .string-array-wrapper {
+  .string-array-wrapper {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;

@@ -73,3 +73,17 @@ body {
     content: "x";
   }
 }
+.small {
+  font-size: small;
+}
+.auto-hide {
+  opacity: 0;
+  &:hover {
+    opacity: 1;
+  }
+}
+.fly-right {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
