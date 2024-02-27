@@ -9,6 +9,7 @@ export default function ImageViewer() {
     dir: { files },
     updateFiles,
     deleteFiles,
+    next,
   } = useGlobal();
   const { _id, path, dir, details } = file;
   const [editedId, setEditedId] = useState(0);
@@ -57,6 +58,9 @@ export default function ImageViewer() {
             }
           : undefined
       }
+      onMouseUp={(e) => {
+        if (e.button === 1) next(1);
+      }}
       onMouseMove={(e) => {
         if (editeds.length) {
           const { x: imgX, width } = imageRef.current!.getBoundingClientRect();
