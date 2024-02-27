@@ -28,7 +28,7 @@ function App() {
   const [state, setState] = useState<AppState>({
     dir: null,
     file: null,
-    viewer: "",
+    viewer: new URLSearchParams(location.search.slice(1)).get("viewer") || "",
   });
   const { dir, file, viewer } = state;
   const nextRef = useRef<Next>(() => {});
@@ -64,7 +64,6 @@ function App() {
       const filename = search.get("file")!;
       if (filename) {
         const file = dir.files.find((f) => f.fullname === filename);
-        const viewer = search.get("viewer") || "";
         if (file) {
           setState({ file, dir, viewer });
           scrollFileIntoView(file._id);
