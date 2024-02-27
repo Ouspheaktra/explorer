@@ -69,6 +69,10 @@ export default function ImageViewer() {
           imageRef.current!.style.clipPath = `polygon(0 0, ${x}% 0, ${x}% 100%, 0 100%)`;
         } else imageRef.current!.style.clipPath = "";
       }}
+      onDoubleClick={(e) => {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else e.currentTarget.requestFullscreen();
+      }}
     >
       {editeds.length ? (
         <img
