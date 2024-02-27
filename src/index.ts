@@ -145,6 +145,12 @@ app.post("/api/command", (req, res) => {
     command: string;
     newExt?: string;
   };
+  if (originalCommand.startsWith(":")) {
+    const query = new URLSearchParams(originalCommand.slice(1));
+    const autoShutdown = query.get("auto-shutdown");
+    jobs.setAutoShutdown(autoShutdown === "1");
+    return res.sendStatus(200);
+  }
   const { dir, name, ext } = file;
   const newExt: string = req.body.newExt || ext;
   // copy file into .explorer

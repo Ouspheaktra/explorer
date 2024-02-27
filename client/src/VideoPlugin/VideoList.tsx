@@ -11,6 +11,7 @@ import TrimEditor from "./editors/TrimEditor";
 import { iVideoDetails } from "./types";
 import createStringArrayDetailsEditor from "../Editor/editors/createStringArrayDetailsEditor";
 import createStringDetailsEditor from "../Editor/editors/createStringDetailsEditor";
+import AutoShutdown from "../Editor/editors/AutoShutdown";
 
 const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {
@@ -56,6 +57,7 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
         ReThumbnailEditor,
         CropRenderer,
         TrimEditor,
+        AutoShutdown,
       ]}
     />
   );
