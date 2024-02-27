@@ -179,7 +179,7 @@ app.post("/api/command", (req, res) => {
         delete data[fullname]; // delete old details
         // find new files
         let regex = new RegExp(
-          `^${escapeRegExp(name)}(?:\\s#\\d)?${escapeRegExp(newExt)}$`
+          `^${escapeRegExp(name)}(?:\\s#\\d+)?${escapeRegExp(newExt)}$`
         );
         const newFullnames = fs
           .readdirSync(explorerDir)
