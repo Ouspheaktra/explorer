@@ -31,12 +31,13 @@ export default function List({
         : undefined,
     [file]
   );
+  const query = new URLSearchParams(location.search.slice(1));
   const [fullMode, setFullMode] = useState(
-    new URLSearchParams(location.search.slice(1)).get("fullList") === "1"
+    query.get("full-list") === "1"
   );
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
-    builtinSorts[0].name,
-    "asc",
+    query.get("sort-name") || builtinSorts[0].name,
+    query.get("sort-order") as Order || "asc",
   ]);
   const toSortStore = useRef<{
     sortName: string;
@@ -100,7 +101,7 @@ export default function List({
                   if (fullMode && selecteds.length) setFile(file);
                   //
                   setFullMode(!fullMode);
-                  pushHistory({ fullList: fullMode ? "" : "1" }, false);
+                  pushHistory({ ["full-list"]: fullMode ? "" : "1" }, false);
                   //
                   if (file) scrollFileIntoView(file._id);
                 }}
@@ -140,6 +141,7 @@ export default function List({
                       className={`is-${type} ${isCurrent ? "active" : ""}`}
                       onClick={(e) => {
                         if (type === "unknown") return;
+                        // if fullscreen, select mode
                         if (fullMode) {
                           if (e.ctrlKey)
                             setSelecteds(toggleItem([...selecteds!], f));
@@ -169,14 +171,17 @@ export default function List({
               data-order={sortOrder}
               className={"order-btn" + (sortName === name ? " active" : "")}
               onClick={() => {
-                setSort([
-                  name,
+                const order =
                   sortName !== name
                     ? "asc"
                     : sortOrder === "asc"
                     ? "desc"
-                    : "asc",
-                ]);
+                    : "asc";
+                setSort([name, order]);
+                pushHistory(
+                  { ["sort-name"]: name, ["sort-order"]: order },
+                  false
+                );
                 scrollFileIntoView(file._id);
               }}
             >
