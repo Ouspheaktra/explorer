@@ -1,8 +1,10 @@
 .thumbnail {
   display: flex;
   flex-direction: column;
-  width: calc(200px / 9 * 12);
-  aspect-ratio: 16/9;
+  --width: calc(200px / 9 * 12);
+  width: var(--width);
+  height: auto;
+  min-height: calc(var(--width) / 16 * 9);
   position: relative;
   overflow: hidden;
   &.portrait {
