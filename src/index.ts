@@ -74,7 +74,8 @@ app.post("/api/file", (req, res) => {
   if (newName) {
     // keep rename newName if exist
     newName = findAvailableName(dir, newName, ext);
-    fs.renameSync(dir + "/" + oldFullname, dir + "/" + newName + ext);
+    newFullname = newName + ext;
+    fs.renameSync(dir + "/" + oldFullname, dir + "/" + newFullname);
     // rename thumbnail
     const thumbnailsDir = dir + "/.explorer/thumbnails/";
     fs.mkdirSync(thumbnailsDir, { recursive: true });
@@ -192,8 +193,8 @@ app.post("/api/command", (req, res) => {
           fs.renameSync(explorerDir + newFullname, dir + "/" + newFullname);
         }
         writeFilesData(dir, data);
-        // TODO move to trash
-        fs.renameSync(explorerDir + tempFullname, explorerDir + fullname);
+        //
+        fs.rmSync(explorerDir + tempFullname);
       }
       //
       next();
