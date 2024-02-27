@@ -6,7 +6,7 @@ import Editor from "../Editor";
 import { iFile } from "../types";
 import { toggleItem } from "../utils";
 import { scrollFileIntoView } from "./utils";
-import TrashButton from "../Editor/TrashButton";
+import TrashEditor from "../Editor/editors/TrashEditor";
 import "./style.scss";
 
 export default function List({
@@ -193,7 +193,7 @@ export default function List({
       </ul>
       {selecteds.length && (
         <Editor
-          Components={[...EditorComponents, TrashButton]}
+          Components={[...EditorComponents, TrashEditor]}
           selecteds={selecteds}
         />
       )}
