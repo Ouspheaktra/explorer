@@ -182,7 +182,8 @@ export default function List({
                   { ["sort-name"]: name, ["sort-order"]: order },
                   false
                 );
-                scrollFileIntoView(file._id);
+                if (selecteds.length)
+                  scrollFileIntoView(selecteds.at(-1)!._id);
               }}
             >
               {name}
