@@ -77,7 +77,7 @@ export default function Thumbnail({
           src={thumbnailUrl(file, thumbnailId.current)}
           onLoad={(e) => {
             const { naturalWidth, naturalHeight } = e.currentTarget;
-            if (naturalWidth < naturalHeight) setIsLandscape(false);
+            setIsLandscape(naturalWidth > naturalHeight);
           }}
           onError={async (e) => {
             if (isErrorRef.current) return;
