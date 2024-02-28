@@ -1,15 +1,17 @@
 .thumbnail {
   display: flex;
   flex-direction: column;
-  --width: calc(200px / 9 * 12);
-  width: var(--width);
-  height: auto;
-  min-height: calc(var(--width) / 16 * 9);
+  width: calc(200px / 9 * 16);
+  aspect-ratio: 1;
   position: relative;
   overflow: hidden;
+  &.landscape {
+    width: auto;
+    height: 200px;
+    aspect-ratio: 16/9;
+  }
   &.portrait {
     width: 200px;
-    height: auto;
     aspect-ratio: 9/16;
   }
   > img {

@@ -15,7 +15,7 @@ export default function Thumbnail({
   createThumbnail: () => Promise<string[]>;
 } & HTMLProps<HTMLDivElement>) {
   const [toLoad, setToLoad] = useState(false);
-  const [isLandscape, setIsLandscape] = useState(true);
+  const [isLandscape, setIsLandscape] = useState<boolean | null>(null);
   const elRef = useRef<HTMLDivElement | null>(null);
   const isErrorRef = useRef(false);
   const intervalRef = useRef(0);
@@ -41,7 +41,7 @@ export default function Thumbnail({
     <div
       className={
         "thumbnail" +
-        (isLandscape ? "" : " portrait") +
+        (isLandscape === null ? "" : isLandscape ? " landscape" : " portrait") +
         (className ? " " + className : "")
       }
       ref={elRef}
@@ -55,7 +55,7 @@ export default function Thumbnail({
               intervalRef.current = setInterval(() => {
                 thumbnailId.current = (thumbnailId.current + 1) % maxThumbnails;
                 img.src = thumbnailUrl(file, thumbnailId.current);
-              }, 1000) as unknown as number;
+              }, 750) as unknown as number;
             }
       }
       onMouseLeave={
