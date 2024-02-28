@@ -5,17 +5,24 @@ import { iFile } from "../../types";
 export function RenameEditor({ selecteds }: EditorComponentProps) {
   const { updateFiles } = useGlobal();
   return (
-    <input
-      className={`filename-input`}
-      defaultValue={selecteds[0].name}
-      placeholder={"new filename"}
-      onKeyUp={(e) => {
-        if (e.key === "Enter") {
-          updateFileName(selecteds, updateFiles, e.currentTarget.value.trim());
-          e.currentTarget.value = "";
-        }
-      }}
-    />
+    <div>
+      <label className="label">rename</label>
+      <input
+        className={`filename-input`}
+        defaultValue={selecteds[0].name}
+        placeholder={"new filename"}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            updateFileName(
+              selecteds,
+              updateFiles,
+              e.currentTarget.value.trim()
+            );
+            e.currentTarget.value = "";
+          }
+        }}
+      />
+    </div>
   );
 }
 

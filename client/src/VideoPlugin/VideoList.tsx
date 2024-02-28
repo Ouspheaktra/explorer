@@ -12,6 +12,7 @@ import { iVideoDetails } from "./types";
 import createStringArrayDetailsEditor from "../Editor/editors/createStringArrayDetailsEditor";
 import createStringDetailsEditor from "../Editor/editors/createStringDetailsEditor";
 import AutoShutdown from "../Editor/editors/AutoShutdown";
+import { RenameEditor } from "../Editor/editors/RenameEditor";
 
 const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {
@@ -50,6 +51,7 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
         },
       ]}
       EditorComponents={[
+        RenameEditor,
         createStringArrayDetailsEditor("avatars", formName),
         createStringArrayDetailsEditor("tags"),
         createStringDetailsEditor("title", formName),
