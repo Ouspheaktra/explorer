@@ -1,6 +1,7 @@
 import express from "express";
 import p from "path";
 import fs from "fs";
+// import cors from "cors";
 import { execSync, exec } from "child_process";
 import bodyParser from "body-parser";
 import jobs from "./jobs";
@@ -24,6 +25,7 @@ const port = process.env.PORT || (__filename.endsWith(".js") ? 5555 : 5000);
 // app.set("views", path.join(__dirname, "views"));
 // app.set("view engine", "ejs");
 
+// app.use(cors());
 app.use(express.static(p.join(__dirname, "../client/dist")));
 
 app.get("/", (req, res) => {
