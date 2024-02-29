@@ -1,5 +1,6 @@
 import { AppState, FileType, ObjectLiteral, iFile } from "../types";
 import { mimeTypes } from "../../../src/utils";
+import Bowser from "bowser";
 
 export const shuffleArray = (array: any[]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -37,8 +38,12 @@ export const extToType = (ext: string) =>
 export const dirToPrevDir = (dir: string) =>
   dir ? dir.split("/").slice(0, -1).join("/") : false;
 
+const browser = Bowser.getParser(window.navigator.userAgent).getBrowserName();
+
 export const fileUrl = (path: string) =>
-  `/file?${new URLSearchParams({ path }).toString()}`;
+  browser === "Firefox"
+    ? "file://" + path
+    : `/file?${new URLSearchParams({ path }).toString()}`;
 
 export const objectToQuery = (obj: ObjectLiteral) =>
   new URLSearchParams(obj).toString();
