@@ -5,7 +5,7 @@ import { useGlobal } from "../GlobalContext";
 import "./style.scss";
 
 export default function VideoViewer() {
-  const { file, next } = useGlobal();
+  const { file, dir: { files }, next } = useGlobal();
   const { path, _id } = file;
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
@@ -31,6 +31,7 @@ export default function VideoViewer() {
     });
   }, [_id]);
   const src = fileUrl(path);
+  const vttFile = files.find(f => f.ext === ".vtt" && f.name === file.name);
   return (
     <div
       className="video-player"
@@ -77,7 +78,9 @@ export default function VideoViewer() {
           volumeBarRef.current!.value = volume;
           video.volume = parseFloat(volume);
         }}
-      />
+      >
+        {vttFile && <track default src={fileUrl(vttFile.path)}  kind="captions" srcLang="en" label="English" />}
+      </video>
       {/* PLAY */}
       <button className="vp-play" onClick={() => toggleVideoPlayState()}>
         ▶️

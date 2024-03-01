@@ -220,10 +220,10 @@ app.get("/file", (req, res) => {
   const { ext } = getFileParts(path);
   // if is director, 404
   if (!ext) return res.sendStatus(404);
-  // if image file
-  if (Object.keys(mimeTypes.image).includes(ext)) return res.sendFile(path);
+  // if NOT video file
+  if (!Object.keys(mimeTypes.video).includes(ext)) return res.sendFile(path);
   // if video file
-  else if (Object.keys(mimeTypes.video).includes(ext)) {
+  else {
     const size = fs.statSync(path).size;
     const range = req.headers.range;
     let fileStream: fs.ReadStream;
@@ -251,7 +251,8 @@ app.get("/file", (req, res) => {
       console.error(err);
     });
     fileStream.pipe(res);
-  } else return res.send("no viewer for extension: " + ext);
+  }
+  // return res.send("no viewer for extension: " + ext);
 });
 
 app.listen(port, () => {
