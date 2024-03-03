@@ -14,7 +14,7 @@ export default class PanZoom {
     this.mouseDown = (e) => {
       if (e.button === panButton) {
         pan = true;
-        const [x, y] = (el.style.translate || "0 0")
+        const [x, y=0] = (el.style.translate || "0 0")
           .split(" ")
           .map((o) => parseFloat(o));
         mouseX = e.clientX - x;
@@ -23,7 +23,6 @@ export default class PanZoom {
     };
     this.mouseMove = (e) => {
       if (pan) {
-        e.preventDefault();
         el.style.translate = `${e.clientX - mouseX}px ${e.clientY - mouseY}px`;
       }
     };
