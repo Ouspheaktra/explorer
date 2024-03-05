@@ -5,7 +5,11 @@ import { useGlobal } from "../GlobalContext";
 import "./style.scss";
 
 export default function VideoViewer() {
-  const { file, dir: { files }, next } = useGlobal();
+  const {
+    file,
+    dir: { files },
+    next,
+  } = useGlobal();
   const { path, _id } = file;
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
@@ -31,7 +35,7 @@ export default function VideoViewer() {
     });
   }, [_id]);
   const src = fileUrl(path);
-  const vttFile = files.find(f => f.ext === ".vtt" && f.name === file.name);
+  const vttFile = files.find((f) => f.ext === ".vtt" && f.name === file.name);
   return (
     <div
       className="video-player"
@@ -53,6 +57,9 @@ export default function VideoViewer() {
         }}
         onMouseDown={(e) => {
           if (e.button === 2) isRightHold.current = true;
+          // prevent middle mouse click default behavior
+          // from scroll down page
+          else if (e.button === 1) e.preventDefault();
         }}
         onMouseUp={(e) => {
           if (e.button === 0) toggleVideoPlayState();
@@ -79,7 +86,15 @@ export default function VideoViewer() {
           video.volume = parseFloat(volume);
         }}
       >
-        {vttFile && <track default src={fileUrl(vttFile.path)}  kind="captions" srcLang="en" label="English" />}
+        {vttFile && (
+          <track
+            default
+            src={fileUrl(vttFile.path)}
+            kind="captions"
+            srcLang="en"
+            label="English"
+          />
+        )}
       </video>
       {/* PLAY */}
       <button className="vp-play" onClick={() => toggleVideoPlayState()}>
