@@ -32,9 +32,14 @@ export default function List({
     [file]
   );
   const query = new URLSearchParams(location.search.slice(1));
-  const [fullMode, setFullMode] = useState(query.get("full-list") === "1");
+  const [fullMode, setFullMode] = useState(
+    Boolean(query.get("viewer") && query.get("full-list") === "1")
+  );
+  const allSorts = [...sorts, ...builtinSorts];
+  const querySortName = query.get("sort-name");
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
-    query.get("sort-name") || builtinSorts[0].name,
+    (querySortName && allSorts.find((s) => s.name === querySortName)?.name) ||
+      builtinSorts[0].name,
     (query.get("sort-order") as Order) || "asc",
   ]);
   const toSortStore = useRef<{
@@ -49,7 +54,6 @@ export default function List({
     sortedGroups: [],
   });
 
-  const allSorts = [...sorts, ...builtinSorts];
   if (
     sortName !== toSortStore.current.sortName ||
     sortOrder !== toSortStore.current.sortOrder ||
