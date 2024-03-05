@@ -69,22 +69,25 @@ export const sameDate = (date1: Date, date2: Date) =>
   date1.getMonth() === date2.getMonth() &&
   date1.getDate() === date2.getDate();
 
-export const setTitle = ({ dir, file }: AppState) =>
-  (document.title = file ? file.fullname : dir ? dir.dir : "Explorer");
-
-export const pushHistory = (
-  state: AppState & ObjectLiteral,
-  isPush: boolean = true
+export const updateQuery = (
+  query: ObjectLiteral,
+  {
+    replace = false,
+    useReplaceState = false,
+  }: { replace?: boolean; useReplaceState?: boolean } = {}
 ) => {
-  const { dir, file, ...rest } = state;
-  const q = objectToQuery({
-    dir: dir ? dir.dir : "",
-    file: file ? file.fullname : "",
-    ...rest,
-  });
-  if (isPush) history.pushState({}, "", `/?${q}`);
-  else history.replaceState({}, "", `/?${q}`);
-  setTitle(state);
+  const q = objectToQuery(
+    replace
+      ? query
+      : {
+          ...Object.fromEntries(
+            new URLSearchParams(location.search.slice(1)).entries()
+          ),
+          ...query,
+        }
+  );
+  if (useReplaceState) history.replaceState({}, "", `/?${q}`);
+  else history.pushState({}, "", `/?${q}`);
 };
 
 export const thumbnailUrl = ({ dir, fullname }: iFile, id: number) =>

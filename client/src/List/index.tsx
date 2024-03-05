@@ -4,7 +4,7 @@ import { builtinSorts } from "./builtin";
 import { useGlobal } from "../GlobalContext";
 import Editor from "../Editor";
 import { iFile } from "../types";
-import { toggleItem } from "../utils";
+import { toggleItem, updateQuery } from "../utils";
 import { scrollFileIntoView } from "./utils";
 import TrashEditor from "../Editor/editors/TrashEditor";
 import "./style.scss";
@@ -20,7 +20,7 @@ export default function List({
   ...ulProps
 }: ListProps) {
   const [open, setOpen] = useState(true);
-  const { setDir, file, setFile, setNext, pushHistory } = useGlobal();
+  const { setDir, file, setFile, setNext } = useGlobal();
   const [selecteds, setSelecteds] = useState<iFile[]>(file ? [file] : []);
   useEffect(
     () =>
@@ -32,12 +32,10 @@ export default function List({
     [file]
   );
   const query = new URLSearchParams(location.search.slice(1));
-  const [fullMode, setFullMode] = useState(
-    query.get("full-list") === "1"
-  );
+  const [fullMode, setFullMode] = useState(query.get("full-list") === "1");
   const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
     query.get("sort-name") || builtinSorts[0].name,
-    query.get("sort-order") as Order || "asc",
+    (query.get("sort-order") as Order) || "asc",
   ]);
   const toSortStore = useRef<{
     sortName: string;
@@ -101,7 +99,10 @@ export default function List({
                   if (fullMode && selecteds.length) setFile(file);
                   //
                   setFullMode(!fullMode);
-                  pushHistory({ ["full-list"]: fullMode ? "" : "1" }, false);
+                  updateQuery(
+                    { ["full-list"]: fullMode ? "" : "1" },
+                    { useReplaceState: true }
+                  );
                   //
                   if (file) scrollFileIntoView(file._id);
                 }}
@@ -178,12 +179,11 @@ export default function List({
                     ? "desc"
                     : "asc";
                 setSort([name, order]);
-                pushHistory(
+                updateQuery(
                   { ["sort-name"]: name, ["sort-order"]: order },
-                  false
+                  { useReplaceState: true }
                 );
-                if (selecteds.length)
-                  scrollFileIntoView(selecteds.at(-1)!._id);
+                if (selecteds.length) scrollFileIntoView(selecteds.at(-1)!._id);
               }}
             >
               {name}

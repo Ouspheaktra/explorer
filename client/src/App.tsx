@@ -1,26 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import { AppState, iDir } from "./types";
+import { AppState, ObjectLiteral, iDir } from "./types";
 import Explorer from "./Explorer";
 import {
   dirToPrevDir,
   prepareFile,
   promisesAllOneByOne,
-  pushHistory as _pushHistory,
-  setTitle,
+  updateQuery as _updateQuery,
 } from "./utils";
-import {
-  GlobalContext,
-  Next,
-  PushHistory,
-  SetDir,
-  SetFile,
-} from "./GlobalContext";
+import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
 import { deleteFile, getDir, postCommand, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
 import PrevNext from "./PrevNext";
 import { scrollFileIntoView } from "./List/utils";
 import "./App.scss";
+
+const setTitle = ({ dir, file }: AppState) =>
+  (document.title = file?.fullname || dir?.dir || "Explorer");
+
+const updateQuery = (
+  { file, dir, ...rest }: Partial<AppState> & ObjectLiteral,
+  options?: Parameters<typeof _updateQuery>[1]
+) => {
+  return _updateQuery(
+    Object.assign(
+      rest,
+      file === null || file ? { file: file?.fullname || "" } : {},
+      dir ? { dir: dir.dir } : {}
+    ),
+    options
+  );
+};
 
 const plugins = [ImagePlugin, VideoPlugin];
 
@@ -32,28 +42,27 @@ function App() {
   });
   const { dir, file, viewer } = state;
   const nextRef = useRef<Next>(() => {});
-  const pushHistory: PushHistory = (updateState, pushHistory = true) =>
-    _pushHistory({ ...state, ...updateState }, pushHistory);
   const setDir: SetDir = (dir, pushIntoHistory = true) =>
-      getDir(dir).then((data) => {
+      getDir(dir).then((newDir) => {
         // push history
-        if (pushIntoHistory) pushHistory({ dir: data }, true);
+        if (pushIntoHistory)
+          updateQuery({ dir: newDir, file: null }, { replace: true });
         // prepare
-        data.prevDir = dirToPrevDir(data.dir);
-        data.files.forEach((f, i) => {
+        newDir.prevDir = dirToPrevDir(newDir.dir);
+        newDir.files.forEach((f, i) => {
           f._id = i;
           prepareFile(f);
         });
         //
-        setState({ file: null, dir: data, viewer });
-        return data;
+        setState({ file: null, dir: newDir, viewer });
+        return newDir;
       }),
     setFile: SetFile = (newFile) => {
-      pushHistory({ file: newFile });
+      updateQuery({ file: newFile, dir });
       setState({ viewer, dir, file: newFile });
     },
     setViewer = (viewer: string) => {
-      pushHistory({ viewer }, false);
+      updateQuery({ viewer }, { useReplaceState: true });
       setState({ file, dir, viewer });
     };
   // query data
@@ -93,7 +102,10 @@ function App() {
                 const id = files.findIndex((file) => newFile._id === file._id);
                 files[id] = prepareFile(newFile);
               }
-              pushHistory({ dir: newDir, file: newFiles[0] }, false);
+              updateQuery(
+                { dir: newDir, file: newFiles[0] },
+                { useReplaceState: true }
+              );
               setState({ file: newFiles[0], dir: newDir, viewer });
               // scrollFileIntoView(newFiles[0]._id);
               return newFiles;
@@ -125,7 +137,6 @@ function App() {
           ),
         next: (plus) => nextRef.current(plus),
         setNext: (next) => (nextRef.current = next),
-        pushHistory,
       }}
     >
       <div id="viewer">
