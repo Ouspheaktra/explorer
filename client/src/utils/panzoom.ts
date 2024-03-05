@@ -13,8 +13,12 @@ export default class PanZoom {
     // pan
     this.mouseDown = (e) => {
       if (e.button === panButton) {
+        // if panButton is left mouse button
+        // mouseMove will drag image/video
+        // so prevent that default behavior
+        e.preventDefault();
         pan = true;
-        const [x, y=0] = (el.style.translate || "0 0")
+        const [x, y = 0] = (el.style.translate || "0 0")
           .split(" ")
           .map((o) => parseFloat(o));
         mouseX = e.clientX - x;
