@@ -7,7 +7,7 @@ import {
   promisesAllOneByOne,
   updateQuery as _updateQuery,
 } from "./utils";
-import { GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
+import { GetNext, GlobalContext, SetDir, SetFile } from "./GlobalContext";
 import { deleteFile, getDir, postCommand, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
@@ -42,7 +42,6 @@ function App() {
     document.title = newState.file?.fullname || newState.dir?.dir || "Explorer";
   };
   const { dir, file, viewer } = state;
-  const nextRef = useRef<Next>(() => {});
   const setDir: SetDir = (dir, pushIntoHistory = true) =>
       getDir(dir).then((newDir) => {
         // push history
@@ -66,6 +65,7 @@ function App() {
       updateQuery({ viewer }, { useReplaceState: true });
       setState({ file, dir, viewer });
     };
+  const getNextRef = useRef<GetNext>(() => undefined);
   // query data
   useEffect(() => {
     const search = new URLSearchParams(location.search.slice(1));
@@ -112,15 +112,21 @@ function App() {
             }
           ),
         deleteFiles: (files) =>
-          promisesAllOneByOne(files.map((file) => deleteFile(file))).then(() =>
-            setState({
-              file,
-              dir: {
-                ...dir,
-                files: dir.files.filter((f) => !files.includes(f)),
-              },
-              viewer,
-            })
+          promisesAllOneByOne(files.map((file) => deleteFile(file))).then(
+            () => {
+              let nextId = 1;
+              let next = getNextRef.current(nextId);
+              while (next && files.includes(next))
+                next = getNextRef.current(++nextId);
+              setState({
+                file: next || null,
+                dir: {
+                  ...dir,
+                  files: dir.files.filter((f) => !files.includes(f)),
+                },
+                viewer,
+              });
+            }
           ),
         commandFiles: (files, command, newExt) =>
           promisesAllOneByOne(
@@ -135,8 +141,12 @@ function App() {
               viewer,
             })
           ),
-        next: (plus) => nextRef.current(plus),
-        setNext: (next) => (nextRef.current = next),
+        next: (plus) => {
+          const file = getNextRef.current(plus);
+          if (file) setFile(file);
+        },
+        getNext: (plus) => getNextRef.current(plus),
+        setGetNext: (getNext) => (getNextRef.current = getNext),
       }}
     >
       <div id="viewer">

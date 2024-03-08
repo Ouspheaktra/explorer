@@ -20,7 +20,7 @@ export default function List({
   ...ulProps
 }: ListProps) {
   const [open, setOpen] = useState(true);
-  const { setDir, file, setFile, setNext } = useGlobal();
+  const { setDir, file, setFile, setGetNext } = useGlobal();
   const [selecteds, setSelecteds] = useState<iFile[]>(file ? [file] : []);
   useEffect(
     () =>
@@ -77,12 +77,13 @@ export default function List({
     });
   }
   const { sortedGroups } = toSortStore.current;
-  setNext((plus) => {
+  setGetNext((plus) => {
     const [file] = selecteds;
     if (!file) return;
     const files = sortedGroups.map(({ files }) => files).flat();
     const currentId = files.indexOf(file);
-    if (currentId) setFile(files.at((currentId + plus) % files.length)!);
+    if (currentId > -1)
+      return files.at((currentId + plus) % files.length)!;
   });
   return (
     <>

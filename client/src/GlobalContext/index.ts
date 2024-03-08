@@ -12,8 +12,9 @@ export type CommandFiles = (
   command: string,
   newExt?: string
 ) => Promise<any>;
+export type GetNext = (plus: number) => iFile | undefined;
 export type Next = (plus: number) => void;
-export type SetNext = (next: Next) => void;
+export type SetGetNext = (next: GetNext) => void;
 
 export type iGlobalContext = iData & {
   setDir: SetDir;
@@ -22,7 +23,8 @@ export type iGlobalContext = iData & {
   deleteFiles: DeleteFiles;
   commandFiles: CommandFiles;
   next: Next;
-  setNext: SetNext;
+  getNext: GetNext;
+  setGetNext: SetGetNext;
 };
 
 // @ts-ignore
