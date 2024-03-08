@@ -44,6 +44,7 @@ function App() {
   const { dir, file, viewer } = state;
   const setDir: SetDir = (dir, pushIntoHistory = true) =>
       getDir(dir).then((newDir) => {
+        newDir.files = newDir.files.filter((f) => !f.ext || f.stat.size);
         // push history
         if (pushIntoHistory)
           updateQuery({ dir: newDir, file: null }, { replace: true });
