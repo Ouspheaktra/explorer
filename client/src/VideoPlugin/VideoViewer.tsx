@@ -63,7 +63,6 @@ export default function VideoViewer() {
         }}
         onMouseUp={(e) => {
           if (e.button === 0) toggleVideoPlayState();
-          else if (e.button === 1) next(1);
           isRightHold.current = false;
         }}
         onPause={() => (mainRef.current!.dataset.isPaused = "paused")}

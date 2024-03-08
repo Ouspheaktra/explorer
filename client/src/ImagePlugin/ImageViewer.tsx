@@ -58,9 +58,6 @@ export default function ImageViewer() {
             }
           : undefined
       }
-      onMouseUp={(e) => {
-        if (e.button === 1) next(1);
-      }}
       onMouseMove={(e) => {
         if (editeds.length) {
           const { x: imgX, width } = imageRef.current!.getBoundingClientRect();

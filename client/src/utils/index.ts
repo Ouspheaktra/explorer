@@ -1,4 +1,4 @@
-import { AppState, FileType, ObjectLiteral, iFile } from "../types";
+import { FileType, ObjectLiteral, iFile } from "../types";
 import { mimeTypes } from "../../../src/utils";
 import Bowser from "bowser";
 
