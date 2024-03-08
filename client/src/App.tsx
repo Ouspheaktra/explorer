@@ -15,9 +15,6 @@ import PrevNext from "./PrevNext";
 import { scrollFileIntoView } from "./List/utils";
 import "./App.scss";
 
-const setTitle = ({ dir, file }: AppState) =>
-  (document.title = file?.fullname || dir?.dir || "Explorer");
-
 const updateQuery = (
   { file, dir, ...rest }: Partial<AppState> & ObjectLiteral,
   options?: Parameters<typeof _updateQuery>[1]
@@ -35,11 +32,15 @@ const updateQuery = (
 const plugins = [ImagePlugin, VideoPlugin];
 
 function App() {
-  const [state, setState] = useState<AppState>({
+  const [state, _setState] = useState<AppState>({
     dir: null,
     file: null,
     viewer: new URLSearchParams(location.search.slice(1)).get("viewer") || "",
   });
+  const setState = (newState: AppState) => {
+    _setState(newState);
+    document.title = newState.file?.fullname || newState.dir?.dir || "Explorer";
+  };
   const { dir, file, viewer } = state;
   const nextRef = useRef<Next>(() => {});
   const setDir: SetDir = (dir, pushIntoHistory = true) =>
@@ -76,9 +77,8 @@ function App() {
         if (file) {
           setState({ file, dir, viewer });
           scrollFileIntoView(file._id);
-          setTitle({ ...state, dir, file });
         }
-      } else setTitle({ ...state, dir });
+      }
     });
   }, []);
   //
