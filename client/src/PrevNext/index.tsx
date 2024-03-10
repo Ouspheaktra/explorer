@@ -4,15 +4,15 @@ import { useGlobal } from "../GlobalContext";
 export default function PrevNext() {
   const { next } = useGlobal();
   useEffect(() => {
-    const onMouseDown = (e: MouseEvent) => {
+    const onMouseUp = (e: MouseEvent) => {
       if (e.button > 2) {
         e.preventDefault();
         next(e.button === 3 ? -1 : 1);
       }
     };
-    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
     return () => {
-      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
     };
   }, []);
   return (

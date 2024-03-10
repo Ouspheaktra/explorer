@@ -9,7 +9,6 @@ export default function ImageViewer() {
     dir: { files },
     updateFiles,
     deleteFiles,
-    next,
   } = useGlobal();
   const { _id, path, dir, details } = file;
   const [editedId, setEditedId] = useState(0);

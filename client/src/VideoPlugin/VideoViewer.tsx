@@ -19,7 +19,8 @@ export default function VideoViewer() {
   const timeBarRef = useRef<HTMLInputElement | null>(null);
   const volumeBarRef = useRef<HTMLInputElement | null>(null);
   const currentTimeRef = useRef<HTMLSpanElement | null>(null);
-  const isRightHold = useRef(false);
+  const mouseHold = useRef<number | false>(false);
+  const scrollWhenMouseHold = useRef(false);
   const toggleVideoPlayState = (play?: boolean) => {
     const video = videoRef.current!;
     if (play === undefined) video.paused ? video.play() : video.pause();
@@ -31,7 +32,7 @@ export default function VideoViewer() {
     const video = videoRef.current!;
     panzoomHandle.current = new PanZoom(video, {
       panButton: 2,
-      doZoom: () => isRightHold.current,
+      doZoom: () => mouseHold.current === 2,
     });
   }, [_id]);
   const src = fileUrl(path);
@@ -47,23 +48,31 @@ export default function VideoViewer() {
         ref={videoRef}
         src={src}
         autoPlay
-        onWheel={({ deltaY }) => {
-          if (!isRightHold.current)
-            videoRef.current!.currentTime += deltaY < 0 ? 5 : -5;
+        onWheel={({ deltaY, currentTarget: video }) => {
+          if (mouseHold.current !== false) scrollWhenMouseHold.current = true;
+          // zoom
+          if (mouseHold.current === 2) video.currentTime += deltaY < 0 ? 5 : -5;
+          // volume up/down
+          else if (mouseHold.current === 4) {
+            const newVolume = video.volume + (deltaY < 0 ? 0.1 : -0.1);
+            video.volume = Math.max(0, Math.min(newVolume, 1));
+          }
         }}
         onDoubleClick={() => {
           if (document.fullscreenElement) document.exitFullscreen();
           else mainRef.current!.requestFullscreen();
         }}
         onMouseDown={(e) => {
-          if (e.button === 2) isRightHold.current = true;
+          if (e.button > 1) mouseHold.current = e.button;
           // prevent middle mouse click default behavior
           // from scroll down page
           else if (e.button === 1) e.preventDefault();
         }}
         onMouseUp={(e) => {
           if (e.button === 0) toggleVideoPlayState();
-          isRightHold.current = false;
+          if (mouseHold.current !== false && scrollWhenMouseHold.current)
+            e.stopPropagation();
+          mouseHold.current = scrollWhenMouseHold.current = false;
         }}
         onPause={() => (mainRef.current!.dataset.isPaused = "paused")}
         onPlay={() => (mainRef.current!.dataset.isPaused = "")}
@@ -78,6 +87,10 @@ export default function VideoViewer() {
         onDurationChange={({ currentTarget: video }) => {
           timeBarRef.current!.max = video.duration.toString();
           toggleVideoPlayState(isPlayingRef.current);
+        }}
+        onVolumeChange={({ currentTarget: video }) => {
+          volumeBarRef.current!.value = video.volume.toString();
+          localStorage.setItem("volume", video.volume.toString());
         }}
         onLoadedData={({ currentTarget: video }) => {
           const volume = localStorage.getItem("volume") || "1";
@@ -204,7 +217,6 @@ export default function VideoViewer() {
                 const video = videoRef.current!;
                 video.volume = e.currentTarget.valueAsNumber;
                 video.muted = false;
-                localStorage.setItem("volume", e.currentTarget.value);
               }}
             />
             <button
