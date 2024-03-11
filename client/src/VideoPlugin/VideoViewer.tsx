@@ -14,22 +14,20 @@ export default function VideoViewer() {
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
   const mainRef = useRef<HTMLDivElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const previewRef = useRef<HTMLVideoElement | null>(null);
-  const timeBarRef = useRef<HTMLInputElement | null>(null);
-  const volumeBarRef = useRef<HTMLInputElement | null>(null);
-  const currentTimeRef = useRef<HTMLSpanElement | null>(null);
   const mouseHold = useRef<number | false>(false);
   const scrollWhenMouseHold = useRef(false);
+  const getEl = <T = HTMLInputElement>(query: string) =>
+    mainRef.current!.querySelector(".vp-" + query)! as T;
+  const getVideo = () => getEl<HTMLVideoElement>("video");
   const toggleVideoPlayState = (play?: boolean) => {
-    const video = videoRef.current!;
+    const video = getVideo();
     if (play === undefined) video.paused ? video.play() : video.pause();
     else play ? video.play() : video.pause();
     isPlayingRef.current = !video.paused;
   };
   useEffect(() => {
     panzoomHandle.current?.dispose();
-    const video = videoRef.current!;
+    const video = getVideo();
     panzoomHandle.current = new PanZoom(video, {
       panButton: 2,
       doZoom: () => mouseHold.current === 2,
@@ -39,24 +37,25 @@ export default function VideoViewer() {
   const vttFile = files.find((f) => f.ext === ".vtt" && f.name === file.name);
   return (
     <div
-      className="video-player"
       ref={mainRef}
+      className="video-player"
       onContextMenu={(e) => e.preventDefault()}
     >
       <video
         id="video"
-        ref={videoRef}
+        className="vp-video"
         src={src}
         autoPlay
         onWheel={({ deltaY, currentTarget: video }) => {
           if (mouseHold.current !== false) scrollWhenMouseHold.current = true;
-          // zoom
-          if (mouseHold.current === 2) video.currentTime += deltaY < 0 ? 5 : -5;
           // volume up/down
-          else if (mouseHold.current === 4) {
+          if (mouseHold.current === 4) {
             const newVolume = video.volume + (deltaY < 0 ? 0.1 : -0.1);
             video.volume = Math.max(0, Math.min(newVolume, 1));
           }
+          // skip
+          else if (mouseHold.current !== 2)
+            video.currentTime += deltaY < 0 ? 5 : -5;
         }}
         onDoubleClick={() => {
           if (document.fullscreenElement) document.exitFullscreen();
@@ -70,7 +69,9 @@ export default function VideoViewer() {
         }}
         onMouseUp={(e) => {
           if (e.button === 0) toggleVideoPlayState();
-          if (mouseHold.current !== false && scrollWhenMouseHold.current)
+          // prevent next/prev button from working
+          // when hold next/prev button and scroll
+          if (Number(mouseHold.current) > 2 && scrollWhenMouseHold.current)
             e.stopPropagation();
           mouseHold.current = scrollWhenMouseHold.current = false;
         }}
@@ -78,23 +79,23 @@ export default function VideoViewer() {
         onPlay={() => (mainRef.current!.dataset.isPaused = "")}
         onEnded={() => next(1)}
         onTimeUpdate={({ currentTarget: video }) => {
-          timeBarRef.current!.value = video.currentTime.toString();
-          currentTimeRef.current!.textContent = [
+          getEl("timebar").value = video.currentTime.toString();
+          getEl("current-time").textContent = [
             secondsToString(video.currentTime),
             secondsToString(video.duration),
           ].join("/");
         }}
         onDurationChange={({ currentTarget: video }) => {
-          timeBarRef.current!.max = video.duration.toString();
+          getEl("timebar").max = video.duration.toString();
           toggleVideoPlayState(isPlayingRef.current);
         }}
         onVolumeChange={({ currentTarget: video }) => {
-          volumeBarRef.current!.value = video.volume.toString();
+          getEl("volume").value = video.volume.toString();
           localStorage.setItem("volume", video.volume.toString());
         }}
         onLoadedData={({ currentTarget: video }) => {
           const volume = localStorage.getItem("volume") || "1";
-          volumeBarRef.current!.value = volume;
+          getEl("volume").value = volume;
           video.volume = parseFloat(volume);
         }}
       >
@@ -116,7 +117,7 @@ export default function VideoViewer() {
       <form
         className="vp-color"
         onInput={({ currentTarget: form }) => {
-          videoRef.current!.style.filter = [
+          getVideo().style.filter = [
             `contrast(${form.contrast.valueAsNumber}%)`,
             `brightness(${form.brightness.valueAsNumber}%)`,
             `saturate(${form.saturate.valueAsNumber}%)`,
@@ -167,19 +168,18 @@ export default function VideoViewer() {
         <div className="vp-timebar-container">
           <div className="vp-more"></div>
           <input
-            ref={timeBarRef}
             className="vp-timebar"
             type="range"
             min={0}
             onInput={(e) =>
-              (videoRef.current!.currentTime = e.currentTarget.valueAsNumber)
+              (getVideo().currentTime = e.currentTarget.valueAsNumber)
             }
             onMouseMove={({ currentTarget: range, clientX }) => {
               const boundingRect = range.getBoundingClientRect();
               const mouseX = clientX - boundingRect.left;
               const ratio = mouseX / range.offsetWidth;
               const potentialValue = Math.round(ratio * parseInt(range.max));
-              const preview = previewRef.current!;
+              const preview = getEl<HTMLVideoElement>("preview-video");
               preview.currentTime = potentialValue;
               preview.parentElement!.style.left = mouseX + "px";
               preview.previousElementSibling!.textContent =
@@ -189,7 +189,7 @@ export default function VideoViewer() {
           <div className="vp-preview">
             <span className="vp-time"></span>
             <video
-              ref={previewRef}
+              className="vp-preview-video"
               src={src}
               autoPlay={false}
               muted={true}
@@ -203,18 +203,17 @@ export default function VideoViewer() {
               onClick={() => toggleVideoPlayState()}
               className="vp-play-btn"
             ></button>
-            <span ref={currentTimeRef} className="vp-time"></span>
+            <span className="vp-current-time"></span>
           </div>
           <div className="vp-buttons-side-container">
             <input
-              ref={volumeBarRef}
               className="vp-volume"
               type="range"
               min={0}
               max={1}
               step={0.01}
               onInput={(e) => {
-                const video = videoRef.current!;
+                const video = getVideo();
                 video.volume = e.currentTarget.valueAsNumber;
                 video.muted = false;
               }}
