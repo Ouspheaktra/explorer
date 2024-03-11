@@ -15,7 +15,7 @@ export default function List({
   bottomButtons,
   sorts = [],
   FileComponent,
-  filteredFiles,
+  filteredFiles: preFilteredFiles,
   EditorComponents,
   ...ulProps
 }: ListProps) {
@@ -42,23 +42,32 @@ export default function List({
       builtinSorts[0].name,
     (query.get("sort-order") as Order) || "asc",
   ]);
+  const [filter, setFilter] = useState(query.get("filter") || "");
   const toSortStore = useRef<{
     sortName: string;
     sortOrder: string;
-    filteredFiles: iFile[];
+    filter: string;
+    preFilteredFiles: iFile[];
     sortedGroups: SortedGroup[];
   }>({
     sortName: "",
+    filter: "",
     sortOrder,
-    filteredFiles: [],
+    preFilteredFiles: [],
     sortedGroups: [],
   });
 
   if (
     sortName !== toSortStore.current.sortName ||
     sortOrder !== toSortStore.current.sortOrder ||
-    filteredFiles !== toSortStore.current.filteredFiles
+    filter !== toSortStore.current.filter ||
+    preFilteredFiles !== toSortStore.current.preFilteredFiles
   ) {
+    // filter
+    const filteredFiles = filter
+      ? preFilteredFiles.filter(f => f.name.startsWith(filter))
+      : preFilteredFiles;
+    // sort
     console.log("RE SORT");
     const sorter = allSorts.find((sort) => sort.name === sortName)!;
     const sortedGroups = sorter.sort(filteredFiles);
@@ -72,8 +81,9 @@ export default function List({
     Object.assign(toSortStore.current, {
       sortName,
       sortOrder,
+      filter,
       sortedGroups,
-      filteredFiles,
+      preFilteredFiles,
     });
   }
   const { sortedGroups } = toSortStore.current;
@@ -82,8 +92,7 @@ export default function List({
     if (!file) return;
     const files = sortedGroups.map(({ files }) => files).flat();
     const currentId = files.indexOf(file);
-    if (currentId > -1)
-      return files.at((currentId + plus) % files.length)!;
+    if (currentId > -1) return files.at((currentId + plus) % files.length)!;
   });
   return (
     <>
@@ -194,6 +203,28 @@ export default function List({
               {name}
             </button>
           ))}
+          <br />
+          Filter:
+          <br />
+          <textarea
+            rows={1}
+            className="filter auto-height"
+            onInput={(e) => {
+              const element = e.currentTarget;
+              element.style.height = "5px";
+              element.style.height = element.scrollHeight + "px";
+            }}
+          ></textarea>
+          <button
+            onClick={(e) => {
+              const filterInput = e.currentTarget
+                .previousElementSibling! as HTMLTextAreaElement;
+              setFilter(filterInput.value.trim());
+            }}
+          >
+            ➜
+          </button>
+          <br />
           {bottomButtons}
         </li>
       </ul>

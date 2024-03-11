@@ -75,6 +75,9 @@
     }
   }
   > .list-bottom {
+    > * {
+      vertical-align: middle;
+    }
     > .order-btn {
       &.active {
         background-color: yellow;
@@ -91,4 +94,9 @@
       }
     }
   }
+}
+
+textarea.filter {
+  width: 75%;
+  font-size: 16px;
 }
