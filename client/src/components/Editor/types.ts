@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { iFile } from "../types";
+import { iFile } from "../../types";
 
 export interface EditorProps {
   selecteds: iFile[];

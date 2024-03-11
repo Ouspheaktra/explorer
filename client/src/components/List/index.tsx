@@ -65,7 +65,7 @@ export default function List({
   ) {
     // filter
     const filteredFiles = filter
-      ? preFilteredFiles.filter(f => f.name.startsWith(filter))
+      ? preFilteredFiles.filter(f => f.name.toLowerCase().startsWith(filter.toLowerCase()))
       : preFilteredFiles;
     // sort
     console.log("RE SORT");

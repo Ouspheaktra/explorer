@@ -1,6 +1,6 @@
-import { UpdateFiles } from "../GlobalContext";
 import { formName } from "./types";
-import { iFile } from "../types";
+import { iFile } from "../../types";
+import { UpdateFiles } from "../../GlobalContext";
 
 export const updateDetails = (
   seleteds: iFile[],
