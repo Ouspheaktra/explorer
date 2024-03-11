@@ -1,6 +1,6 @@
-import { FileComponentProps } from "../List/types";
+import { FileComponentProps } from "../components/List/types";
 import { fileUrl } from "../utils";
-import Thumbnail from "../componenets/Thumbnail";
+import Thumbnail from "../components/Thumbnail";
 
 export default function ImageFileComponent({ fullMode, file }: FileComponentProps) {
   if (fullMode)

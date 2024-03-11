@@ -1,6 +1,6 @@
-import { UpdateFiles, useGlobal } from "../../GlobalContext";
-import { EditorComponentProps } from "../types";
-import { iFile } from "../../types";
+import { UpdateFiles, useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "./Editor/types";
+import { iFile } from "../types";
 
 export function RenameEditor({ selecteds }: EditorComponentProps) {
   const { updateFiles } = useGlobal();

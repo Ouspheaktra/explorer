@@ -1,6 +1,6 @@
-import { useGlobal } from "../../GlobalContext";
-import { EditorComponentProps, createDetailsEditor } from "../types";
-import { updateDetails } from "../utils";
+import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps, createDetailsEditor } from "./Editor/types";
+import { updateDetails } from "./Editor/utils";
 
 const createStringArrayDetailsEditor: createDetailsEditor = (
   _name,

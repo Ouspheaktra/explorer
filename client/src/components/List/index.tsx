@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ListProps, Order, SortedGroup } from "./types";
 import { builtinSorts } from "./builtin";
-import { useGlobal } from "../GlobalContext";
+import { useGlobal } from "../../GlobalContext";
 import Editor from "../Editor";
-import { iFile } from "../types";
-import { toggleItem, updateQuery } from "../utils";
+import { iFile } from "../../types";
+import { toggleItem, updateQuery } from "../../utils";
 import { scrollFileIntoView } from "./utils";
-import TrashEditor from "../Editor/editors/TrashEditor";
+import TrashEditor from "../TrashEditor";
 import "./style.scss";
 
 export default function List({

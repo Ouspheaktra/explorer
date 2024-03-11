@@ -1,11 +1,11 @@
-import List from "../List";
-import { createSort } from "../List/utils";
-import EditedEditor from "./editors/EditedEditor";
+import List from "../components/List";
+import { createSort } from "../components/List/utils";
+import EditedEditor from "../components/EditedEditor";
 import { useGlobal } from "../GlobalContext";
 import ImageFileComponent from "./ImageFileComponent";
 import { useRef } from "react";
 import { Plugin, iFile } from "../types";
-import createStringArrayDetailsEditor from "../Editor/editors/createStringArrayDetailsEditor";
+import createStringArrayDetailsEditor from "../components/createStringArrayDetailsEditor";
 import { iImageDetails } from "./types";
 
 const ImageList: Plugin["List"] = ({ closeButton }) => {

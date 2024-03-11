@@ -1,5 +1,5 @@
-import { EditorComponentProps } from "../../Editor/types";
-import { useGlobal } from "../../GlobalContext";
+import { EditorComponentProps } from "./Editor/types";
+import { useGlobal } from "../GlobalContext";
 
 export default function CropRenderer({
   selecteds,

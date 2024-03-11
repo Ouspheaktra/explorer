@@ -1,5 +1,5 @@
-import { EditorComponentProps } from "../../Editor/types";
-import { useGlobal } from "../../GlobalContext";
+import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "./Editor/types";
 
 const rotate = (degree: number) =>
   `ffmpeg -display_rotation ${degree} -i {input} -c copy {output}`;

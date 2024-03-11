@@ -1,4 +1,4 @@
-import { iFile } from "../types";
+import { iFile } from "../../types";
 import { Sort } from "./types";
 
 export const createSort =

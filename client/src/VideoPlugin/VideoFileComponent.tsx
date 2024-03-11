@@ -1,6 +1,6 @@
-import { FileComponentProps } from "../List/types";
-import Thumbnail from "../componenets/Thumbnail";
-import { createThumbnail } from "./editors/ReThumbnailEditor";
+import { FileComponentProps } from "../components/List/types";
+import Thumbnail from "../components/Thumbnail";
+import { createThumbnail } from "../components/ReThumbnailEditor";
 
 export default function VideoFileComponent({ fullMode, file }: FileComponentProps) {
   if (fullMode)

@@ -1,6 +1,6 @@
 import { FC, HTMLProps, ReactNode } from "react";
-import { iFile } from "../types";
-import { EditorProps } from "../Editor/types";
+import { iFile } from "../../types";
+import { EditorProps } from "../../Editor/types";
 
 export type Order = "asc" | "desc";
 export type SortedGroup = {

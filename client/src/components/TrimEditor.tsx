@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { EditorComponentProps } from "../../Editor/types";
-import { secondsToString as str } from "../../utils";
-import { useGlobal } from "../../GlobalContext";
+import { secondsToString as str } from "../utils";
+import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "./Editor/types";
 
 export default function TrimEditor({ selecteds }: EditorComponentProps) {
   const { commandFiles } = useGlobal();

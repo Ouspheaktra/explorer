@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useGlobal } from "../GlobalContext";
+import { useGlobal } from "../../GlobalContext";
 
 export default function PrevNext() {
   const { next } = useGlobal();

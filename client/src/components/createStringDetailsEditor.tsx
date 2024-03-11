@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { useGlobal } from "../../GlobalContext";
-import { updateDetails } from "../utils";
-import { EditorComponentProps, createDetailsEditor } from "../types";
+import { useGlobal } from "../GlobalContext";
+import { updateDetails } from "./Editor/utils";
+import { EditorComponentProps, createDetailsEditor } from "./Editor/types";
 
 const createStringDetailsEditor: createDetailsEditor = (_name, formName) => {
   function StringDetailsEditor({ selecteds }: EditorComponentProps) {

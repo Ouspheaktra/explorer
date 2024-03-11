@@ -1,7 +1,7 @@
-import { EditorComponentProps } from "../../Editor/types";
-import { iFile } from "../../types";
-import { fileUrl } from "../../utils";
-import { postThumbnails } from "../../utils/api";
+import { EditorComponentProps } from "./Editor/types";
+import { iFile } from "../types";
+import { fileUrl } from "../utils";
+import { postThumbnails } from "../utils/api";
 
 export default function ReThumbnailEditor({ selecteds }: EditorComponentProps) {
   return (

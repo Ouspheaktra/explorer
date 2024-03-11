@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AppState, ObjectLiteral, iDir } from "./types";
-import Explorer from "./Explorer";
+import Explorer from "./components/Explorer";
 import {
   dirToPrevDir,
   prepareFile,
@@ -11,8 +11,8 @@ import { GetNext, GlobalContext, SetDir, SetFile } from "./GlobalContext";
 import { deleteFile, getDir, postCommand, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
-import PrevNext from "./PrevNext";
-import { scrollFileIntoView } from "./List/utils";
+import PrevNext from "./components/PrevNext";
+import { scrollFileIntoView } from "./components/List/utils";
 import "./App.scss";
 
 const updateQuery = (

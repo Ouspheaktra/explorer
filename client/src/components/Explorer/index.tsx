@@ -1,6 +1,7 @@
-import List from "./List";
-import { useGlobal } from "./GlobalContext";
-import { FileComponentProps, ListProps } from "./List/types";
+import List from "../List";
+import { useGlobal } from "../../GlobalContext";
+import { FileComponentProps, ListProps } from "../List/types";
+
 
 export default function Explorer({
   topButtons,

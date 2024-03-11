@@ -1,4 +1,4 @@
-import { useGlobal } from "../../GlobalContext";
+import { useGlobal } from "../GlobalContext";
 
 export default function AutoShutdown() {
   const {

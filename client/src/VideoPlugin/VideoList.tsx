@@ -1,18 +1,18 @@
 import { useRef } from "react";
 import { useGlobal } from "../GlobalContext";
-import List from "../List";
-import { createSort } from "../List/utils";
+import List from "../components/List";
+import { createSort } from "../components/List/utils";
 import VideoFileComponent from "./VideoFileComponent";
 import { Plugin, iFile } from "../types";
-import RotateRenderer from "./editors/RotateEditor";
-import CropRenderer from "./editors/CropEditor";
-import ReThumbnailEditor from "./editors/ReThumbnailEditor";
-import TrimEditor from "./editors/TrimEditor";
+import RotateRenderer from "../components/RotateEditor";
+import CropRenderer from "../components/CropEditor";
+import ReThumbnailEditor from "../components/ReThumbnailEditor";
+import TrimEditor from "../components/TrimEditor";
 import { iVideoDetails } from "./types";
-import createStringArrayDetailsEditor from "../Editor/editors/createStringArrayDetailsEditor";
-import createStringDetailsEditor from "../Editor/editors/createStringDetailsEditor";
-import AutoShutdown from "../Editor/editors/AutoShutdown";
-import { RenameEditor } from "../Editor/editors/RenameEditor";
+import createStringArrayDetailsEditor from "../components/createStringArrayDetailsEditor";
+import createStringDetailsEditor from "../components/createStringDetailsEditor";
+import AutoShutdown from "../components/AutoShutdown";
+import { RenameEditor } from "../components/RenameEditor";
 
 const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {

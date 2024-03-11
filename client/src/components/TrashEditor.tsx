@@ -1,5 +1,5 @@
-import { useGlobal } from "../../GlobalContext";
-import { EditorComponentProps } from "../types";
+import { useGlobal } from "../GlobalContext";
+import { EditorComponentProps } from "./Editor/types";
 
 export default function TrashEditor({ selecteds }: EditorComponentProps) {
   const { deleteFiles } = useGlobal();
