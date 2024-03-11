@@ -208,6 +208,7 @@ export default function List({
           <br />
           <textarea
             rows={1}
+            defaultValue={filter}
             className="filter auto-height"
             onInput={(e) => {
               const element = e.currentTarget;
@@ -219,7 +220,13 @@ export default function List({
             onClick={(e) => {
               const filterInput = e.currentTarget
                 .previousElementSibling! as HTMLTextAreaElement;
-              setFilter(filterInput.value.trim());
+              const newFilter = filterInput.value.trim();
+              if (newFilter === filter) return;
+              setFilter(newFilter);
+              updateQuery(
+                { filter: newFilter },
+                { useReplaceState: true }
+              );
             }}
           >
             ➜
