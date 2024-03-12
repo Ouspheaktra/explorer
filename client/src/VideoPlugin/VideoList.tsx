@@ -29,21 +29,21 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
       topButtons={closeButton}
       sorts={[
         {
-          name: "Avatar",
+          name: "avatars",
           sort: createSort(
             (file) => (file.details.avatars ? file.details.avatars[0] : false),
             (a, b) => a.stat.size - b.stat.size
           ),
         },
         {
-          name: "Title",
+          name: "title",
           sort: createSort(
             (file) => (file.details.title ? file.details.title[0] : false),
             (a, b) => a.details.title!.localeCompare(b.details.title!)
           ),
         },
         {
-          name: "Tag",
+          name: "tags",
           sort: createSort(
             (file) => (file.details.tags ? file.details.tags[0] : false),
             (a, b) => a.stat.size - b.stat.size

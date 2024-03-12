@@ -257,6 +257,18 @@ export default function List({
           <br />
           Filter:
           <br />
+          <button
+            style={{ backgroundColor: "red", color: "white" }}
+            onClick={() => {
+              const filterInput = filterBtnRef.current!
+                .previousElementSibling! as HTMLTextAreaElement;
+              filterInput.value = "";
+              filterInput.dispatchEvent(new Event("input", { bubbles: true }));
+              filterBtnRef.current!.click();
+            }}
+          >
+            &times;
+          </button>
           <textarea
             rows={1}
             defaultValue={filter}
