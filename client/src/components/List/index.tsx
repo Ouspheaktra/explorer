@@ -48,33 +48,37 @@ export default function List({
     sortName: string;
     sortOrder: string;
     filter: string;
-    preFilteredFiles: iFile[];
     sortedGroups: SortedGroup[];
   }>({
     sortName: "",
     filter: "",
     sortOrder,
-    preFilteredFiles: [],
     sortedGroups: [],
   });
 
   if (
     sortName !== toSortStore.current.sortName ||
     sortOrder !== toSortStore.current.sortOrder ||
-    filter !== toSortStore.current.filter ||
-    preFilteredFiles !== toSortStore.current.preFilteredFiles
+    filter !== toSortStore.current.filter
   ) {
-    let filteredFiles: iFile[] = [];
+    console.log("SORT || FILTER");
+
+    let filteredFiles = preFilteredFiles;
 
     // FILTER
     if (filter) {
       const filters = filter
         .split("\n")
         .map((f) => FILTER_REG.exec(f)!.groups! as unknown as FilterRegexGroup);
+      let first = true;
       for (let filter of filters) {
         const { not, detail: detailName, word } = filter;
         // if has detail name
         if (detailName) {
+          if (first) {
+            first = false;
+            filteredFiles = [];
+          }
           filteredFiles = filteredFiles.concat(
             preFilteredFiles.filter(({ details }) => {
               const detail = details[detailName] as string | string[];
@@ -96,10 +100,9 @@ export default function List({
           );
         }
       }
-    } else filteredFiles = preFilteredFiles;
+    }
 
-    // FILTER
-    console.log("SORT");
+    // SORT
     const sorter = allSorts.find((sort) => sort.name === sortName)!;
     const sortedGroups = sorter.sort(filteredFiles);
     const unknown = sortedGroups.pop()!;
@@ -114,7 +117,6 @@ export default function List({
       sortOrder,
       filter,
       sortedGroups,
-      preFilteredFiles,
     });
   }
   const { sortedGroups } = toSortStore.current;
