@@ -49,17 +49,20 @@ export default function List({
     sortOrder: string;
     filter: string;
     sortedGroups: SortedGroup[];
+    preFilteredFiles: iFile[];
   }>({
     sortName: "",
     filter: "",
     sortOrder,
     sortedGroups: [],
+    preFilteredFiles: [],
   });
 
   if (
     sortName !== toSortStore.current.sortName ||
     sortOrder !== toSortStore.current.sortOrder ||
-    filter !== toSortStore.current.filter
+    filter !== toSortStore.current.filter ||
+    preFilteredFiles !== toSortStore.current.preFilteredFiles
   ) {
     console.log("SORT || FILTER");
 
@@ -117,6 +120,7 @@ export default function List({
       sortOrder,
       filter,
       sortedGroups,
+      preFilteredFiles,
     });
   }
   const { sortedGroups } = toSortStore.current;
@@ -218,7 +222,10 @@ export default function List({
                           // is file, change file
                           if (ext) setFile(f);
                           // if directory, change dir
-                          else setDir(dir);
+                          else {
+                            setDir(dir);
+                            document.getElementById("reset-filter")!.click();
+                          }
                         }
                       }}
                     >
@@ -260,6 +267,7 @@ export default function List({
           Filter:
           <br />
           <button
+            id="reset-filter"
             style={{ backgroundColor: "red", color: "white" }}
             onClick={() => {
               const filterInput = filterBtnRef.current!

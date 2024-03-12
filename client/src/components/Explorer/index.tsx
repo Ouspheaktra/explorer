@@ -22,7 +22,10 @@ export default function Explorer({
       listTop={
         <>
           {dir && (
-            <li className="a" onClick={() => setDir(prevDir || "")}>
+            <li className="a" onClick={() => {
+              setDir(prevDir || "")
+              document.getElementById("reset-filter")!.click();
+            }}>
               &lt;&minus; Back
             </li>
           )}
