@@ -4,19 +4,22 @@ import { fileUrl, secondsToString } from "../utils";
 import { useGlobal } from "../GlobalContext";
 import "./style.scss";
 
+const colorsProperty = ["contrast", "brightness", "saturate", "hue"];
+
 export default function VideoViewer() {
   const {
     file,
     dir: { files },
     next,
+    updateFiles,
   } = useGlobal();
-  const { path, _id } = file;
+  const { path, _id, details } = file;
   const panzoomHandle = useRef<PanZoom>();
   const isPlayingRef = useRef(true);
   const mainRef = useRef<HTMLDivElement | null>(null);
   const mouseHold = useRef<number | false>(false);
   const scrollWhenMouseHold = useRef(false);
-  const getEl = <T = HTMLInputElement>(query: string) =>
+  const getEl = <T = HTMLInputElement,>(query: string) =>
     mainRef.current!.querySelector(".vp-" + query)! as T;
   const getVideo = () => getEl<HTMLVideoElement>("video");
   const toggleVideoPlayState = (play?: boolean) => {
@@ -97,6 +100,14 @@ export default function VideoViewer() {
           const volume = localStorage.getItem("volume") || "1";
           getEl("volume").value = volume;
           video.volume = parseFloat(volume);
+          // color
+          const form = getEl("color");
+          for (let property of colorsProperty) {
+            // @ts-ignore
+            const input = form[property] as HTMLInputElement;
+            input.value = details[property] || input.getAttribute("value");
+          }
+          form.dispatchEvent(new Event("input", { bubbles: true }));
         }}
       >
         {vttFile && (
@@ -123,6 +134,26 @@ export default function VideoViewer() {
             `saturate(${form.saturate.valueAsNumber}%)`,
             `hue-rotate(${form.hue.valueAsNumber}deg)`,
           ].join(" ");
+          updateFiles(
+            [
+              [
+                file,
+                {
+                  ...details,
+                  ...Object.fromEntries(
+                    colorsProperty.map((name) => [
+                      name,
+                      form[name].value === form[name].getAttribute("value")
+                        ? undefined
+                        : form[name].value,
+                    ])
+                  ),
+                },
+                null,
+              ],
+            ],
+            true
+          );
         }}
         onReset={({ currentTarget: form }) =>
           setTimeout(

@@ -4,7 +4,8 @@ import type { postFile } from "../utils/api";
 export type SetFile = (file: iFile | null) => any;
 export type SetDir = (dir: string, pushHistory?: boolean) => Promise<iDir>;
 export type UpdateFiles = (
-  postFiles: Parameters<typeof postFile>[]
+  postFiles: Parameters<typeof postFile>[],
+  silence?: boolean
 ) => Promise<iFile[]>;
 export type DeleteFiles = (files: iFile[]) => Promise<any>;
 export type CommandFiles = (

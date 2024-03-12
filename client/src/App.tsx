@@ -82,6 +82,8 @@ function App() {
       }
     });
   }, []);
+  //@ts-ignore
+  window.getFile = () => file;
   //
   if (!dir) return "Loading...";
   const plugin =
@@ -94,20 +96,22 @@ function App() {
         setDir,
         file: file!,
         setFile,
-        updateFiles: (args) =>
+        updateFiles: (args, silence = false) =>
           promisesAllOneByOne(args.map((arg) => postFile(...arg))).then(
             (newFiles) => {
-              const newDir: iDir = { ...dir!, files: [...dir!.files] };
-              const { files } = newDir;
+              const { files } = dir;
+              let firstFile = true;
               for (let newFile of newFiles) {
-                const id = files.findIndex((file) => newFile._id === file._id);
-                files[id] = prepareFile(newFile);
+                const file = files.find((file) => newFile._id === file._id);
+                if (file) {
+                  Object.assign(file, prepareFile(newFile));
+                  if (firstFile && !silence) {
+                    updateQuery({ dir, file }, { useReplaceState: true });
+                    setState({ file, dir, viewer });
+                  }
+                  firstFile = false;
+                }
               }
-              updateQuery(
-                { dir: newDir, file: newFiles[0] },
-                { useReplaceState: true }
-              );
-              setState({ file: newFiles[0], dir: newDir, viewer });
               // scrollFileIntoView(newFiles[0]._id);
               return newFiles;
             }
