@@ -30,7 +30,7 @@ const ImageList: Plugin["List"] = ({ closeButton }) => {
       topButtons={closeButton}
       sorts={[
         {
-          name: "Avatar",
+          name: "avatars",
           sort: createSort(
             (file) => (file.details.avatars ? file.details.avatars[0] : false),
             (a, b) => a.details.avatars[0].localeCompare(b.details.avatars[0])

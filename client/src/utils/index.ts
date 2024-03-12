@@ -134,3 +134,5 @@ export function rotateImage(dataURL: string, degree: number) {
     img.src = dataURL; // Set the source of the image to the original data URL
   });
 }
+
+export const notBoolean = (not: any, bool: boolean) => (not ? !bool : bool);

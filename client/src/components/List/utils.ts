@@ -1,6 +1,8 @@
 import { iFile } from "../../types";
 import { Sort } from "./types";
 
+export const FILTER_REG = /^(?<not>!)?(?:\[(?<detail>.+?)\])?(?<word>.+)$/;
+
 export const createSort =
   (
     groupName: (file: iFile) => string | false,

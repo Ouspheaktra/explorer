@@ -33,6 +33,12 @@
       display: block;
       margin: 5px 0;
       font-weight: bold;
+      background-color: transparent;
+      border: none;
+      color: inherit;
+      font-size: inherit;
+      padding-inline: 0;
+      cursor: pointer;
     }
     > .list-group-files {
       > li {

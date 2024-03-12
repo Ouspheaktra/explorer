@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { ListProps, Order, SortedGroup } from "./types";
+import { FilterRegexGroup, ListProps, Order, SortedGroup } from "./types";
 import { builtinSorts } from "./builtin";
 import { useGlobal } from "../../GlobalContext";
 import Editor from "../Editor";
 import { iFile } from "../../types";
-import { toggleItem, updateQuery } from "../../utils";
-import { scrollFileIntoView } from "./utils";
+import { notBoolean, toggleItem, updateQuery } from "../../utils";
+import { FILTER_REG, scrollFileIntoView } from "./utils";
 import TrashEditor from "../TrashEditor";
 import "./style.scss";
 
@@ -21,6 +21,7 @@ export default function List({
 }: ListProps) {
   const [open, setOpen] = useState(true);
   const { setDir, file, setFile, setGetNext } = useGlobal();
+  const filterBtnRef = useRef<HTMLButtonElement | null>(null);
   const [selecteds, setSelecteds] = useState<iFile[]>(file ? [file] : []);
   useEffect(
     () =>
@@ -63,12 +64,42 @@ export default function List({
     filter !== toSortStore.current.filter ||
     preFilteredFiles !== toSortStore.current.preFilteredFiles
   ) {
-    // filter
-    const filteredFiles = filter
-      ? preFilteredFiles.filter(f => f.name.toLowerCase().startsWith(filter.toLowerCase()))
-      : preFilteredFiles;
-    // sort
-    console.log("RE SORT");
+    let filteredFiles: iFile[] = [];
+
+    // FILTER
+    if (filter) {
+      const filters = filter
+        .split("\n")
+        .map((f) => FILTER_REG.exec(f)!.groups! as unknown as FilterRegexGroup);
+      for (let filter of filters) {
+        const { not, detail: detailName, word } = filter;
+        // if has detail name
+        if (detailName) {
+          filteredFiles = filteredFiles.concat(
+            preFilteredFiles.filter(({ details }) => {
+              const detail = details[detailName] as string | string[];
+              return detail
+                ? notBoolean(
+                    not,
+                    Array.isArray(detail)
+                      ? detail.some((o) => o === word)
+                      : detail === word
+                  )
+                : false;
+            })
+          );
+        }
+        // if filename
+        else {
+          filteredFiles = filteredFiles.filter(({ name }) =>
+            notBoolean(not, name.startsWith(word))
+          );
+        }
+      }
+    } else filteredFiles = preFilteredFiles;
+
+    // FILTER
+    console.log("SORT");
     const sorter = allSorts.find((sort) => sort.name === sortName)!;
     const sortedGroups = sorter.sort(filteredFiles);
     const unknown = sortedGroups.pop()!;
@@ -143,7 +174,27 @@ export default function List({
         {sortedGroups.map(({ name, files }, gid) => {
           return (
             <li key={gid} className="list-group">
-              <span className="list-group-name">{name}</span>
+              <button
+                className="list-group-name"
+                onContextMenu={(e) => e.preventDefault()}
+                onClick={(e) => {
+                  const textarea = filterBtnRef.current!
+                    .previousElementSibling! as HTMLTextAreaElement;
+                  // left click, add to filter
+                  if (e.button === 0) {
+                    textarea.value =
+                      `[${sortName}]${name}\n${textarea.value}`.trim();
+                  }
+                  // right click, add negative to filter
+                  else if (e.button === 2) {
+                    textarea.value =
+                      `![${sortName}]${name}\n${textarea.value}`.trim();
+                  }
+                  textarea.dispatchEvent(new Event("input", { bubbles: true }));
+                }}
+              >
+                {name}
+              </button>
               <ul className="list-group-files">
                 {files.map((f) => {
                   const { type, ext, fullname, dir, _id } = f;
@@ -217,16 +268,14 @@ export default function List({
             }}
           ></textarea>
           <button
+            ref={filterBtnRef}
             onClick={(e) => {
               const filterInput = e.currentTarget
                 .previousElementSibling! as HTMLTextAreaElement;
               const newFilter = filterInput.value.trim();
               if (newFilter === filter) return;
               setFilter(newFilter);
-              updateQuery(
-                { filter: newFilter },
-                { useReplaceState: true }
-              );
+              updateQuery({ filter: newFilter }, { useReplaceState: true });
             }}
           >
             ➜

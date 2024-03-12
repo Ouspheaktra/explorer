@@ -1,3 +1,5 @@
+save setting
+
 File Type
 
 - Text Files: Such as .txt, .docx, .pdf, .rtf, etc.
