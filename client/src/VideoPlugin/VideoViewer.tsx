@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import PanZoom from "../utils/panzoom";
 import { fileUrl, secondsToString } from "../utils";
 import { UpdateFiles, useGlobal } from "../GlobalContext";
-import "./style.scss";
 import { ObjectLiteral, iFile } from "../types";
+import "./style.scss";
 
 const colorsProperty = ["contrast", "brightness", "saturate", "hue"];
 
@@ -70,9 +70,12 @@ export default function VideoViewer() {
           else if (mouseHold.current !== 2)
             video.currentTime += deltaY < 0 ? 5 : -5;
         }}
-        onDoubleClick={() => {
-          if (document.fullscreenElement) document.exitFullscreen();
-          else mainRef.current!.requestFullscreen();
+        onDoubleClick={(e) => {
+          // fullscreen
+          if (e.button === 0) {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else mainRef.current!.requestFullscreen();
+          }
         }}
         onMouseDown={(e) => {
           if (e.button > 1) mouseHold.current = e.button;
@@ -195,6 +198,13 @@ export default function VideoViewer() {
         <input name="hue" type="number" min="0" step="4" defaultValue="360" />
         <br />
         <input type="reset" />
+        <button
+          type="button"
+          style={{ float: "right" }}
+          onClick={() => panzoomHandle.current?.set(0, 0, 1).onEnd()}
+        >
+          reset panzoom
+        </button>
       </form>
       {/* CONTROL */}
       <div className="vp-control">
