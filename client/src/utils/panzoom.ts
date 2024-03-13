@@ -2,14 +2,18 @@ export interface PanZoomOption {
   zoomSpeed?: number;
   panButton?: number;
   doZoom?: (e: WheelEvent) => boolean;
+  onEnd?: (translateX: number, translateY: number, scale: number) => void;
 }
 
 export default class PanZoom {
   constructor(public el: HTMLElement, public option: PanZoomOption = {}) {
-    const { zoomSpeed = 0.05, panButton = 0, doZoom = truthy } = option;
+    const { zoomSpeed = 0.05, panButton = 0, doZoom = truthy, onEnd } = option;
     let pan = false;
     let mouseX = 0,
       mouseY = 0;
+    let translateX = 0,
+      translateY = 0,
+      scale = 1;
     // pan
     this.mouseDown = (e) => {
       if (e.button === panButton) {
@@ -27,10 +31,15 @@ export default class PanZoom {
     };
     this.mouseMove = (e) => {
       if (pan) {
-        el.style.translate = `${e.clientX - mouseX}px ${e.clientY - mouseY}px`;
+        translateX = e.clientX - mouseX;
+        translateY = e.clientY - mouseY;
+        el.style.translate = `${translateX}px ${translateY}px`;
       }
     };
-    this.mouseUp = () => (pan = false);
+    this.mouseUp = () => {
+      pan = false;
+      onEnd?.(translateX, translateY, scale);
+    };
     el.addEventListener("mousedown", this.mouseDown);
     window.addEventListener("mousemove", this.mouseMove);
     window.addEventListener("mouseup", this.mouseUp);
@@ -38,10 +47,10 @@ export default class PanZoom {
     this.wheel = (e) => {
       if (!doZoom(e)) return;
       const isUp = e.deltaY < 0;
-      el.style.scale =
-        parseFloat(el.style.scale || "1") +
-        (isUp ? zoomSpeed : -zoomSpeed) +
-        "";
+      scale =
+        parseFloat(el.style.scale || "1") + (isUp ? zoomSpeed : -zoomSpeed);
+      el.style.scale = "" + scale;
+      onEnd?.(translateX, translateY, scale);
     };
     if (zoomSpeed > 0) el.addEventListener("wheel", this.wheel);
   }

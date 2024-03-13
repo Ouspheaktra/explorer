@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import PanZoom from "../utils/panzoom";
 import { fileUrl, secondsToString } from "../utils";
-import { useGlobal } from "../GlobalContext";
+import { UpdateFiles, useGlobal } from "../GlobalContext";
 import "./style.scss";
+import { ObjectLiteral, iFile } from "../types";
 
 const colorsProperty = ["contrast", "brightness", "saturate", "hue"];
 
@@ -19,7 +20,7 @@ export default function VideoViewer() {
   const mainRef = useRef<HTMLDivElement | null>(null);
   const mouseHold = useRef<number | false>(false);
   const scrollWhenMouseHold = useRef(false);
-  const getEl = <T = HTMLInputElement,>(query: string) =>
+  const getEl = <T extends HTMLElement = HTMLInputElement>(query: string) =>
     mainRef.current!.querySelector(".vp-" + query)! as T;
   const getVideo = () => getEl<HTMLVideoElement>("video");
   const toggleVideoPlayState = (play?: boolean) => {
@@ -34,6 +35,13 @@ export default function VideoViewer() {
     panzoomHandle.current = new PanZoom(video, {
       panButton: 2,
       doZoom: () => mouseHold.current === 2,
+      onEnd: (translateX, translateY, scale) => {
+        updateFile(updateFiles, file, {
+          translateX: translateX === 0 ? undefined : translateX,
+          translateY: translateY === 0 ? undefined : translateY,
+          scale: scale === 1 ? undefined : scale,
+        });
+      },
     });
   }, [_id]);
   const src = fileUrl(path);
@@ -134,25 +142,17 @@ export default function VideoViewer() {
             `saturate(${form.saturate.valueAsNumber}%)`,
             `hue-rotate(${form.hue.valueAsNumber}deg)`,
           ].join(" ");
-          updateFiles(
-            [
-              [
-                file,
-                {
-                  ...details,
-                  ...Object.fromEntries(
-                    colorsProperty.map((name) => [
-                      name,
-                      form[name].value === form[name].getAttribute("value")
-                        ? undefined
-                        : form[name].value,
-                    ])
-                  ),
-                },
-                null,
-              ],
-            ],
-            true
+          updateFile(
+            updateFiles,
+            file,
+            Object.fromEntries(
+              colorsProperty.map((name) => [
+                name,
+                form[name].value === form[name].getAttribute("value")
+                  ? undefined
+                  : form[name].value,
+              ])
+            )
           );
         }}
         onReset={({ currentTarget: form }) =>
@@ -265,5 +265,25 @@ export default function VideoViewer() {
         </div>
       </div>
     </div>
+  );
+}
+
+function updateFile(
+  updateFiles: UpdateFiles,
+  file: iFile,
+  moreDetails: ObjectLiteral
+) {
+  updateFiles(
+    [
+      [
+        file,
+        {
+          ...file.details,
+          ...moreDetails,
+        },
+        null,
+      ],
+    ],
+    true
   );
 }
