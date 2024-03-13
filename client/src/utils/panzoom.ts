@@ -61,6 +61,7 @@ export default class PanZoom {
   private wheel: (e: WheelEvent) => void;
 
   dispose = () => {
+    this.el.style.translate = this.el.style.scale = "";
     this.el.removeEventListener("mousedown", this.mouseDown);
     window.removeEventListener("mousemove", this.mouseMove);
     window.removeEventListener("mouseup", this.mouseUp);

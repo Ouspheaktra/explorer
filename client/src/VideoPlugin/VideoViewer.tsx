@@ -43,6 +43,8 @@ export default function VideoViewer() {
         });
       },
     });
+    video.style.translate = `${details.translateX || 0}px ${details.translateY || 0}px`;
+    video.style.scale = (details.scale || 1) + "";
   }, [_id]);
   const src = fileUrl(path);
   const vttFile = files.find((f) => f.ext === ".vtt" && f.name === file.name);
