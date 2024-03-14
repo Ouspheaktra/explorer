@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AppState, ObjectLiteral, iDir } from "./types";
+import { AppState, ObjectLiteral } from "./types";
 import Explorer from "./components/Explorer";
 import {
   dirToPrevDir,

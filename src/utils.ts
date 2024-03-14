@@ -17,7 +17,7 @@ export const mimeTypes: {
     ".mov": "video/quicktime",
     ".avi": "video/x-msvideo",
     ".wmv": "video/x-ms-wmv",
-    ".flv": "video/x-flv",
+    // ".flv": "video/x-flv",
     ".mkv": "video/x-matroska",
     ".3gp": "video/3gpp",
     ".webm": "video/webm",
