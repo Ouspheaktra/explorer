@@ -81,6 +81,13 @@ function App() {
         }
       }
     });
+    //
+    document.onfullscreenchange = () => {
+      if (document.fullscreenElement)
+        document.body.classList.add("fullscreen");
+      else
+        document.body.classList.remove("fullscreen");
+    }
   }, []);
   //@ts-ignore
   window.getFile = () => file;
