@@ -163,9 +163,9 @@ function App() {
     >
       <div
         id="viewer"
-        onDoubleClick={() => {
+        onDoubleClick={(e) => {
           if (document.fullscreenElement) document.exitFullscreen();
-          else document.body.requestFullscreen();
+          else e.currentTarget.requestFullscreen();
         }}
       >
         {file && plugin && <plugin.Viewer />}
