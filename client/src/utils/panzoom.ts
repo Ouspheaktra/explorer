@@ -1,6 +1,6 @@
 export interface PanZoomOption {
   zoomSpeed?: number;
-  panButton?: number;
+  panButtons?: number[];
   doZoom?: (e: WheelEvent) => boolean;
   onEnd?: (translateX: number, translateY: number, scale: number) => void;
 }
@@ -12,13 +12,13 @@ export default class PanZoom {
   private wheel: (e: WheelEvent) => void;
 
   constructor(public el: HTMLElement, public option: PanZoomOption = {}) {
-    const { zoomSpeed = 0.05, panButton = 0, doZoom = truthy } = option;
+    const { zoomSpeed = 0.05, panButtons = [0], doZoom = truthy } = option;
     let pan = false;
     let mouseX = 0,
       mouseY = 0;
     // pan
     this.mouseDown = (e) => {
-      if (e.button === panButton) {
+      if (panButtons.includes(e.button)) {
         // if panButton is left mouse button
         // mouseMove will drag image/video
         // so prevent that default behavior

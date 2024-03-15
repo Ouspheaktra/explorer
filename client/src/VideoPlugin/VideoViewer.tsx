@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import PanZoom from "../utils/panzoom";
 import { fileUrl, secondsToString } from "../utils";
-import { UpdateFiles, useGlobal } from "../GlobalContext";
-import { ObjectLiteral, iFile } from "../types";
+import { useGlobal } from "../GlobalContext";
+import { updateFile } from "./utils";
 import "./style.scss";
 
 const colorsProperty = ["contrast", "brightness", "saturate", "hue"];
@@ -33,7 +33,7 @@ export default function VideoViewer() {
     panzoomHandle.current?.dispose();
     const video = getVideo();
     panzoomHandle.current = new PanZoom(video, {
-      panButton: 2,
+      panButtons: [2],
       doZoom: () => mouseHold.current === 2,
       onEnd: (translateX, translateY, scale) => {
         updateFile(updateFiles, file, {
@@ -43,8 +43,11 @@ export default function VideoViewer() {
         });
       },
     });
-    video.style.translate = `${details.translateX || 0}px ${details.translateY || 0}px`;
-    video.style.scale = (details.scale || 1) + "";
+    panzoomHandle.current.set(
+      details.translateX || 0,
+      details.translateY || 0,
+      details.scale || 1
+    );
   }, [_id]);
   const src = fileUrl(path);
   const vttFile = files.find((f) => f.ext === ".vtt" && f.name === file.name);
@@ -277,25 +280,5 @@ export default function VideoViewer() {
         </div>
       </div>
     </div>
-  );
-}
-
-function updateFile(
-  updateFiles: UpdateFiles,
-  file: iFile,
-  moreDetails: ObjectLiteral
-) {
-  updateFiles(
-    [
-      [
-        file,
-        {
-          ...file.details,
-          ...moreDetails,
-        },
-        null,
-      ],
-    ],
-    true
   );
 }

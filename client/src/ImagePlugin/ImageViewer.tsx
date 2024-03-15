@@ -2,6 +2,7 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useGlobal } from "../GlobalContext";
 import { fileUrl } from "../utils";
 import PanZoom from "../utils/panzoom";
+import { updateFile } from "../VideoPlugin/utils";
 
 export default function ImageViewer() {
   const {
@@ -19,11 +20,25 @@ export default function ImageViewer() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const panzoomHandle = useRef<PanZoom>();
   useEffect(() => {
-    if (panzoomHandle.current) panzoomHandle.current.dispose();
-    panzoomHandle.current = new PanZoom(wrapperRef.current!);
+    panzoomHandle.current?.dispose();
+    panzoomHandle.current = new PanZoom(wrapperRef.current!, {
+      panButtons: [0, 2],
+      onEnd: (translateX, translateY, scale) => {
+        updateFile(updateFiles, file, {
+          translateX: translateX === 0 ? undefined : translateX,
+          translateY: translateY === 0 ? undefined : translateY,
+          scale: scale === 1 ? undefined : scale,
+        });
+      },
+    });
     const { naturalWidth, naturalHeight } = imageRef.current!;
     setOrientation(naturalWidth > naturalHeight ? "landscape" : "portrait");
     setEditedId(0);
+    panzoomHandle.current.set(
+      details.translateX || 0,
+      details.translateY || 0,
+      details.scale || 1
+    );
   }, [_id]);
   const editeds: string[] = details.editeds || [];
   const style: CSSProperties =
@@ -47,6 +62,7 @@ export default function ImageViewer() {
         editeds.length ? `${editedId + 1} / ${editeds.length}` : undefined
       }
       ref={wrapperRef}
+      onContextMenu={(e) => e.preventDefault()}
       onMouseDown={
         editeds.length
           ? (e) => {
