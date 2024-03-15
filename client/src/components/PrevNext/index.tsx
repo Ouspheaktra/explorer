@@ -7,7 +7,9 @@ export default function PrevNext() {
     const onMouseUp = (e: MouseEvent) => {
       if (e.button > 2) {
         e.preventDefault();
-        next(e.button === 3 ? -1 : 1);
+        document
+          .getElementById((e.button === 3 ? "prev" : "next") + "-btn")!
+          .click();
       }
     };
     window.addEventListener("mouseup", onMouseUp);
@@ -17,10 +19,10 @@ export default function PrevNext() {
   }, []);
   return (
     <>
-      <button className="prev" onClick={() => next(-1)}>
+      <button id="prev-btn" className="prev" onClick={() => next(-1)}>
         &lt;
       </button>
-      <button className="next" onClick={() => next(1)}>
+      <button id="next-btn" className="next" onClick={() => next(1)}>
         &gt;
       </button>
     </>

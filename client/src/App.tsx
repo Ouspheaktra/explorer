@@ -59,7 +59,7 @@ function App() {
         return newDir;
       }),
     setFile: SetFile = (newFile) => {
-      updateQuery({ file: newFile, dir });
+      updateQuery({ file: newFile });
       setState({ viewer, dir, file: newFile });
     },
     setViewer = (viewer: string) => {
