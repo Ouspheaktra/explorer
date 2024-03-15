@@ -11,6 +11,9 @@ body {
 }
 body.fullscreen {
   cursor: none;
+  .list {
+    display: none;
+  }
 }
 * {
   box-sizing: border-box;

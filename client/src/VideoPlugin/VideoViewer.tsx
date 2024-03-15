@@ -73,13 +73,6 @@ export default function VideoViewer() {
           else if (mouseHold.current !== 2)
             video.currentTime += deltaY < 0 ? 5 : -5;
         }}
-        onDoubleClick={(e) => {
-          // fullscreen
-          if (e.button === 0) {
-            if (document.fullscreenElement) document.exitFullscreen();
-            else mainRef.current!.requestFullscreen();
-          }
-        }}
         onMouseDown={(e) => {
           if (e.button > 1) mouseHold.current = e.button;
           // prevent middle mouse click default behavior

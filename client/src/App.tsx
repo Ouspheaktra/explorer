@@ -87,7 +87,7 @@ function App() {
         document.body.classList.add("fullscreen");
       else
         document.body.classList.remove("fullscreen");
-    }
+    };
   }, []);
   //@ts-ignore
   window.getFile = () => file;
@@ -161,7 +161,13 @@ function App() {
         setGetNext: (getNext) => (getNextRef.current = getNext),
       }}
     >
-      <div id="viewer">
+      <div
+        id="viewer"
+        onDoubleClick={() => {
+          if (document.fullscreenElement) document.exitFullscreen();
+          else document.body.requestFullscreen();
+        }}
+      >
         {file && plugin && <plugin.Viewer />}
         {file && <PrevNext />}
       </div>
