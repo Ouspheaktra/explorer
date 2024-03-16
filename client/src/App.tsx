@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AppState, ObjectLiteral } from "./types";
+import { AppState, ObjectLiteral, iFile } from "./types";
 import Explorer from "./components/Explorer";
 import {
   dirToPrevDir,
@@ -43,29 +43,21 @@ function App() {
   };
   const { dir, file, viewer } = state;
   const setDir: SetDir = (dir, pushIntoHistory = true) =>
-      getDir(dir).then((newDir) => {
-        newDir.files = newDir.files.filter((f) => !f.ext || f.stat.size);
-        // push history
-        if (pushIntoHistory)
-          updateQuery({ dir: newDir, file: null }, { replace: true });
-        // prepare
-        newDir.prevDir = dirToPrevDir(newDir.dir);
-        newDir.files.forEach((f, i) => {
-          f._id = i;
-          prepareFile(f);
-        });
-        //
-        setState({ file: null, dir: newDir, viewer });
-        return newDir;
-      }),
-    setFile: SetFile = (newFile) => {
-      updateQuery({ file: newFile });
-      setState({ viewer, dir, file: newFile });
-    },
-    setViewer = (viewer: string) => {
-      updateQuery({ viewer }, { useReplaceState: true });
-      setState({ file, dir, viewer });
-    };
+    getDir(dir).then((newDir) => {
+      newDir.files = newDir.files.filter((f) => !f.ext || f.stat.size);
+      // push history
+      if (pushIntoHistory)
+        updateQuery({ dir: newDir, file: null }, { replace: true });
+      // prepare
+      newDir.prevDir = dirToPrevDir(newDir.dir);
+      newDir.files.forEach((f, i) => {
+        f._id = i;
+        prepareFile(f);
+      });
+      //
+      setState({ file: null, dir: newDir, viewer });
+      return newDir;
+    });
   const getNextRef = useRef<GetNext>(() => undefined);
   // query data
   useEffect(() => {
@@ -83,19 +75,39 @@ function App() {
     });
     //
     document.onfullscreenchange = () => {
-      if (document.fullscreenElement)
-        document.body.classList.add("fullscreen");
-      else
-        document.body.classList.remove("fullscreen");
+      if (document.fullscreenElement) document.body.classList.add("fullscreen");
+      else document.body.classList.remove("fullscreen");
     };
   }, []);
   //@ts-ignore
   window.getFile = () => file;
   //
   if (!dir) return "Loading...";
-  const plugin =
-    plugins.find((p) => (file ? p.type === file.type : p.type === viewer)) ||
-    false;
+  const setFile: SetFile = (newFile) => {
+      updateQuery({ file: newFile });
+      setState({ viewer, dir, file: newFile });
+    },
+    setViewer = (viewer: string) => {
+      updateQuery({ viewer }, { useReplaceState: true });
+      setState({ file, dir, viewer });
+    },
+    getNext: GetNext = (plus) => getNextRef.current(plus),
+    onCommand = (files: iFile[]) => () => {
+      let nextId = 1;
+      let next = getNext(nextId);
+      while (next && files.includes(next)) next = getNext(++nextId);
+      setState({
+        file: next || null,
+        dir: {
+          ...dir,
+          files: dir.files.filter((f) => !files.includes(f)),
+        },
+        viewer,
+      });
+    },
+    plugin =
+      plugins.find((p) => (file ? p.type === file.type : p.type === viewer)) ||
+      false;
   return (
     <GlobalContext.Provider
       value={{
@@ -125,39 +137,17 @@ function App() {
           ),
         deleteFiles: (files) =>
           promisesAllOneByOne(files.map((file) => deleteFile(file))).then(
-            () => {
-              let nextId = 1;
-              let next = getNextRef.current(nextId);
-              while (next && files.includes(next))
-                next = getNextRef.current(++nextId);
-              setState({
-                file: next || null,
-                dir: {
-                  ...dir,
-                  files: dir.files.filter((f) => !files.includes(f)),
-                },
-                viewer,
-              });
-            }
+            onCommand(files)
           ),
-        commandFiles: (files, command, newExt) =>
+        commandFiles: (files, ...rest) =>
           promisesAllOneByOne(
-            files.map((file) => postCommand(file, command, newExt))
-          ).then(() =>
-            setState({
-              file,
-              dir: {
-                ...dir,
-                files: dir.files.filter((f) => !files.includes(f)),
-              },
-              viewer,
-            })
-          ),
+            files.map((file) => postCommand(file, ...rest))
+          ).then(onCommand(files)),
         next: (plus) => {
           const file = getNextRef.current(plus);
           if (file) setFile(file);
         },
-        getNext: (plus) => getNextRef.current(plus),
+        getNext,
         setGetNext: (getNext) => (getNextRef.current = getNext),
       }}
     >
