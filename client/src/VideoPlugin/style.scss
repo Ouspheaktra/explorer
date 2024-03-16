@@ -1,5 +1,10 @@
-body.fullscreen .vp-control {
-  opacity: 0;
+body.fullscreen {
+  #video {
+    cursor: none;
+  }
+  .vp-control {
+    opacity: 0;
+  }
 }
 
 .video-player[data-is-paused="paused"] {
