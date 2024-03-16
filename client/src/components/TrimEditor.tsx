@@ -26,13 +26,16 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
                 sorted.sort((a, b) => a[0] - b[0]);
                 commandFiles(
                   selecteds,
-                  sorted
-                    .map(
-                      ([start, end]) =>
-                        // prettier-ignore
-                        `ffmpeg -ss ${str(start)} -to ${str(end)} -i {input} -c copy {output#}`
-                    )
-                    .join(" && ")
+                  sorted.length > 1
+                    ? sorted
+                        .map(
+                          ([start, end]) =>
+                            // prettier-ignore
+                            `ffmpeg -ss ${str(start)} -to ${str(end)} -i {input} -c copy {output#}`
+                        )
+                        .join(" && ")
+                    : // prettier-ignore
+                      `ffmpeg -ss ${str(sorted[0][0])} -to ${str(sorted[0][1])} -i {input} -c copy {output}`
                 );
               }}
             >
@@ -82,8 +85,7 @@ export default function TrimEditor({ selecteds }: EditorComponentProps) {
               <button
                 className="x"
                 onClick={() => setParts(parts.filter((_, i) => i !== id))}
-              >
-              </button>
+              ></button>
             </div>
           ))}
           <button
