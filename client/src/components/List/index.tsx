@@ -308,6 +308,7 @@ export default function List({
       </ul>
       {selecteds.length && (
         <Editor
+          key={selecteds[0]._id}
           Components={[...EditorComponents, TrashEditor]}
           selecteds={selecteds}
         />
