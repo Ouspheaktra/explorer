@@ -38,11 +38,13 @@ export default function List({
   );
   const allSorts = [...sorts, ...builtinSorts];
   const querySortName = query.get("sort-name");
-  const [[sortName, sortOrder], setSort] = useState<[string, Order]>([
+  const [sortName, setSortName] = useState<string>(
     (querySortName && allSorts.find((s) => s.name === querySortName)?.name) ||
-      builtinSorts[0].name,
-    (query.get("sort-order") as Order) || "asc",
-  ]);
+      builtinSorts[0].name
+  );
+  const [sortOrder, setSortOrder] = useState<Order>(
+    (query.get("sort-order") as Order) || "asc"
+  );
   const [filter, setFilter] = useState(query.get("filter") || "");
   const toSortStore = useRef<{
     sortName: string;
@@ -239,30 +241,42 @@ export default function List({
         })}
         <li className="list-bottom">
           Order:
-          <br />
-          {allSorts.map(({ name }) => (
-            <button
-              key={name}
-              data-order={sortOrder}
-              className={"order-btn" + (sortName === name ? " active" : "")}
-              onClick={() => {
-                const order =
-                  sortName !== name
-                    ? "asc"
-                    : sortOrder === "asc"
-                    ? "desc"
-                    : "asc";
-                setSort([name, order]);
-                updateQuery(
-                  { ["sort-name"]: name, ["sort-order"]: order },
-                  { useReplaceState: true }
-                );
-                if (selecteds.length) scrollFileIntoView(selecteds.at(-1)!._id);
-              }}
-            >
-              {name}
-            </button>
-          ))}
+          <select
+            value={sortName}
+            onChange={(e) => {
+              const newSortName = e.currentTarget.value;
+              setSortName(newSortName);
+              updateQuery(
+                { ["sort-name"]: newSortName },
+                { useReplaceState: true }
+              );
+              if (selecteds.length) scrollFileIntoView(selecteds.at(-1)!._id);
+            }}
+          >
+            {allSorts.map(({ name }) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+          <select
+            value={sortOrder}
+            onChange={(e) => {
+              const newSortOrder = e.currentTarget.value as Order;
+              setSortOrder(newSortOrder);
+              updateQuery(
+                { ["sort-order"]: newSortOrder },
+                { useReplaceState: true }
+              );
+              if (selecteds.length) scrollFileIntoView(selecteds.at(-1)!._id);
+            }}
+          >
+            {["asc", "desc"].map((order) => (
+              <option key={order} value={order}>
+                {order}
+              </option>
+            ))}
+          </select>
           <br />
           Filter:
           <br />

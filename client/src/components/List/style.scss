@@ -84,21 +84,6 @@
     > * {
       vertical-align: middle;
     }
-    > .order-btn {
-      &.active {
-        background-color: yellow;
-        &::after {
-          content: "➤";
-          display: inline-block;
-        }
-        &[data-order="asc"]::after {
-          rotate: -90deg;
-        }
-        &[data-order="desc"]::after {
-          rotate: 90deg;
-        }
-      }
-    }
   }
 }
 
