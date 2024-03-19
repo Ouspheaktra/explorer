@@ -66,7 +66,7 @@ export default function VideoViewer() {
           if (mouseHold.current !== false) scrollWhenMouseHold.current = true;
           // volume up/down
           if (mouseHold.current === 4) {
-            const newVolume = video.volume + (deltaY < 0 ? 0.1 : -0.1);
+            const newVolume = video.volume + (deltaY < 0 ? 0.05 : -0.05);
             video.volume = Math.max(0, Math.min(newVolume, 1));
           }
           // skip
