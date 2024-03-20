@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
-import { iData, iDir, iFile } from "../types";
+import { iData, iFile } from "../types";
 import type { postFile } from "../utils/api";
 export type SetFile = (file: iFile | null) => any;
-export type SetDir = (dir: string, pushHistory?: boolean) => Promise<iDir>;
+export type SetDir = (dir: string) => any;
 export type UpdateFiles = (
   postFiles: Parameters<typeof postFile>[],
   silence?: boolean

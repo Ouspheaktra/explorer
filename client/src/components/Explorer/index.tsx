@@ -2,7 +2,6 @@ import List from "../List";
 import { useGlobal } from "../../GlobalContext";
 import { FileComponentProps, ListProps } from "../List/types";
 
-
 export default function Explorer({
   topButtons,
 }: Pick<ListProps, "topButtons">) {
@@ -22,10 +21,13 @@ export default function Explorer({
       listTop={
         <>
           {dir && (
-            <li className="a" onClick={() => {
-              setDir(prevDir || "")
-              document.getElementById("reset-filter")!.click();
-            }}>
+            <li
+              className="a"
+              onClick={() => {
+                setDir(prevDir || "");
+                document.getElementById("reset-filter")!.click();
+              }}
+            >
               &lt;&minus; Back
             </li>
           )}

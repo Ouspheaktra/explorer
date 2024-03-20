@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import App, { appLoader } from "./App.tsx";
 
 if (location.hostname !== "localhost") {
   // https://github.com/vitejs/vite/issues/2076
@@ -15,11 +16,22 @@ if (location.hostname !== "localhost") {
 }
 
 window.addEventListener("fullscreenchange", () => {
-  document.body.classList.toggle("fullscreen", Boolean(document.fullscreenElement))
-})
+  document.body.classList.toggle(
+    "fullscreen",
+    Boolean(document.fullscreenElement)
+  );
+});
+
+const router = createBrowserRouter([
+  {
+    path: "/:directory?/:filename?",
+    element: <App />,
+    loader: appLoader,
+  },
+]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   // <React.StrictMode>
-    <App />
+  <RouterProvider router={router} />
   // </React.StrictMode>
 );

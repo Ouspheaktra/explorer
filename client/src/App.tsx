@@ -1,109 +1,60 @@
-import { useEffect, useRef, useState } from "react";
-import { AppState, ObjectLiteral, iFile } from "./types";
-import Explorer from "./components/Explorer";
+import { useRef } from "react";
+import { iDir, iFile } from "./types";
 import {
-  dirToPrevDir,
   prepareFile,
   promisesAllOneByOne,
   updateQuery as _updateQuery,
+  objectToQuery,
+  dirToPrevDir,
 } from "./utils";
-import { GetNext, GlobalContext, SetDir, SetFile } from "./GlobalContext";
-import { deleteFile, getDir, postCommand, postFile } from "./utils/api";
+import { GetNext, GlobalContext, Next, SetDir, SetFile } from "./GlobalContext";
+import { deleteFile, postCommand, postFile } from "./utils/api";
 import ImagePlugin from "./ImagePlugin";
 import VideoPlugin from "./VideoPlugin";
+import {
+  LoaderFunction,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import Explorer from "./components/Explorer";
 import PrevNext from "./components/PrevNext";
-import { scrollFileIntoView } from "./components/List/utils";
 import "./App.scss";
-
-const updateQuery = (
-  { file, dir, ...rest }: Partial<AppState> & ObjectLiteral,
-  options?: Parameters<typeof _updateQuery>[1]
-) => {
-  return _updateQuery(
-    Object.assign(
-      rest,
-      file === null || file ? { file: file?.fullname || "" } : {},
-      dir ? { dir: dir.dir } : {}
-    ),
-    options
-  );
-};
 
 const plugins = [ImagePlugin, VideoPlugin];
 
+document.onfullscreenchange = () => {
+  if (document.fullscreenElement) document.body.classList.add("fullscreen");
+  else document.body.classList.remove("fullscreen");
+};
+
 function App() {
-  const [state, _setState] = useState<AppState>({
-    dir: null,
-    file: null,
-    viewer: new URLSearchParams(location.search.slice(1)).get("viewer") || "",
-  });
-  const setState = (newState: AppState) => {
-    _setState(newState);
-    document.title = newState.file?.fullname || newState.dir?.dir || "Explorer";
-  };
-  const { dir, file, viewer } = state;
-  const setDir: SetDir = (dir, pushIntoHistory = true) =>
-    getDir(dir).then((newDir) => {
-      newDir.files = newDir.files.filter((f) => !f.ext || f.stat.size);
-      // push history
-      if (pushIntoHistory)
-        updateQuery({ dir: newDir, file: null }, { replace: true });
-      // prepare
-      newDir.prevDir = dirToPrevDir(newDir.dir);
-      newDir.files.forEach((f, i) => {
-        f._id = i;
-        prepareFile(f);
-      });
-      //
-      setState({ file: null, dir: newDir, viewer });
-      return newDir;
-    });
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const viewer = searchParams.get("viewer");
+  const { file, dir } = useLoaderData() as { file: iFile; dir: iDir };
   const getNextRef = useRef<GetNext>(() => undefined);
-  // query data
-  useEffect(() => {
-    const search = new URLSearchParams(location.search.slice(1));
-    const dirPath = search.get("dir") || "";
-    setDir(dirPath, false).then((dir) => {
-      const filename = search.get("file")!;
-      if (filename) {
-        const file = dir.files.find((f) => f.fullname === filename);
-        if (file) {
-          setState({ file, dir, viewer });
-          scrollFileIntoView(file._id);
-        }
-      }
-    });
-    //
-    document.onfullscreenchange = () => {
-      if (document.fullscreenElement) document.body.classList.add("fullscreen");
-      else document.body.classList.remove("fullscreen");
-    };
-  }, []);
-  //@ts-ignore
-  window.getFile = () => file;
   //
   if (!dir) return "Loading...";
-  const setFile: SetFile = (newFile) => {
-      updateQuery({ file: newFile });
-      setState({ viewer, dir, file: newFile });
-    },
-    setViewer = (viewer: string) => {
-      updateQuery({ viewer }, { useReplaceState: true });
-      setState({ file, dir, viewer });
-    },
+  //
+  const setDir: SetDir = (dir) => navigate(`/${encodeURIComponent(dir)}`),
+    setFile: SetFile = (file) =>
+      file
+        ? // prettier-ignore
+          navigate(`/${encodeURIComponent(dir.dir)}/${encodeURIComponent(file.fullname)}${location.search}`)
+        : setDir(dir.dir),
     getNext: GetNext = (plus) => getNextRef.current(plus),
+    next: Next = (plus) => {
+      const file = getNext(plus);
+      if (file) setFile(file)
+    },
     onCommand = (files: iFile[]) => () => {
       let nextId = 1;
       let next = getNext(nextId);
       while (next && files.includes(next)) next = getNext(++nextId);
-      setState({
-        file: next || null,
-        dir: {
-          ...dir,
-          files: dir.files.filter((f) => !files.includes(f)),
-        },
-        viewer,
-      });
+      if (next) setFile(next);
+      else setDir(dir.dir);
+      dir.files = dir.files.filter((f) => !files.includes(f));
     },
     plugin =
       plugins.find((p) => (file ? p.type === file.type : p.type === viewer)) ||
@@ -115,23 +66,14 @@ function App() {
         setDir,
         file: file!,
         setFile,
-        updateFiles: (args, silence = false) =>
+        updateFiles: (args) =>
           promisesAllOneByOne(args.map((arg) => postFile(...arg))).then(
             (newFiles) => {
               const { files } = dir;
-              let firstFile = true;
               for (let newFile of newFiles) {
                 const file = files.find((file) => newFile._id === file._id);
-                if (file) {
-                  Object.assign(file, prepareFile(newFile));
-                  if (firstFile && !silence) {
-                    updateQuery({ dir, file }, { useReplaceState: true });
-                    setState({ file, dir, viewer });
-                  }
-                  firstFile = false;
-                }
+                if (file) Object.assign(file, prepareFile(newFile));
               }
-              // scrollFileIntoView(newFiles[0]._id);
               return newFiles;
             }
           ),
@@ -143,10 +85,7 @@ function App() {
           promisesAllOneByOne(
             files.map((file) => postCommand(file, ...rest))
           ).then(onCommand(files)),
-        next: (plus) => {
-          const file = getNextRef.current(plus);
-          if (file) setFile(file);
-        },
+        next,
         getNext,
         setGetNext: (getNext) => (getNextRef.current = getNext),
       }}
@@ -163,16 +102,25 @@ function App() {
       </div>
       {viewer && plugin ? (
         <plugin.List
-          closeButton={<button onClick={() => setViewer("")}>close</button>}
+          closeButton={
+            <button onClick={() => setSearchParams({ viewer: "" })}>
+              close
+            </button>
+          }
         />
       ) : (
         <Explorer
           topButtons={
             file ? (
-              <button onClick={() => setViewer(file.type)}>{file.type}</button>
+              <button onClick={() => setSearchParams({ viewer: file.type })}>
+                {file.type}
+              </button>
             ) : (
               plugins.map((p) => (
-                <button key={p.type} onClick={() => setViewer(p.type)}>
+                <button
+                  key={p.type}
+                  onClick={() => setSearchParams({ viewer: p.type })}
+                >
                   {p.type}
                 </button>
               ))
@@ -185,3 +133,31 @@ function App() {
 }
 
 export default App;
+
+let lastDirectory: string | undefined = "[---]",
+  lastDir: iDir = { dir: "", prevDir: "", files: [] };
+
+export const appLoader: LoaderFunction = async ({
+  params: { directory, filename },
+}) => {
+  const dir =
+    lastDirectory === directory
+      ? lastDir
+      : await fetch(`/api/dir?${objectToQuery({ dir: directory || "" })}`)
+          .then((res) => res.json())
+          .then((dir: iDir) => {
+            dir.files = dir.files.filter((f) => !f.ext || f.stat.size);
+            dir.prevDir = dirToPrevDir(dir.dir);
+            dir.files.forEach((f, i) => {
+              f._id = i;
+              prepareFile(f);
+            });
+            return dir;
+          });
+  lastDirectory = directory;
+  lastDir = dir;
+  return {
+    dir,
+    file: (filename && dir.files.find((f) => f.fullname === filename)) || null,
+  };
+};
