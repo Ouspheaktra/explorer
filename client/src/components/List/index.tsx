@@ -4,9 +4,10 @@ import { builtinSorts } from "./builtin";
 import { useGlobal } from "../../GlobalContext";
 import Editor from "../Editor";
 import { iFile } from "../../types";
-import { notBoolean, toggleItem, updateQuery } from "../../utils";
+import { notBoolean, toggleItem } from "../../utils";
 import { FILTER_REG, scrollFileIntoView } from "./utils";
 import TrashEditor from "../TrashEditor";
+import { useSearchParams } from "react-router-dom";
 import "./style.scss";
 
 export default function List({
@@ -32,7 +33,7 @@ export default function List({
         : undefined,
     [file]
   );
-  const query = new URLSearchParams(location.search.slice(1));
+  const [query, setSearchParams] = useSearchParams();
   const [fullMode, setFullMode] = useState(
     Boolean(query.get("viewer") && query.get("full-list") === "1")
   );
@@ -152,10 +153,10 @@ export default function List({
                   if (fullMode && selecteds.length) setFile(file);
                   //
                   setFullMode(!fullMode);
-                  updateQuery(
-                    { ["full-list"]: fullMode ? "" : "1" },
-                    { useReplaceState: true }
-                  );
+                  setSearchParams((q) => {
+                    q.set("full-list", fullMode ? "" : "1");
+                    return q;
+                  });
                   //
                   if (file) scrollFileIntoView(file._id);
                 }}
@@ -246,10 +247,10 @@ export default function List({
             onChange={(e) => {
               const newSortName = e.currentTarget.value;
               setSortName(newSortName);
-              updateQuery(
-                { ["sort-name"]: newSortName },
-                { useReplaceState: true }
-              );
+              setSearchParams((q) => {
+                q.set("sort-name", newSortName);
+                return q;
+              });
               if (selecteds.length) scrollFileIntoView(selecteds.at(-1)!._id);
             }}
           >
@@ -264,10 +265,10 @@ export default function List({
             onChange={(e) => {
               const newSortOrder = e.currentTarget.value as Order;
               setSortOrder(newSortOrder);
-              updateQuery(
-                { ["sort-order"]: newSortOrder },
-                { useReplaceState: true }
-              );
+              setSearchParams((q) => {
+                q.set("sort-order", newSortOrder);
+                return q;
+              });
               if (selecteds.length) scrollFileIntoView(selecteds.at(-1)!._id);
             }}
           >
@@ -311,7 +312,10 @@ export default function List({
               const newFilter = filterInput.value.trim();
               if (newFilter === filter) return;
               setFilter(newFilter);
-              updateQuery({ filter: newFilter }, { useReplaceState: true });
+              setSearchParams((q) => {
+                q.set("filter", newFilter);
+                return q;
+              });
             }}
           >
             ➜

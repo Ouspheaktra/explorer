@@ -69,27 +69,6 @@ export const sameDate = (date1: Date, date2: Date) =>
   date1.getMonth() === date2.getMonth() &&
   date1.getDate() === date2.getDate();
 
-export const updateQuery = (
-  query: ObjectLiteral,
-  {
-    replace = false,
-    useReplaceState = false,
-  }: { replace?: boolean; useReplaceState?: boolean } = {}
-) => {
-  const q = objectToQuery(
-    replace
-      ? query
-      : {
-          ...Object.fromEntries(
-            new URLSearchParams(location.search.slice(1)).entries()
-          ),
-          ...query,
-        }
-  );
-  if (useReplaceState) history.replaceState({}, "", `/?${q}`);
-  else history.pushState({}, "", `/?${q}`);
-};
-
 export const thumbnailUrl = ({ dir, fullname }: iFile, id: number) =>
   `/file?${new URLSearchParams({
     path:

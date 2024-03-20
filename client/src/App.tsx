@@ -3,7 +3,6 @@ import { iDir, iFile } from "./types";
 import {
   prepareFile,
   promisesAllOneByOne,
-  updateQuery as _updateQuery,
   objectToQuery,
   dirToPrevDir,
 } from "./utils";
@@ -33,6 +32,7 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const viewer = searchParams.get("viewer");
   const { file, dir } = useLoaderData() as { file: iFile; dir: iDir };
+  document.title = file ? file.fullname : dir.dir || "Explorer";
   const getNextRef = useRef<GetNext>(() => undefined);
   //
   if (!dir) return "Loading...";
@@ -46,7 +46,7 @@ function App() {
     getNext: GetNext = (plus) => getNextRef.current(plus),
     next: Next = (plus) => {
       const file = getNext(plus);
-      if (file) setFile(file)
+      if (file) setFile(file);
     },
     onCommand = (files: iFile[]) => () => {
       let nextId = 1;
@@ -103,7 +103,14 @@ function App() {
       {viewer && plugin ? (
         <plugin.List
           closeButton={
-            <button onClick={() => setSearchParams({ viewer: "" })}>
+            <button
+              onClick={() =>
+                setSearchParams((q) => {
+                  q.delete("viewer");
+                  return q;
+                })
+              }
+            >
               close
             </button>
           }
@@ -112,14 +119,26 @@ function App() {
         <Explorer
           topButtons={
             file ? (
-              <button onClick={() => setSearchParams({ viewer: file.type })}>
+              <button
+                onClick={() =>
+                  setSearchParams((q) => {
+                    q.set("viewer", file.type);
+                    return q;
+                  })
+                }
+              >
                 {file.type}
               </button>
             ) : (
               plugins.map((p) => (
                 <button
                   key={p.type}
-                  onClick={() => setSearchParams({ viewer: p.type })}
+                  onClick={() =>
+                    setSearchParams((q) => {
+                      q.set("viewer", p.type);
+                      return q;
+                    })
+                  }
                 >
                   {p.type}
                 </button>
