@@ -119,6 +119,7 @@ export default function List({
           <ul>
             <li className="list-top-buttons">
               {topButtons}
+              {/* FULLMODE */}
               <button
                 className="list-fuller"
                 onClick={() => {
@@ -138,6 +139,7 @@ export default function List({
               >
                 {fullMode ? "S" : "F"}
               </button>
+              {/* OPEN/CLOSE */}
               <button
                 className="list-opener"
                 onClick={() => {
@@ -156,6 +158,7 @@ export default function List({
         </li>
         {sortedGroups.map(({ name, files }, gid) => {
           return (
+            // GROUP NAME
             <li key={gid} className="list-group">
               <button
                 className="list-group-name"
@@ -178,6 +181,7 @@ export default function List({
               >
                 {name}
               </button>
+              {/* FILES */}
               <ul className="list-group-files">
                 {files.map((f) => {
                   const { type, ext, fullname, dir, _id } = f;
@@ -215,6 +219,7 @@ export default function List({
           );
         })}
         <li className="list-bottom">
+          {/* ORDER */}
           Order:
           <select
             value={sortName}
@@ -251,6 +256,7 @@ export default function List({
             ))}
           </select>
           <br />
+          {/* FILTER */}
           Filter:
           <br />
           <button
@@ -295,6 +301,7 @@ export default function List({
           {bottomButtons}
         </li>
       </ul>
+      {/* EDITOR */}
       {selecteds.length && (
         <Editor
           key={selecteds[0]._id}

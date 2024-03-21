@@ -3,7 +3,7 @@ import { createSort } from "../components/List/utils";
 import EditedEditor from "../components/EditedEditor";
 import { useGlobal } from "../GlobalContext";
 import ImageFileComponent from "./ImageFileComponent";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import { Plugin, iFile } from "../types";
 import createStringArrayDetailsEditor from "../components/createStringArrayDetailsEditor";
 import { iImageDetails } from "./types";
@@ -12,20 +12,24 @@ const ImageList: Plugin["List"] = ({ closeButton }) => {
   const {
     dir: { files },
   } = useGlobal();
-  const filesStore = useRef<iFile[]>([]);
-  if (files !== filesStore.current) {
+  const [filteredFiles, setFilteredFiles] = useState<iFile[]>([]);
+  //
+  useEffect(() => {
     const editeds = files
       .filter((file) => file.details.editeds?.length)
       .map((file) => file.details.editeds)
       .flat();
-    filesStore.current = files.filter(
-      (file) => file.type === "image" && !editeds.includes(file.fullname)
+    setFilteredFiles(
+      files.filter(
+        (file) => file.type === "image" && !editeds.includes(file.fullname)
+      )
     );
-  }
+  }, [files]);
+  //
   return (
     <List
       id="image-list"
-      filteredFiles={filesStore.current}
+      filteredFiles={filteredFiles}
       FileComponent={ImageFileComponent}
       topButtons={closeButton}
       sorts={[

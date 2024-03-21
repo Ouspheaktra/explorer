@@ -32,7 +32,7 @@ function App() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const viewer = searchParams.get("viewer");
-  const { file, dir } = useLoaderData() as { file: iFile; dir: iDir };
+  const { file, dir } = useLoaderData() as { file: iFile | null; dir: iDir };
   document.title = file ? file.fullname : dir.dir || "Explorer";
   const getNextRef = useRef<GetNext>(() => undefined);
   //
@@ -92,6 +92,7 @@ function App() {
         setGetNext: (getNext) => (getNextRef.current = getNext),
       }}
     >
+      {/* VIEWER */}
       <div
         id="viewer"
         onDoubleClick={(e) => {
@@ -102,6 +103,7 @@ function App() {
         {file && plugin && <plugin.Viewer />}
         {file && <PrevNext />}
       </div>
+      {/* LIST */}
       {viewer && plugin ? (
         <plugin.List
           closeButton={

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGlobal } from "../GlobalContext";
 import List from "../components/List";
 import { createSort } from "../components/List/utils";
@@ -18,13 +18,16 @@ const VideoList: Plugin["List"] = ({ closeButton }) => {
   const {
     dir: { files },
   } = useGlobal();
-  const filesStore = useRef<iFile[]>([]);
-  if (files !== filesStore.current)
-    filesStore.current = files.filter((file) => file.type === "video");
+  const [filteredFiles, setFilteredFiles] = useState<iFile[]>([]);
+  //
+  useEffect(() => {
+    setFilteredFiles(files.filter((file) => file.type === "video"));
+  }, [files]);
+  //
   return (
     <List
       id="video-list"
-      filteredFiles={filesStore.current}
+      filteredFiles={filteredFiles}
       FileComponent={VideoFileComponent}
       topButtons={closeButton}
       sorts={[
