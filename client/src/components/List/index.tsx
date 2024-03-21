@@ -24,47 +24,28 @@ export default function List({
   const { setDir, file, setFile, setGetNext } = useGlobal();
   const filterBtnRef = useRef<HTMLButtonElement | null>(null);
   const [selecteds, setSelecteds] = useState<iFile[]>(file ? [file] : []);
-  useEffect(
-    () =>
-      !file
-        ? setSelecteds([])
-        : !selecteds.includes(file)
-        ? setSelecteds([file])
-        : undefined,
-    [file]
-  );
+  const [sortedGroups, setSortedGroups] = useState<SortedGroup[]>([]);
   const [query, setSearchParams] = useSearchParams();
-  const fullMode = Boolean(query.get("viewer") && query.get("full-list") === "1")
+  const fullMode = Boolean(
+    query.get("viewer") && query.get("full-list") === "1"
+  );
   const allSorts = [...sorts, ...builtinSorts];
   const querySortName = query.get("sort-name");
-  const [sortName, setSortName] = useState<string>(
+  const sortName =
     (querySortName && allSorts.find((s) => s.name === querySortName)?.name) ||
-      builtinSorts[0].name
-  );
-  const [sortOrder, setSortOrder] = useState<Order>(
-    (query.get("sort-order") as Order) || "asc"
-  );
-  const [filter, setFilter] = useState(query.get("filter") || "");
-  const toSortStore = useRef<{
-    sortName: string;
-    sortOrder: string;
-    filter: string;
-    sortedGroups: SortedGroup[];
-    preFilteredFiles: iFile[];
-  }>({
-    sortName: "",
-    filter: "",
-    sortOrder,
-    sortedGroups: [],
-    preFilteredFiles: [],
-  });
+    builtinSorts[1].name;
+  const sortOrder = query.get("sort-order") || ("desc" as Order);
+  const filter = query.get("filter") || "";
 
-  if (
-    sortName !== toSortStore.current.sortName ||
-    sortOrder !== toSortStore.current.sortOrder ||
-    filter !== toSortStore.current.filter ||
-    preFilteredFiles !== toSortStore.current.preFilteredFiles
-  ) {
+  // new file, update selecteds
+  useEffect(() => {
+    if (file) {
+      if (selecteds.includes(file)) setSelecteds([file]);
+    } else setSelecteds([]);
+  }, [file]);
+
+  // sort and filter
+  useEffect(() => {
     console.log("SORT || FILTER");
 
     let filteredFiles = preFilteredFiles;
@@ -116,15 +97,10 @@ export default function List({
       unknown.files.reverse();
     }
     sortedGroups.push(unknown);
-    Object.assign(toSortStore.current, {
-      sortName,
-      sortOrder,
-      filter,
-      sortedGroups,
-      preFilteredFiles,
-    });
-  }
-  const { sortedGroups } = toSortStore.current;
+    //
+    setSortedGroups(sortedGroups);
+  }, [sortName, sortOrder, filter, preFilteredFiles]);
+
   setGetNext((plus) => {
     const [file] = selecteds;
     if (!file) return;
@@ -132,6 +108,7 @@ export default function List({
     const currentId = files.indexOf(file);
     if (currentId > -1) return files.at((currentId + plus) % files.length)!;
   });
+
   return (
     <>
       <ul
@@ -153,8 +130,7 @@ export default function List({
                   // if back to list mode
                   // view first selected file
                   const [file] = selecteds;
-                  if (fullMode && selecteds.length)
-                    setFile(file);
+                  if (fullMode && file) setFile(file);
                   //
                   if (file) scrollFileIntoView(file._id);
                 }}
@@ -244,7 +220,6 @@ export default function List({
             value={sortName}
             onChange={(e) => {
               const newSortName = e.currentTarget.value;
-              setSortName(newSortName);
               setSearchParams((q) => {
                 q.set("sort-name", newSortName);
                 return q;
@@ -262,7 +237,6 @@ export default function List({
             value={sortOrder}
             onChange={(e) => {
               const newSortOrder = e.currentTarget.value as Order;
-              setSortOrder(newSortOrder);
               setSearchParams((q) => {
                 q.set("sort-order", newSortOrder);
                 return q;
@@ -309,7 +283,6 @@ export default function List({
                 .previousElementSibling! as HTMLTextAreaElement;
               const newFilter = filterInput.value.trim();
               if (newFilter === filter) return;
-              setFilter(newFilter);
               setSearchParams((q) => {
                 q.set("filter", newFilter);
                 return q;
