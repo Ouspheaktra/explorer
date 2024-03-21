@@ -34,9 +34,7 @@ export default function List({
     [file]
   );
   const [query, setSearchParams] = useSearchParams();
-  const [fullMode, setFullMode] = useState(
-    Boolean(query.get("viewer") && query.get("full-list") === "1")
-  );
+  const fullMode = Boolean(query.get("viewer") && query.get("full-list") === "1")
   const allSorts = [...sorts, ...builtinSorts];
   const querySortName = query.get("sort-name");
   const [sortName, setSortName] = useState<string>(
@@ -147,16 +145,16 @@ export default function List({
               <button
                 className="list-fuller"
                 onClick={() => {
-                  const [file] = selecteds;
-                  // if back to list mode
-                  // view first selected file
-                  if (fullMode && selecteds.length) setFile(file);
                   //
-                  setFullMode(!fullMode);
                   setSearchParams((q) => {
                     q.set("full-list", fullMode ? "" : "1");
                     return q;
                   });
+                  // if back to list mode
+                  // view first selected file
+                  const [file] = selecteds;
+                  if (fullMode && selecteds.length)
+                    setFile(file);
                   //
                   if (file) scrollFileIntoView(file._id);
                 }}

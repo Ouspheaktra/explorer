@@ -1,4 +1,4 @@
-import { useRef, useState, useState } from "react";
+import { useRef, useState } from "react";
 import { iDir, iFile } from "./types";
 import {
   prepareFile,
