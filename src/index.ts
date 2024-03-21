@@ -28,10 +28,6 @@ const port = process.env.PORT || (__filename.endsWith(".js") ? 5555 : 5000);
 // app.use(cors());
 app.use(express.static(p.join(__dirname, "../client/dist")));
 
-app.get("/", (req, res) => {
-  res.sendFile(p.join(__dirname, "../client/dist", "index.html"));
-});
-
 app.use(bodyParser.json({ limit: "1mb" }));
 
 app.get("/api/dir", (req, res) => {
@@ -253,6 +249,10 @@ app.get("/file", (req, res) => {
     fileStream.pipe(res);
   }
   // return res.send("no viewer for extension: " + ext);
+});
+
+app.get("*", (_req, res) => {
+  res.sendFile(p.join(__dirname, "../client/dist", "index.html"));
 });
 
 app.listen(port, () => {
