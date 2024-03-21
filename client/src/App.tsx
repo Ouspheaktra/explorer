@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useState } from "react";
 import { iDir, iFile } from "./types";
 import {
   prepareFile,
@@ -28,6 +28,7 @@ document.onfullscreenchange = () => {
 };
 
 function App() {
+  const [updateId, setUpdateId] = useState(0);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const viewer = searchParams.get("viewer");
@@ -74,6 +75,7 @@ function App() {
                 const file = files.find((file) => newFile._id === file._id);
                 if (file) Object.assign(file, prepareFile(newFile));
               }
+              setUpdateId(updateId + 1);
               return newFiles;
             }
           ),
