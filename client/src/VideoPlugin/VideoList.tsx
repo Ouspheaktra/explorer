@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobal } from "../GlobalContext";
 import List from "../components/List";
 import { createSort } from "../components/List/utils";

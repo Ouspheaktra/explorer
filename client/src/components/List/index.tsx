@@ -39,9 +39,8 @@ export default function List({
 
   // new file, update selecteds
   useEffect(() => {
-    if (file) {
-      if (selecteds.includes(file)) setSelecteds([file]);
-    } else setSelecteds([]);
+    if (file) setSelecteds([file]);
+    else setSelecteds([]);
   }, [file]);
 
   // sort and filter
