@@ -4,6 +4,7 @@ import { fileUrl, secondsToString } from "../utils";
 import { useGlobal } from "../GlobalContext";
 import { updateFile } from "./utils";
 import "./style.scss";
+import AutoNextButton from "../components/AutoNextButton";
 
 const colorsProperty = ["contrast", "brightness", "saturate", "hue"];
 
@@ -89,7 +90,10 @@ export default function VideoViewer() {
         }}
         onPause={() => (mainRef.current!.dataset.isPaused = "paused")}
         onPlay={() => (mainRef.current!.dataset.isPaused = "")}
-        onEnded={() => next(1)}
+        onEnded={() => {
+          if (localStorage.getItem("auto-next") === "1")
+            next(1)
+        }}
         onTimeUpdate={({ currentTarget: video }) => {
           getEl("timebar").value = video.currentTime.toString();
           getEl("current-time").textContent = [
@@ -206,6 +210,7 @@ export default function VideoViewer() {
       <div className="vp-control">
         <div className="vp-timebar-container">
           <div className="vp-more"></div>
+          {/* TIME BAR */}
           <input
             className="vp-timebar"
             type="range"
@@ -225,6 +230,7 @@ export default function VideoViewer() {
                 secondsToString(potentialValue);
             }}
           />
+          {/* PREVIEW */}
           <div className="vp-preview">
             <span className="vp-time"></span>
             <video
@@ -238,13 +244,18 @@ export default function VideoViewer() {
         </div>
         <div className="vp-buttons-container">
           <div className="vp-buttons-side-container">
+            {/* PLAY */}
             <button
               onClick={() => toggleVideoPlayState()}
               className="vp-play-btn"
             ></button>
+            {/* TIME */}
             <span className="vp-current-time"></span>
+            {/* AUTO NEXT */}
+            <AutoNextButton />
           </div>
           <div className="vp-buttons-side-container">
+            {/* VOLUME */}
             <input
               className="vp-volume"
               type="range"
@@ -257,6 +268,7 @@ export default function VideoViewer() {
                 video.muted = false;
               }}
             />
+            {/* FULLSCREEN */}
             <button
               type="button"
               onClick={(e) =>
