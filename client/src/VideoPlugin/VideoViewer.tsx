@@ -7,7 +7,7 @@ import "./style.scss";
 import AutoNextButton from "../components/AutoNextButton";
 
 const colorsProperty = ["contrast", "brightness", "saturate", "hue"];
-const settingsProperty = [...colorsProperty, "speed"];
+const settingsProperty = [...colorsProperty, "speed", "rotate"];
 
 export default function VideoViewer() {
   const {
@@ -152,6 +152,8 @@ export default function VideoViewer() {
           ].join(" ");
           // speed
           video.playbackRate = form.speed.valueAsNumber;
+          // rotate
+          video.style.rotate = form.rotate.value + "deg";
           // update
           updateFile(
             updateFiles,
@@ -218,6 +220,9 @@ export default function VideoViewer() {
           step="0.05"
           defaultValue="1"
         />
+        <br />
+        rotate__:{" "}
+        <input name="rotate" type="number" min="0" max="360" step="10" defaultValue="0" />
         <hr />
         <button
           type="button"
