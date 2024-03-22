@@ -7,6 +7,7 @@ import "./style.scss";
 import AutoNextButton from "../components/AutoNextButton";
 
 const colorsProperty = ["contrast", "brightness", "saturate", "hue"];
+const settingsProperty = [...colorsProperty, "speed"];
 
 export default function VideoViewer() {
   const {
@@ -91,8 +92,7 @@ export default function VideoViewer() {
         onPause={() => (mainRef.current!.dataset.isPaused = "paused")}
         onPlay={() => (mainRef.current!.dataset.isPaused = "")}
         onEnded={() => {
-          if (localStorage.getItem("auto-next") === "1")
-            next(1)
+          if (localStorage.getItem("auto-next") === "1") next(1);
         }}
         onTimeUpdate={({ currentTarget: video }) => {
           getEl("timebar").value = video.currentTime.toString();
@@ -113,16 +113,17 @@ export default function VideoViewer() {
           const volume = localStorage.getItem("volume") || "1";
           getEl("volume").value = volume;
           video.volume = parseFloat(volume);
-          // color
-          const form = getEl("color");
-          for (let property of colorsProperty) {
+          // settings
+          const settingsForm = getEl("settings") as HTMLFormElement;
+          for (let property of settingsProperty) {
             // @ts-ignore
-            const input = form[property] as HTMLInputElement;
+            const input = settingsForm[property] as HTMLInputElement;
             input.value = details[property] || input.getAttribute("value");
           }
-          form.dispatchEvent(new Event("input", { bubbles: true }));
+          settingsForm.dispatchEvent(new Event("input", { bubbles: true }));
         }}
       >
+        {/* SUBTITLE */}
         {vttFile && (
           <track
             default
@@ -139,19 +140,24 @@ export default function VideoViewer() {
       </button>
       {/* COLOR */}
       <form
-        className="vp-color"
+        className="vp-settings"
         onInput={({ currentTarget: form }) => {
-          getVideo().style.filter = [
+          const video = getVideo();
+          // color
+          video.style.filter = [
             `contrast(${form.contrast.valueAsNumber}%)`,
             `brightness(${form.brightness.valueAsNumber}%)`,
             `saturate(${form.saturate.valueAsNumber}%)`,
             `hue-rotate(${form.hue.valueAsNumber}deg)`,
           ].join(" ");
+          // speed
+          video.playbackRate = form.speed.valueAsNumber;
+          // update
           updateFile(
             updateFiles,
             file,
             Object.fromEntries(
-              colorsProperty.map((name) => [
+              settingsProperty.map((name) => [
                 name,
                 form[name].value === form[name].getAttribute("value")
                   ? undefined
@@ -160,12 +166,6 @@ export default function VideoViewer() {
             )
           );
         }}
-        onReset={({ currentTarget: form }) =>
-          setTimeout(
-            () => form.dispatchEvent(new Event("input", { bubbles: true })),
-            1
-          )
-        }
       >
         bright__:{" "}
         <input
@@ -197,7 +197,28 @@ export default function VideoViewer() {
         hue_____:{" "}
         <input name="hue" type="number" min="0" step="4" defaultValue="360" />
         <br />
-        <input type="reset" />
+        <button
+          type="button"
+          onClick={(e) => {
+            const form = e.currentTarget.parentElement! as HTMLFormElement;
+            for (let property of colorsProperty)
+              form[property].value = form[property].getAttribute("value");
+            form.dispatchEvent(new Event("input", { bubbles: true }));
+          }}
+        >
+          reset
+        </button>
+        <hr />
+        speed___:{" "}
+        <input
+          name="speed"
+          type="number"
+          min="0.25"
+          max="2"
+          step="0.05"
+          defaultValue="1"
+        />
+        <hr />
         <button
           type="button"
           style={{ float: "right" }}
