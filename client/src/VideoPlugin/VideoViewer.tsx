@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import PanZoom from "../utils/panzoom";
 import { fileUrl, secondsToString } from "../utils";
 import { useGlobal } from "../GlobalContext";
@@ -222,7 +222,26 @@ export default function VideoViewer() {
         />
         <br />
         rotate__:{" "}
-        <input name="rotate" type="number" min="0" max="360" step="10" defaultValue="0" />
+        <input
+          name="rotate"
+          type="number"
+          min="0"
+          max="360"
+          step="10"
+          defaultValue="0"
+        />
+        <button type="button" data-value="0" onClick={rotateClickEvent}>
+          0
+        </button>
+        <button type="button" data-value="90" onClick={rotateClickEvent}>
+          90
+        </button>
+        <button type="button" data-value="180" onClick={rotateClickEvent}>
+          180
+        </button>
+        <button type="button" data-value="270" onClick={rotateClickEvent}>
+          -90
+        </button>
         <hr />
         <button
           type="button"
@@ -312,4 +331,11 @@ export default function VideoViewer() {
       </div>
     </div>
   );
+}
+
+function rotateClickEvent(e: MouseEvent) {
+  const rotate = (e.currentTarget.parentElement! as HTMLFormElement)
+    .rotate as HTMLInputElement;
+  rotate.value = e.currentTarget.dataset.value;
+  rotate.dispatchEvent(new Event("input", { bubbles: true }));
 }
